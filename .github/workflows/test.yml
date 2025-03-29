@@ -14,7 +14,6 @@ jobs:
         options: >-
           --health-cmd pg_isready --health-interval 10s --health-timeout 5s  --health-retries 5
 
-
         ports:
           - 5432:5432
 
@@ -24,13 +23,14 @@ jobs:
       - name: Install bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: ${{ secrets.BUN_VERSION }}
+          bun-version: 1.1.22
 
       - name: Install deps
         run: bun i
 
       - name: Lint
         run: bun run lint
+        working-directory: lobe
 
       - name: Test Server Coverage
         run: bun run test-server:coverage
@@ -41,20 +41,22 @@ jobs:
           KEY_VAULTS_SECRET: LA7n9k3JdEcbSgml2sxfw+4TV1AzaaFU5+R176aQz4s=
           S3_PUBLIC_DOMAIN: https://example.com
           APP_URL: https://home.com
+        working-directory: lobe
 
       - name: Upload Server coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/server/lcov.info
+          files: lobe/coverage/server/lcov.info
           flags: server
 
       - name: Test App Coverage
         run: bun run test-app:coverage
+        working-directory: lobe
 
       - name: Upload App Coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/app/lcov.info
+          files: lobe/coverage/app/lcov.info
           flags: app

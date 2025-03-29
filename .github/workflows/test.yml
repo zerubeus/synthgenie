@@ -27,6 +27,7 @@ jobs:
 
       - name: Install deps
         run: bun i
+        working-directory: lobe
 
       - name: Lint
         run: bun run lint

@@ -128,15 +128,15 @@ const ChatApp = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col rounded-xl overflow-hidden shadow-2xl bg-gray-900 border border-gray-800">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Synthgenie {selectedDevice && <span className="text-blue-500 font-medium">MIDI</span>}
+      <header className="bg-gray-900 border-b border-gray-800 p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+          Synthgenie {selectedDevice && <span className="text-blue-400 font-medium">MIDI</span>}
         </h1>
         <button 
           onClick={clearChat}
-          className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full"
+          className="p-2 text-gray-400 hover:text-blue-400 hover:bg-gray-800 rounded-full"
           aria-label="Clear chat"
           title="Clear chat"
         >
@@ -145,7 +145,7 @@ const ChatApp = () => {
       </header>
 
       {/* Chat Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900 h-[60vh]">
         {messages.map((message, index) => (
           <div 
             key={index} 
@@ -154,27 +154,27 @@ const ChatApp = () => {
             <div className={`
               max-w-3xl p-4 rounded-lg flex gap-3 items-start
               ${message.role === 'user' 
-                ? 'bg-blue-500 text-white rounded-br-none' 
-                : 'bg-white border border-gray-200 shadow-sm rounded-bl-none'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none' 
+                : 'bg-gray-800 border border-gray-700 shadow-sm rounded-bl-none text-gray-200'
               }
             `}>
               <div className={`
                 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center
-                ${message.role === 'user' ? 'bg-blue-600' : 'bg-gray-100'}
+                ${message.role === 'user' ? 'bg-blue-500' : 'bg-gray-700'}
               `}>
                 {message.role === 'user' 
                   ? <User size={14} className="text-white" /> 
-                  : <Bot size={14} className="text-gray-600" />
+                  : <Bot size={14} className="text-gray-300" />
                 }
               </div>
               <div className="flex-1">
-                <p className={`whitespace-pre-wrap ${message.role === 'user' ? 'text-white' : 'text-gray-800'}`}>
+                <p className={`whitespace-pre-wrap text-white`}>
                   {message.content}
                 </p>
                 {message.role === 'assistant' && (
                   <button 
                     onClick={() => copyMessage(message.content)}
-                    className="mt-2 text-gray-400 hover:text-gray-600"
+                    className="mt-2 text-gray-400 hover:text-blue-400"
                     title="Copy to clipboard"
                   >
                     <Copy size={14} />
@@ -186,14 +186,14 @@ const ChatApp = () => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="max-w-3xl p-4 rounded-lg flex gap-3 items-start bg-white border border-gray-200 shadow-sm rounded-bl-none">
-              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
-                <Bot size={14} className="text-gray-600" />
+            <div className="max-w-3xl p-4 rounded-lg flex gap-3 items-start bg-gray-800 border border-gray-700 shadow-sm rounded-bl-none">
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center">
+                <Bot size={14} className="text-gray-300" />
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                <div className="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: '600ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                <div className="w-2 h-2 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: '600ms' }}></div>
               </div>
             </div>
           </div>
@@ -202,12 +202,12 @@ const ChatApp = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-200">
-        <div className="max-w-4xl mx-auto relative">
-          <div className="border border-gray-300 rounded-lg bg-white overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+      <div className="p-4 bg-gray-800 border-t border-gray-700">
+        <div className="relative">
+          <div className="border border-gray-700 rounded-lg bg-gray-900 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
             <textarea
               ref={inputRef}
-              className="w-full p-3 pb-12 resize-none outline-none min-h-20 overflow-hidden border-none"
+              className="w-full p-3 pb-12 resize-none outline-none min-h-20 overflow-hidden border-none bg-gray-900 text-white placeholder-gray-500"
               placeholder="Type your message..."
               value={input}
               onChange={handleTextAreaInput}
@@ -221,7 +221,7 @@ const ChatApp = () => {
                 <select
                   value={selectedDevice}
                   onChange={(e) => setSelectedDevice(e.target.value)}
-                  className="appearance-none bg-transparent pr-6 border-none focus:outline-none text-gray-700 text-right"
+                  className="appearance-none bg-transparent pr-6 border-none focus:outline-none text-gray-400 text-right"
                   style={{ direction: "rtl", paddingRight: "1.5rem" }}
                 >
                   {midiDevices.map((device) => (
@@ -231,7 +231,7 @@ const ChatApp = () => {
                   ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center">
-                  <svg className="h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
                 </div>
@@ -243,8 +243,8 @@ const ChatApp = () => {
                 disabled={input.trim() === '' || isLoading}
                 className={`p-2 rounded-lg flex-shrink-0 ${
                   input.trim() === '' || isLoading
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-blue-500 hover:text-blue-600'
+                    ? 'text-gray-600 cursor-not-allowed'
+                    : 'text-blue-400 hover:text-indigo-400'
                 }`}
                 aria-label="Send message"
               >

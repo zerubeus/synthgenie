@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from typing import List
 
 from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.services.agent import synthgenie_agent
+from synthgenie.services.synth_controller import SynthControllerDeps
 
 
 class UserPrompt(BaseModel):
@@ -19,21 +21,13 @@ async def process_prompt(user_prompt: UserPrompt):
 
     The agent will interpret the prompt and return a list of synthesizer parameter changes.
     """
-    # This is a mock implementation for testing
-    # In the real implementation, we would use the Pydantic AI agent to process the prompt
-    # and return the appropriate responses
+    # Create dependencies for the agent
+    deps = SynthControllerDeps()
 
-    # Mock response for testing
-    mock_responses = [
-        SynthGenieResponse(
-            used_tool="set_wavetone_osc1_pitch",
-            midi_cc=12,  # Example MIDI CC number
-            midi_channel=1,  # Track 1
-            value=80,  # Example value for +2 pitch
-        )
-    ]
+    # Run the agent with the user's prompt
+    result = await synthgenie_agent.run(user_prompt.prompt, deps=deps)
 
-    return mock_responses
+    return result.data
 
 
 @router.get("/health")

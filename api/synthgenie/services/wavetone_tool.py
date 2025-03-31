@@ -24,7 +24,7 @@ def set_wavetone_osc1_pitch(
             Default is 0.
         track (int): The track number to set the pitch for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "TUN1", value, track, "set_wavetone_osc1_pitch"
     )
 
@@ -46,7 +46,7 @@ def set_wavetone_osc1_waveform(
 
         track (int): Track number to set the waveform for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "WAV1", value, track, "set_wavetone_osc1_waveform"
     )
 
@@ -67,7 +67,7 @@ def set_wavetone_osc1_phase_distortion(
             Default is 50%.
         track (int): The track number to set the phase distortion for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "PD1", value, track, "set_wavetone_osc1_phase_distortion"
     )
 
@@ -86,7 +86,7 @@ def set_wavetone_osc1_level(
             Default is 100.
         track (int): The track number to set the level for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "LEV1", value, track, "set_wavetone_osc1_level"
     )
 
@@ -107,7 +107,7 @@ def set_wavetone_osc1_offset(
             Default is 0.
         track (int): The track number to set the offset for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_2", "OFS1", value, track, "set_wavetone_osc1_offset"
     )
 
@@ -126,7 +126,7 @@ def set_wavetone_osc1_table(
             Default is "prim".
         track (int): The track number to set the wavetable for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_2", "TBL1", value, track, "set_wavetone_osc1_table"
     )
 
@@ -148,7 +148,7 @@ def set_wavetone_osc2_pitch(
             Default is 0.
         track (int): The track number to set the pitch for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "TUN2", value, track, "set_wavetone_osc2_pitch"
     )
 
@@ -170,7 +170,7 @@ def set_wavetone_osc2_waveform(
             Default is 0.
         track (int): The track number to set the waveform for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "WAV2", value, track, "set_wavetone_osc2_waveform"
     )
 
@@ -191,7 +191,7 @@ def set_wavetone_osc2_phase_distortion(
             Default is 50%.
         track (int): The track number to set the phase distortion for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "PD2", value, track, "set_wavetone_osc2_phase_distortion"
     )
 
@@ -210,7 +210,7 @@ def set_wavetone_osc2_level(
             Default is 100.
         track (int): The track number to set the level for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_1", "LEV2", value, track, "set_wavetone_osc2_level"
     )
 
@@ -231,7 +231,7 @@ def set_wavetone_osc2_offset(
             Default is 0.
         track (int): The track number to set the offset for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_2", "OFS2", value, track, "set_wavetone_osc2_offset"
     )
 
@@ -250,7 +250,7 @@ def set_wavetone_osc2_table(
             Default is "prim".
         track (int): The track number to set the table for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_2", "TBL2", value, track, "set_wavetone_osc2_table"
     )
 
@@ -272,7 +272,7 @@ def set_wavetone_mod_type(
             Default is "off".
         track (int): The track number to set the modulation type for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_2", "MOD", value, track, "set_wavetone_mod_type"
     )
 
@@ -292,7 +292,7 @@ def set_wavetone_reset_mode(
             Default is "on".
         track (int): The track number to set the reset mode for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_2", "RSET", value, track, "set_wavetone_reset_mode"
     )
 
@@ -311,7 +311,7 @@ def set_wavetone_drift(
             Default is 0.
         track (int): The track number to set the drift for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_2", "DRIF", value, track, "set_wavetone_drift"
     )
 
@@ -331,7 +331,7 @@ def set_wavetone_attack(
             Default is 0.
         track (int): The track number to set the attack for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "ATK", value, track, "set_wavetone_attack"
     )
 
@@ -350,7 +350,7 @@ def set_wavetone_hold(
             Default is 127.
         track (int): The track number to set the hold for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "HOLD", value, track, "set_wavetone_hold"
     )
 
@@ -369,7 +369,7 @@ def set_wavetone_decay(
             Default is 127.
         track (int): The track number to set the decay for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "DEC", value, track, "set_wavetone_decay"
     )
 
@@ -388,7 +388,7 @@ def set_wavetone_noise_level(
             Default is 0.
         track (int): The track number to set the noise level for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "NLEV", value, track, "set_wavetone_noise_level"
     )
 
@@ -408,7 +408,7 @@ def set_wavetone_noise_base(
             Default is 0.
         track (int): The track number to set the noise base for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "BASE", value, track, "set_wavetone_noise_base"
     )
 
@@ -427,7 +427,7 @@ def set_wavetone_noise_width(
             Default is 127.
         track (int): The track number to set the noise width for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "WDTH", value, track, "set_wavetone_noise_width"
     )
 
@@ -447,7 +447,7 @@ def set_wavetone_noise_type(
             Default is "grain noise" (0).
         track (int): The track number to set the noise type for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "TYPE", value, track, "set_wavetone_noise_type"
     )
 
@@ -466,6 +466,6 @@ def set_wavetone_noise_character(
             Default is 0.
         track (int): The track number to set the noise character for. 1-16
     """
-    return ctx.deps.wavetone_synth_controller.set_parameter(
+    return ctx.deps.wavetone_synth_controller.get_parameter(
         "page_3", "CHAR", value, track, "set_wavetone_noise_character"
     )

@@ -36,12 +36,39 @@ export function Welcome() {
           {/* Glow effect behind the synth */}
           <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full -z-10 scale-90 opacity-70"></div>
           
-          <img 
-            src={synthImageUrl} 
-            alt="Moog One Synthesizer" 
-            className="w-full h-auto rounded-lg shadow-2xl transform-gpu filter brightness-90 contrast-125 saturate-75 hue-rotate-15"
-            style={{ mixBlendMode: 'lighten' }}
-          />
+          <div className="relative">
+            <img 
+              src={synthImageUrl} 
+              alt="Moog One Synthesizer" 
+              className="w-full h-auto rounded-lg shadow-2xl transform-gpu filter brightness-90 contrast-125 saturate-75 hue-rotate-15 color-wave"
+              style={{ mixBlendMode: 'lighten' }}
+            />
+            
+            {/* Color wave animation */}
+            <style dangerouslySetInnerHTML={{ __html: `
+              @keyframes colorWave {
+                0% { 
+                  filter: brightness(0.9) contrast(1.25) saturate(0.75) hue-rotate(15deg);
+                }
+                25% { 
+                  filter: brightness(0.9) contrast(1.3) saturate(1.2) hue-rotate(60deg);
+                }
+                50% { 
+                  filter: brightness(0.85) contrast(1.4) saturate(1.0) hue-rotate(180deg);
+                }
+                75% { 
+                  filter: brightness(0.9) contrast(1.3) saturate(1.1) hue-rotate(270deg);
+                }
+                100% { 
+                  filter: brightness(0.9) contrast(1.25) saturate(0.75) hue-rotate(15deg);
+                }
+              }
+              
+              .color-wave {
+                animation: colorWave 15s infinite ease-in-out;
+              }
+            `}} />
+          </div>
         </div>
       </div>
     </div>

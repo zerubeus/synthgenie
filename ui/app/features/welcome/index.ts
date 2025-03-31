@@ -1,2 +1,2 @@
 export { default as WelcomePage } from './WelcomePage';
-export { meta, clientLoader } from './WelcomePage';
+export { meta } from './WelcomePage';

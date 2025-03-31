@@ -1,10 +1,17 @@
+import os
+import sentry_sdk
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
-from synthgenie.routes.agent import router as agent_router
+from synthgenie.routes.agent import router as agent_router  # noqa: E402
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    send_default_pii=True,
+)
 
 app = FastAPI(
     title="Synthgenie API",

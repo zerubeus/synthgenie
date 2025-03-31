@@ -10,7 +10,7 @@ license = { text = "CC BY-NC 4.0" }
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Creative Commons Attribution-NonCommercial 4.0",
+    "License :: Other/Proprietary License",
     "Programming Language :: Python :: 3.12",
 ]
 
@@ -20,6 +20,7 @@ dependencies = [
     "fastapi>=0.115.12",
     "pydantic-ai>=0.0.46",
     "python-dotenv>=1.1.0",
+    "sentry-sdk[fastapi]>=2.25.0",
 ]
 
 [project.scripts]

@@ -5,12 +5,12 @@ description = "AI backend for synthgenie"
 readme = "README.md"
 requires-python = ">=3.12"
 
-license = { text = "MIT" }
+license = { text = "CC BY-NC 4.0" }
 
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Creative Commons Attribution-NonCommercial 4.0",
     "Programming Language :: Python :: 3.12",
 ]
 
@@ -18,8 +18,8 @@ authors = [{ name = "zerubeus", email = "zerubeus@gmail.com" }]
 
 dependencies = [
     "fastapi>=0.115.12",
- "pydantic-ai>=0.0.46",
- "python-dotenv>=1.1.0",
+    "pydantic-ai>=0.0.46",
+    "python-dotenv>=1.1.0",
 ]
 
 [project.scripts]

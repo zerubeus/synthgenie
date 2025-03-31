@@ -84,7 +84,7 @@ class BaseSynthController:
 
 
 @dataclass
-class AgentDeps:
+class SynthControllerDeps:
     """Dependencies for all synthesizer controllers"""
 
     # Amp and FX controllers

@@ -77,7 +77,7 @@ from synthgenie.services.wavetone_tool import (
 
 
 synthgenie_agent = Agent(
-    "anthropic:claude-3-7-sonnet-latest",
+    "google-gla:gemini-2.0-flash",
     tools=[
         set_multi_mode_filter_attack,
         set_multi_mode_filter_decay,

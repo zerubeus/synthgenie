@@ -122,7 +122,7 @@ def set_multi_mode_filter_resonance(
 
 
 def set_multi_mode_filter_type(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the type of the multi-mode filter.

@@ -8,6 +8,7 @@ class MidiMapping(BaseModel):
 
 
 class DigitoneParams(BaseModel):
+    midi: MidiMapping
     max_midi_value: int
     min_midi_value: int
     max_value: int | float | list[int | float]

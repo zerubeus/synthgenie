@@ -1,12 +1,8 @@
 from pydantic import BaseModel
 
 
-class AgentResponse(BaseModel):
-    response: str
-    token_usage: int
-
-
-class ToolCallResult(BaseModel):
-    client_id: str
-    tool_call_id: str
-    result: dict[str, any]
+class SynthGenieResponse(BaseModel):
+    used_tool: str
+    midi_cc: int
+    midi_channel: int
+    value: int

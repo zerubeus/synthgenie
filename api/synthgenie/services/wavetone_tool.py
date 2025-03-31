@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 # Oscillator 1 methods
-def set_osc1_pitch(
+def set_wavetone_osc1_pitch(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the pitch of oscillator one."""
@@ -17,7 +17,7 @@ def set_osc1_pitch(
     )
 
 
-def set_osc1_waveform(
+def set_wavetone_osc1_waveform(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the waveform of oscillator one."""
@@ -26,7 +26,7 @@ def set_osc1_waveform(
     )
 
 
-def set_osc1_phase_distortion(
+def set_wavetone_osc1_phase_distortion(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the phase distortion of oscillator one."""
@@ -35,7 +35,7 @@ def set_osc1_phase_distortion(
     )
 
 
-def set_osc1_level(
+def set_wavetone_osc1_level(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the level of oscillator one."""
@@ -44,7 +44,7 @@ def set_osc1_level(
     )
 
 
-def set_osc1_offset(
+def set_wavetone_osc1_offset(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the offset of oscillator one."""
@@ -53,7 +53,7 @@ def set_osc1_offset(
     )
 
 
-def set_osc1_table(
+def set_wavetone_osc1_table(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the table of oscillator one."""
@@ -63,7 +63,7 @@ def set_osc1_table(
 
 
 # Oscillator 2 methods
-def set_osc2_pitch(
+def set_wavetone_osc2_pitch(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the pitch of oscillator two."""
@@ -72,7 +72,7 @@ def set_osc2_pitch(
     )
 
 
-def set_osc2_waveform(
+def set_wavetone_osc2_waveform(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the waveform of oscillator two."""
@@ -81,7 +81,7 @@ def set_osc2_waveform(
     )
 
 
-def set_osc2_phase_distortion(
+def set_wavetone_osc2_phase_distortion(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the phase distortion of oscillator two."""
@@ -90,7 +90,7 @@ def set_osc2_phase_distortion(
     )
 
 
-def set_osc2_level(
+def set_wavetone_osc2_level(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the level of oscillator two."""
@@ -99,7 +99,7 @@ def set_osc2_level(
     )
 
 
-def set_osc2_offset(
+def set_wavetone_osc2_offset(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the offset of oscillator two."""
@@ -108,7 +108,7 @@ def set_osc2_offset(
     )
 
 
-def set_osc2_table(
+def set_wavetone_osc2_table(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the table of oscillator two."""
@@ -118,7 +118,7 @@ def set_osc2_table(
 
 
 # Modulation methods
-def set_mod_type(
+def set_wavetone_mod_type(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the modulation type."""
@@ -127,7 +127,7 @@ def set_mod_type(
     )
 
 
-def set_reset_mode(
+def set_wavetone_reset_mode(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the reset mode."""
@@ -136,7 +136,7 @@ def set_reset_mode(
     )
 
 
-def set_drift(
+def set_wavetone_drift(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the drift amount."""
@@ -146,7 +146,7 @@ def set_drift(
 
 
 # Envelope methods
-def set_attack(
+def set_wavetone_attack(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the attack time."""
@@ -155,7 +155,7 @@ def set_attack(
     )
 
 
-def set_hold(
+def set_wavetone_hold(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the hold time."""
@@ -164,7 +164,7 @@ def set_hold(
     )
 
 
-def set_decay(
+def set_wavetone_decay(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the decay time."""
@@ -173,7 +173,7 @@ def set_decay(
     )
 
 
-def set_noise_level(
+def set_wavetone_noise_level(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the noise level."""
@@ -183,7 +183,7 @@ def set_noise_level(
 
 
 # Noise methods
-def set_noise_base(
+def set_wavetone_noise_base(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the noise base frequency."""
@@ -192,7 +192,7 @@ def set_noise_base(
     )
 
 
-def set_noise_width(
+def set_wavetone_noise_width(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the noise width."""
@@ -201,7 +201,7 @@ def set_noise_width(
     )
 
 
-def set_noise_type(
+def set_wavetone_noise_type(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the noise type."""
@@ -210,7 +210,7 @@ def set_noise_type(
     )
 
 
-def set_noise_character(
+def set_wavetone_noise_character(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> Tuple[int, int, int]:
     """Set the noise character."""

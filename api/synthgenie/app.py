@@ -1,17 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-tags_metadata = [
-    {
-        "name": "synthgenie",
-        "description": "Agent tools for synthgenie",
-    },
-]
-
+from synthgenie.routes.agent import router as agent_router
 
 app = FastAPI(
     title="Synthgenie API",
-    openapi_tags=tags_metadata,
+    description="API for controlling Elektron Digitone synthesizer parameters",
+    version="1.0.0",
 )
 
 app.add_middleware(
@@ -21,3 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True,
 )
+
+# Include routers
+app.include_router(agent_router)

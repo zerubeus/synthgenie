@@ -2,8 +2,8 @@ import logging
 from dataclasses import dataclass
 from pydantic import Field
 
-from data.digitone_params import digitone_config
-from schemas.digitone import ParameterGroup
+from synthgenie.data.digitone_params import digitone_config
+from synthgenie.schemas.digitone import ParameterGroup
 from synthgenie.schemas.agent import SynthGenieResponse
 
 logger = logging.getLogger(__name__)

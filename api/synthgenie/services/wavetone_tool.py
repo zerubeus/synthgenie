@@ -1,5 +1,5 @@
 from pydantic_ai import RunContext
-from services.synth_controller import SynthControllerDeps
+from synthgenie.services.synth_controller import SynthControllerDeps
 from typing import Tuple
 
 import logging

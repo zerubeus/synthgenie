@@ -75,69 +75,89 @@ def set_osc2_level(value: int, midi_channel: int) -> bool:
     )
 
 
-def set_osc2_offset(self, value: int) -> bool:
+def set_osc2_offset(value: int, midi_channel: int) -> bool:
     """Set the offset of oscillator two."""
-    return self.set_parameter("page_2", "OFS2", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_2", "OFS2", value, midi_channel
+    )
 
 
-def set_osc2_table(self, value: int) -> bool:
+def set_osc2_table(value: int, midi_channel: int) -> bool:
     """Set the table of oscillator two."""
-    return self.set_parameter("page_2", "TBL2", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_2", "TBL2", value, midi_channel
+    )
 
 
 # Modulation methods
-def set_mod_type(self, value: int) -> bool:
+def set_mod_type(value: int, midi_channel: int) -> bool:
     """Set the modulation type."""
-    return self.set_parameter("page_2", "MOD", value)
+    return wavetone_synth_controller.set_parameter("page_2", "MOD", value, midi_channel)
 
 
-def set_reset_mode(self, value: int) -> bool:
+def set_reset_mode(value: int, midi_channel: int) -> bool:
     """Set the reset mode."""
-    return self.set_parameter("page_2", "RSET", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_2", "RSET", value, midi_channel
+    )
 
 
-def set_drift(self, value: int) -> bool:
+def set_drift(value: int, midi_channel: int) -> bool:
     """Set the drift amount."""
-    return self.set_parameter("page_2", "DRIF", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_2", "DRIF", value, midi_channel
+    )
 
 
 # Envelope methods
-def set_attack(self, value: int) -> bool:
+def set_attack(value: int, midi_channel: int) -> bool:
     """Set the attack time."""
-    return self.set_parameter("page_3", "ATK", value)
+    return wavetone_synth_controller.set_parameter("page_3", "ATK", value, midi_channel)
 
 
-def set_hold(self, value: int) -> bool:
+def set_hold(value: int, midi_channel: int) -> bool:
     """Set the hold time."""
-    return self.set_parameter("page_3", "HOLD", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_3", "HOLD", value, midi_channel
+    )
 
 
-def set_decay(self, value: int) -> bool:
+def set_decay(value: int, midi_channel: int) -> bool:
     """Set the decay time."""
-    return self.set_parameter("page_3", "DEC", value)
+    return wavetone_synth_controller.set_parameter("page_3", "DEC", value, midi_channel)
 
 
-def set_noise_level(self, value: int) -> bool:
+def set_noise_level(value: int, midi_channel: int) -> bool:
     """Set the noise level."""
-    return self.set_parameter("page_3", "NLEV", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_3", "NLEV", value, midi_channel
+    )
 
 
 # Noise methods
-def set_noise_base(self, value: int) -> bool:
+def set_noise_base(value: int, midi_channel: int) -> bool:
     """Set the noise base frequency."""
-    return self.set_parameter("page_3", "BASE", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_3", "BASE", value, midi_channel
+    )
 
 
-def set_noise_width(self, value: int) -> bool:
+def set_noise_width(value: int, midi_channel: int) -> bool:
     """Set the noise width."""
-    return self.set_parameter("page_3", "WDTH", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_3", "WDTH", value, midi_channel
+    )
 
 
-def set_noise_type(self, value: int) -> bool:
+def set_noise_type(value: int, midi_channel: int) -> bool:
     """Set the noise type."""
-    return self.set_parameter("page_3", "TYPE", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_3", "TYPE", value, midi_channel
+    )
 
 
-def set_noise_character(self, value: int) -> bool:
+def set_noise_character(value: int, midi_channel: int) -> bool:
     """Set the noise character."""
-    return self.set_parameter("page_3", "CHAR", value)
+    return wavetone_synth_controller.set_parameter(
+        "page_3", "CHAR", value, midi_channel
+    )

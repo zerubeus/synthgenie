@@ -8,7 +8,7 @@ def set_amp_attack(
 ) -> bool:
     """Set the attack time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "ATK", value, midi_channel
+        "ATK", value, midi_channel, "set_amp_attack"
     )
 
 
@@ -17,7 +17,7 @@ def set_amp_hold(
 ) -> bool:
     """Set the hold time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "HOLD", value, midi_channel
+        "HOLD", value, midi_channel, "set_amp_hold"
     )
 
 
@@ -26,7 +26,7 @@ def set_amp_decay(
 ) -> bool:
     """Set the decay time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "DEC", value, midi_channel
+        "DEC", value, midi_channel, "set_amp_decay"
     )
 
 
@@ -35,7 +35,7 @@ def set_amp_sustain(
 ) -> bool:
     """Set the sustain level of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "SUS", value, midi_channel
+        "SUS", value, midi_channel, "set_amp_sustain"
     )
 
 
@@ -44,7 +44,7 @@ def set_amp_release(
 ) -> bool:
     """Set the release time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "REL", value, midi_channel
+        "REL", value, midi_channel, "set_amp_release"
     )
 
 
@@ -53,7 +53,7 @@ def set_amp_envelope_reset(
 ) -> bool:
     """Set envelope reset mode (0=off, 1=on)."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "Env. RSET", value, midi_channel
+        "Env. RSET", value, midi_channel, "set_amp_envelope_reset"
     )
 
 
@@ -62,7 +62,7 @@ def set_amp_envelope_mode(
 ) -> bool:
     """Set envelope mode (0=AHD, 1=ADSR)."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "MODE", value, midi_channel
+        "MODE", value, midi_channel, "set_amp_envelope_mode"
     )
 
 
@@ -71,7 +71,7 @@ def set_amp_pan(
 ) -> bool:
     """Set the stereo panning position (-64 to +64)."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "PAN", value, midi_channel
+        "PAN", value, midi_channel, "set_amp_pan"
     )
 
 
@@ -80,7 +80,7 @@ def set_amp_volume(
 ) -> bool:
     """Set the overall volume level (0-127)."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "VOL", value, midi_channel
+        "VOL", value, midi_channel, "set_amp_volume"
     )
 
 
@@ -89,7 +89,9 @@ def set_fx_bit_reduction(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> bool:
     """Set the bit reduction amount (0-127)."""
-    return ctx.deps.fx_synth_controller.get_direct_parameter("BR", value, midi_channel)
+    return ctx.deps.fx_synth_controller.get_direct_parameter(
+        "BR", value, midi_channel, "set_fx_bit_reduction"
+    )
 
 
 def set_fx_overdrive(
@@ -97,7 +99,7 @@ def set_fx_overdrive(
 ) -> bool:
     """Set the overdrive amount (0-127)."""
     return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "OVER", value, midi_channel
+        "OVER", value, midi_channel, "set_fx_overdrive"
     )
 
 
@@ -105,7 +107,9 @@ def set_fx_sample_rate_reduction(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> bool:
     """Set the sample rate reduction amount (0-127)."""
-    return ctx.deps.fx_synth_controller.get_direct_parameter("SRR", value, midi_channel)
+    return ctx.deps.fx_synth_controller.get_direct_parameter(
+        "SRR", value, midi_channel, "set_fx_sample_rate_reduction"
+    )
 
 
 def set_fx_sample_rate_routing(
@@ -113,7 +117,7 @@ def set_fx_sample_rate_routing(
 ) -> bool:
     """Set sample rate reduction routing (0=pre, 1=post)."""
     return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "SR.RT(pre/post)", value, midi_channel
+        "SR.RT(pre/post)", value, midi_channel, "set_fx_sample_rate_routing"
     )
 
 
@@ -122,7 +126,7 @@ def set_fx_overdrive_routing(
 ) -> bool:
     """Set overdrive routing (0=pre, 1=post)."""
     return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "OD.RT(pre/post)", value, midi_channel
+        "OD.RT(pre/post)", value, midi_channel, "set_fx_overdrive_routing"
     )
 
 
@@ -130,18 +134,24 @@ def set_fx_delay(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> bool:
     """Set the delay send amount (0-127)."""
-    return ctx.deps.fx_synth_controller.get_direct_parameter("DEL", value, midi_channel)
+    return ctx.deps.fx_synth_controller.get_direct_parameter(
+        "DEL", value, midi_channel, "set_fx_delay"
+    )
 
 
 def set_fx_reverb(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> bool:
     """Set the reverb send amount (0-127)."""
-    return ctx.deps.fx_synth_controller.get_direct_parameter("REV", value, midi_channel)
+    return ctx.deps.fx_synth_controller.get_direct_parameter(
+        "REV", value, midi_channel, "set_fx_reverb"
+    )
 
 
 def set_fx_chorus(
     ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
 ) -> bool:
     """Set the chorus send amount (0-127)."""
-    return ctx.deps.fx_synth_controller.get_direct_parameter("CHR", value, midi_channel)
+    return ctx.deps.fx_synth_controller.get_direct_parameter(
+        "CHR", value, midi_channel, "set_fx_chorus"
+    )

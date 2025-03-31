@@ -4,6 +4,7 @@ from pydantic import Field
 
 from data.digitone_params import digitone_config
 from schemas.digitone import ParameterGroup
+from synthgenie.schemas.agent import SynthGenieResponse
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class BaseSynthController:
         self.config = config
 
     def get_parameter(
-        self, page: str, param_name: str, value: int, midi_channel: int
+        self, page: str, param_name: str, value: int, midi_channel: int, used_tool: str
     ) -> tuple[int, int, int]:
         """
         Set a page-based parameter via CC (original method for backward compatibility).
@@ -48,10 +49,15 @@ class BaseSynthController:
         param = self.config[page].parameters[param_name]
         cc_msb = param.midi.cc_msb
 
-        return midi_channel, cc_msb, value
+        return SynthGenieResponse(
+            used_tool=used_tool,
+            midi_cc=cc_msb,
+            midi_channel=midi_channel,
+            value=value,
+        )
 
     def get_direct_parameter(
-        self, param_name: str, value: int, midi_channel: int
+        self, param_name: str, value: int, midi_channel: int, used_tool: str
     ) -> tuple[int, int, int]:
         """
         Args:
@@ -76,7 +82,12 @@ class BaseSynthController:
 
             cc_msb = param.midi.cc_msb
 
-            return midi_channel, cc_msb, value
+            return SynthGenieResponse(
+                used_tool=used_tool,
+                midi_cc=cc_msb,
+                midi_channel=midi_channel,
+                value=value,
+            )
 
         except Exception as e:
             logger.error(f"Failed to set {param_name}: {e}")

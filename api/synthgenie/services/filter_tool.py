@@ -1,5 +1,6 @@
 from pydantic_ai import RunContext
 from synthgenie.services.synth_controller import SynthControllerDeps
+from synthgenie.schemas.agent import SynthGenieResponse
 
 import logging
 
@@ -9,11 +10,12 @@ logger = logging.getLogger(__name__)
 # Multi-Mode Filter functions
 def set_multi_mode_filter_attack(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the attack time of the multi-mode filter envelope.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Attack time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -28,11 +30,12 @@ def set_multi_mode_filter_attack(
 
 def set_multi_mode_filter_decay(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the decay time of the multi-mode filter envelope.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Decay time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -47,11 +50,12 @@ def set_multi_mode_filter_decay(
 
 def set_multi_mode_filter_sustain(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the sustain level of the multi-mode filter envelope.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Sustain level value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -66,11 +70,12 @@ def set_multi_mode_filter_sustain(
 
 def set_multi_mode_filter_release(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the release time of the multi-mode filter envelope.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Release time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -85,11 +90,12 @@ def set_multi_mode_filter_release(
 
 def set_multi_mode_filter_frequency(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the cutoff frequency of the multi-mode filter.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Cutoff frequency value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -104,11 +110,12 @@ def set_multi_mode_filter_frequency(
 
 def set_multi_mode_filter_resonance(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the resonance of the multi-mode filter.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Resonance value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -123,11 +130,12 @@ def set_multi_mode_filter_resonance(
 
 def set_multi_mode_filter_type(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the type of the multi-mode filter.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Filter type value ranging from 0 to 127.
             - 0   = Lowpass
             - 64  = EQ
@@ -144,11 +152,12 @@ def set_multi_mode_filter_type(
 
 def set_multi_mode_filter_envelope_depth(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the envelope depth of the multi-mode filter.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Envelope depth value ranging from 0 to 127.
             - 0 maps to -64
             - 64 maps to 0

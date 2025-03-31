@@ -12,39 +12,35 @@ fx_synth_controller = BaseSynthController(digitone_config.fx_page.parameters)
 
 
 # Amp Functions
-def set_amp_attack(ctx: RunContext[AgentDeps], value: float, midi_channel: int) -> bool:
+def set_amp_attack(ctx: RunContext[AgentDeps], value: int, midi_channel: int) -> bool:
     """Set the attack time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
         "ATK", value, midi_channel
     )
 
 
-def set_amp_hold(ctx: RunContext[AgentDeps], value: float, midi_channel: int) -> bool:
+def set_amp_hold(ctx: RunContext[AgentDeps], value: int, midi_channel: int) -> bool:
     """Set the hold time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
         "HOLD", value, midi_channel
     )
 
 
-def set_amp_decay(ctx: RunContext[AgentDeps], value: float, midi_channel: int) -> bool:
+def set_amp_decay(ctx: RunContext[AgentDeps], value: int, midi_channel: int) -> bool:
     """Set the decay time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
         "DEC", value, midi_channel
     )
 
 
-def set_amp_sustain(
-    ctx: RunContext[AgentDeps], value: float, midi_channel: int
-) -> bool:
+def set_amp_sustain(ctx: RunContext[AgentDeps], value: int, midi_channel: int) -> bool:
     """Set the sustain level of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
         "SUS", value, midi_channel
     )
 
 
-def set_amp_release(
-    ctx: RunContext[AgentDeps], value: float, midi_channel: int
-) -> bool:
+def set_amp_release(ctx: RunContext[AgentDeps], value: int, midi_channel: int) -> bool:
     """Set the release time of the amplitude envelope."""
     return ctx.deps.amp_synth_controller.get_direct_parameter(
         "REL", value, midi_channel

@@ -1,9 +1,8 @@
-from synthgenie.schemas.digitone import DigitoneConfig
 from synthgenie.services.synth_controller import BaseSynthController
+from data.digitone_params import digitone_config
 from typing import Tuple
 
-
-wavetone_pages = DigitoneConfig.wavetone.pages
+wavetone_pages = digitone_config.wavetone.pages
 
 wavetone_synth_controller = BaseSynthController(wavetone_pages)
 

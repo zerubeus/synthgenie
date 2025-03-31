@@ -1,5 +1,8 @@
 import logging
+from dataclasses import dataclass
+from pydantic import Field
 
+from data.digitone_params import digitone_config
 from schemas.digitone import ParameterGroup
 
 logger = logging.getLogger(__name__)
@@ -78,3 +81,75 @@ class BaseSynthController:
         except Exception as e:
             logger.error(f"Failed to set {param_name}: {e}")
             raise Exception(f"Failed to set {param_name}") from e
+
+
+@dataclass
+class AgentDeps:
+    """Dependencies for all synthesizer controllers"""
+
+    # Amp and FX controllers
+    amp_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(digitone_config.amp_page.parameters)
+    )
+    fx_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(digitone_config.fx_page.parameters)
+    )
+
+    # LFO controllers
+    lfo1_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.lfo.lfo_groups["lfo_1"]
+        )
+    )
+    lfo2_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.lfo.lfo_groups["lfo_2"]
+        )
+    )
+    lfo3_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.lfo.lfo_groups["lfo_3"]
+        )
+    )
+
+    # Filter controllers
+    filter_multi_mode_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.multi_mode_filter.parameters
+        )
+    )
+    filter_lowpass4_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.lowpass_4_filter.parameters
+        )
+    )
+    filter_equalizer_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.equalizer_filter.parameters
+        )
+    )
+    filter_base_width_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.base_width_filter.parameters
+        )
+    )
+    filter_legacy_lp_hp_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.legacy_lp_hp_filter.parameters
+        )
+    )
+    filter_comb_minus_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.comb_minus_filter.parameters
+        )
+    )
+    filter_comb_plus_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(
+            digitone_config.comb_plus_filter.parameters
+        )
+    )
+
+    # Wavetone controller
+    wavetone_synth_controller: BaseSynthController = Field(
+        default_factory=lambda: BaseSynthController(digitone_config.wavetone.pages)
+    )

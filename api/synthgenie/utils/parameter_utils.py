@@ -1,8 +1,4 @@
-from elektron_mcp.digitone.models.models import (
-    MidiMapping,
-    DigitoneParams,
-    ParameterGroup,
-)
+from synthgenie.schemas.digitone import DigitoneParams, MidiMapping, ParameterGroup
 
 
 def _extract_param_values(param_dict):
@@ -42,6 +38,7 @@ def create_parameter(
     mapping = MidiMapping(
         cc_msb=cc_msb_str, nrpn_lsb=nrpn_lsb_int, nrpn_msb=nrpn_msb_int
     )
+
     return DigitoneParams(
         midi=mapping,
         max_midi_value=max_midi,

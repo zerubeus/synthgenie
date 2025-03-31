@@ -1,6 +1,12 @@
 from pydantic import BaseModel, Field, model_validator
 
 
+class MidiMapping(BaseModel):
+    cc_msb: str
+    nrpn_lsb: int
+    nrpn_msb: int
+
+
 class DigitoneParams(BaseModel):
     max_midi_value: int
     min_midi_value: int

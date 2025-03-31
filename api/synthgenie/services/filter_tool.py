@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 # Multi-Mode Filter functions
 def set_multi_mode_filter_attack(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the attack time of the multi-mode filter envelope.
@@ -22,12 +22,12 @@ def set_multi_mode_filter_attack(
         track (int): The track number to set the filter attack for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "ATK", value, midi_channel
+        "ATK", value, track, "set_multi_mode_filter_attack"
     )
 
 
 def set_multi_mode_filter_decay(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the decay time of the multi-mode filter envelope.
@@ -41,12 +41,12 @@ def set_multi_mode_filter_decay(
         track (int): The track number to set the filter decay for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "DEC", value, midi_channel
+        "DEC", value, track, "set_multi_mode_filter_decay"
     )
 
 
 def set_multi_mode_filter_sustain(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the sustain level of the multi-mode filter envelope.
@@ -60,12 +60,12 @@ def set_multi_mode_filter_sustain(
         track (int): The track number to set the filter sustain for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "SUS", value, midi_channel
+        "SUS", value, track, "set_multi_mode_filter_sustain"
     )
 
 
 def set_multi_mode_filter_release(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the release time of the multi-mode filter envelope.
@@ -79,12 +79,12 @@ def set_multi_mode_filter_release(
         track (int): The track number to set the filter release for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "REL", value, midi_channel
+        "REL", value, track, "set_multi_mode_filter_release"
     )
 
 
 def set_multi_mode_filter_frequency(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the cutoff frequency of the multi-mode filter.
@@ -98,12 +98,12 @@ def set_multi_mode_filter_frequency(
         track (int): The track number to set the filter frequency for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "FREQ", value, midi_channel
+        "FREQ", value, track, "set_multi_mode_filter_frequency"
     )
 
 
 def set_multi_mode_filter_resonance(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the resonance of the multi-mode filter.
@@ -117,7 +117,7 @@ def set_multi_mode_filter_resonance(
         track (int): The track number to set the filter resonance for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "RESO", value, midi_channel
+        "RESO", value, track, "set_multi_mode_filter_resonance"
     )
 
 
@@ -138,12 +138,12 @@ def set_multi_mode_filter_type(
         track (int): The track number to set the filter type for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "TYPE", value, midi_channel
+        "TYPE", value, track, "set_multi_mode_filter_type"
     )
 
 
 def set_multi_mode_filter_envelope_depth(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the envelope depth of the multi-mode filter.
@@ -159,5 +159,5 @@ def set_multi_mode_filter_envelope_depth(
         track (int): The track number to set the filter envelope depth for. 1-16
     """
     return ctx.deps.filter_multi_mode_synth_controller.get_direct_parameter(
-        "ENV.Depth", value, midi_channel
+        "ENV.Depth", value, track, "set_multi_mode_filter_envelope_depth"
     )

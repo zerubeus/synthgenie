@@ -21,11 +21,13 @@ def set_lfo1_speed(
             Default is 48.
         track (int): The track number to set the LFO speed for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter("SPD", value, track)
+    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
+        "SPD", value, track, "set_lfo1_speed"
+    )
 
 
 def set_lfo1_multiplier(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the multiplier of LFO1.
@@ -39,13 +41,11 @@ def set_lfo1_multiplier(
         track (int): The track number to set the LFO multiplier for. 1-16
     """
     return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "MULT", value, midi_channel
+        "MULT", value, track, "set_lfo1_multiplier"
     )
 
 
-def set_lfo1_fade(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> bool:
+def set_lfo1_fade(ctx: RunContext[SynthControllerDeps], value: int, track: int) -> bool:
     """
     Set the fade in/out of LFO1.
 
@@ -59,12 +59,12 @@ def set_lfo1_fade(
         track (int): The track number to set the LFO fade for. 1-16
     """
     return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "FADE", value, midi_channel
+        "FADE", value, track, "set_lfo1_fade"
     )
 
 
 def set_lfo1_destination(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the destination of LFO1.
@@ -126,12 +126,12 @@ def set_lfo1_destination(
         track (int): The track number to set the LFO destination for. 1-16
     """
     return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "DEST", value, midi_channel
+        "DEST", value, track, "set_lfo1_destination"
     )
 
 
 def set_lfo1_waveform(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the waveform of LFO1.
@@ -149,12 +149,12 @@ def set_lfo1_waveform(
         track (int): The track number to set the LFO waveform for. 1-16
     """
     return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "WAVE", value, midi_channel
+        "WAVE", value, track, "set_lfo1_waveform"
     )
 
 
 def set_lfo1_start_phase(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the start phase of LFO1.
@@ -167,12 +167,12 @@ def set_lfo1_start_phase(
         track (int): The track number to set the LFO start phase for. 1-16
     """
     return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "SPH", value, midi_channel
+        "SPH", value, track, "set_lfo1_start_phase"
     )
 
 
 def set_lfo1_trigger_mode(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the trigger mode of LFO1.
@@ -188,12 +188,12 @@ def set_lfo1_trigger_mode(
         track (int): The track number to set the LFO trigger mode for. 1-16
     """
     return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "MODE", value, midi_channel
+        "MODE", value, track, "set_lfo1_trigger_mode"
     )
 
 
 def set_lfo1_depth(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the depth of LFO1.
@@ -206,13 +206,13 @@ def set_lfo1_depth(
         track (int): The track number to set the LFO depth for. 1-16
     """
     return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "DEP", value, midi_channel
+        "DEP", value, track, "set_lfo1_depth"
     )
 
 
 # LFO2 Functions
 def set_lfo2_speed(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the speed of LFO2.
@@ -226,12 +226,12 @@ def set_lfo2_speed(
         track (int): The track number to set the LFO speed for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "SPD", value, midi_channel
+        "SPD", value, track, "set_lfo2_speed"
     )
 
 
 def set_lfo2_multiplier(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the multiplier of LFO2.
@@ -245,13 +245,11 @@ def set_lfo2_multiplier(
         track (int): The track number to set the LFO multiplier for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "MULT", value, midi_channel
+        "MULT", value, track, "set_lfo2_multiplier"
     )
 
 
-def set_lfo2_fade(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> bool:
+def set_lfo2_fade(ctx: RunContext[SynthControllerDeps], value: int, track: int) -> bool:
     """
     Set the fade in/out of LFO2.
 
@@ -265,12 +263,12 @@ def set_lfo2_fade(
         track (int): The track number to set the LFO fade for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "FADE", value, midi_channel
+        "FADE", value, track, "set_lfo2_fade"
     )
 
 
 def set_lfo2_destination(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the destination of LFO2.
@@ -339,12 +337,12 @@ def set_lfo2_destination(
         track (int): The track number to set the LFO destination for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "DEST", value, midi_channel
+        "DEST", value, track, "set_lfo2_destination"
     )
 
 
 def set_lfo2_waveform(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the waveform of LFO2.
@@ -362,12 +360,12 @@ def set_lfo2_waveform(
         track (int): The track number to set the LFO waveform for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "WAVE", value, midi_channel
+        "WAVE", value, track, "set_lfo2_waveform"
     )
 
 
 def set_lfo2_start_phase(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the start phase of LFO2.
@@ -380,12 +378,12 @@ def set_lfo2_start_phase(
         track (int): The track number to set the LFO start phase for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "SPH", value, midi_channel
+        "SPH", value, track, "set_lfo2_start_phase"
     )
 
 
 def set_lfo2_trigger_mode(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the trigger mode of LFO2.
@@ -401,12 +399,12 @@ def set_lfo2_trigger_mode(
         track (int): The track number to set the LFO trigger mode for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "MODE", value, midi_channel
+        "MODE", value, track, "set_lfo2_trigger_mode"
     )
 
 
 def set_lfo2_depth(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
 ) -> bool:
     """
     Set the depth of LFO2.
@@ -419,5 +417,5 @@ def set_lfo2_depth(
         track (int): The track number to set the LFO depth for. 1-16
     """
     return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "DEP", value, midi_channel
+        "DEP", value, track, "set_lfo2_depth"
     )

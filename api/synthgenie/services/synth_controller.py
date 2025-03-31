@@ -11,20 +11,17 @@ class BaseSynthController:
     def __init__(
         self,
         config: dict[str, ParameterGroup],
-        midi_channel: int,
     ):
         """
         Initialize the controller.
 
         Args:
             config: A dictionary mapping parameter names/pages to ParameterGroup objects.
-            midi_channel: The MIDI channel to use (1-16).
         """
         self.config = config
-        self.midi_channel = midi_channel
 
     def get_parameter(
-        self, page: str, param_name: str, value: int
+        self, page: str, param_name: str, value: int, midi_channel: int
     ) -> tuple[int, int, int]:
         """
         Set a page-based parameter via CC (original method for backward compatibility).
@@ -48,9 +45,11 @@ class BaseSynthController:
         param = self.config[page].parameters[param_name]
         cc_msb = param.midi.cc_msb
 
-        return self.midi_channel, cc_msb, value
+        return midi_channel, cc_msb, value
 
-    def get_direct_parameter(self, param_name: str, value: int) -> tuple[int, int, int]:
+    def get_direct_parameter(
+        self, param_name: str, value: int, midi_channel: int
+    ) -> tuple[int, int, int]:
         """
         Args:
             param_name: Parameter name in config.
@@ -74,7 +73,7 @@ class BaseSynthController:
 
             cc_msb = param.midi.cc_msb
 
-            return self.midi_channel, cc_msb, value
+            return midi_channel, cc_msb, value
 
         except Exception as e:
             logger.error(f"Failed to set {param_name}: {e}")

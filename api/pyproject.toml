@@ -16,7 +16,11 @@ classifiers = [
 
 authors = [{ name = "zerubeus", email = "zerubeus@gmail.com" }]
 
-dependencies = ["fastapi>=0.115.12", "pydantic-ai>=0.0.46"]
+dependencies = [
+    "fastapi>=0.115.12",
+ "pydantic-ai>=0.0.46",
+ "python-dotenv>=1.1.0",
+]
 
 [project.scripts]
 start = "synthgenie.app:app"

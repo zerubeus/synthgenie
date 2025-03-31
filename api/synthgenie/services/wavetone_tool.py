@@ -1,6 +1,7 @@
 from pydantic_ai import RunContext
+
+from synthgenie.schemas.agent import SynthGenieResponse
 from synthgenie.services.synth_controller import SynthControllerDeps
-from typing import Tuple
 
 import logging
 
@@ -10,11 +11,12 @@ logger = logging.getLogger(__name__)
 # Oscillator 1 methods
 def set_wavetone_osc1_pitch(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the pitch of oscillator one.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): MIDI pitch value ranging from 0 to 127.
             - 0 maps to -5
             - 64 maps to 0
@@ -31,11 +33,12 @@ def set_wavetone_osc1_pitch(
 
 def set_wavetone_osc1_waveform(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the waveform of oscillator one for a specific track.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Waveform value to set, ranging from 0 to 127.
             - 0   = Sine
             - 40  = Triangle
@@ -53,11 +56,12 @@ def set_wavetone_osc1_waveform(
 
 def set_wavetone_osc1_phase_distortion(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the phase distortion of oscillator one.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Phase distortion value ranging from 0 to 127.
             - 0 maps to 0%
             - 64 maps to 50%
@@ -74,11 +78,12 @@ def set_wavetone_osc1_phase_distortion(
 
 def set_wavetone_osc1_level(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the level of oscillator one.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Level value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -93,11 +98,12 @@ def set_wavetone_osc1_level(
 
 def set_wavetone_osc1_offset(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the offset of oscillator one.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Offset value ranging from 0 to 127.
             - 0 maps to -10
             - 64 maps to 0
@@ -114,11 +120,12 @@ def set_wavetone_osc1_offset(
 
 def set_wavetone_osc1_table(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Selects the wavetable for oscillator 1's WAVE parameter. Options include PRIM (basic waves like Sin, Tri, Saw, Square) and HARM (a range of harmonic combinations)
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): wavetable value ranging from 0 to 1.
             - 0 = "prim"
             - 1 = "harm"
@@ -134,11 +141,12 @@ def set_wavetone_osc1_table(
 # Oscillator 2 methods
 def set_wavetone_osc2_pitch(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the pitch of oscillator two.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): MIDI pitch value ranging from 0 to 127.
             - 0 maps to -5
             - 64 maps to 0
@@ -155,11 +163,12 @@ def set_wavetone_osc2_pitch(
 
 def set_wavetone_osc2_waveform(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the waveform of oscillator two.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Waveform value to set, ranging from 0 to 127.
             - 0   = Sine
             - 40  = Triangle
@@ -177,11 +186,12 @@ def set_wavetone_osc2_waveform(
 
 def set_wavetone_osc2_phase_distortion(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the phase distortion of oscillator two.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Phase distortion value ranging from 0 to 127.
             - 0 maps to 0%
             - 64 maps to 50%
@@ -198,11 +208,12 @@ def set_wavetone_osc2_phase_distortion(
 
 def set_wavetone_osc2_level(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the level of oscillator two.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Level value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -217,11 +228,12 @@ def set_wavetone_osc2_level(
 
 def set_wavetone_osc2_offset(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the offset of oscillator two.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Offset value ranging from 0 to 127.
             - 0 maps to -10
             - 64 maps to 0
@@ -238,11 +250,12 @@ def set_wavetone_osc2_offset(
 
 def set_wavetone_osc2_table(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Selects the wavetable for oscillator 2's WAVE parameter. Options include PRIM (basic waves like Sin, Tri, Saw, Square) and HARM (a range of harmonic combinations)
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Table value ranging from 0 to 1.
             - 0 = "prim"
             - 1 = "harm"
@@ -258,11 +271,12 @@ def set_wavetone_osc2_table(
 # Modulation methods
 def set_wavetone_mod_type(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     MOD Oscillator Modulation selects how the two oscillators interact. The options are OFF, RING MOD (Oscillator 2 modulates Oscillator 1), RING MODE FIXED (Oscillator 2 modulates Oscillator 1, but its pitch doesn't track note values), and HARD SYNC (Oscillator 1's phase resets with each new cycle of Oscillator 2)
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Modulation type value ranging from 0 to 3.
             - 0 = "off"
             - 1 = "ring mod"
@@ -279,11 +293,12 @@ def set_wavetone_mod_type(
 
 def set_wavetone_reset_mode(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     RSET Oscillator Phase Reset determines if and how the oscillators' wave phases reset when a note is played. Options are OFF (no reset), ON (reset to the start of the waveform), and RAND (reset to a random position)
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Reset mode value ranging from 0 to 2.
             - 0 = "off"
             - 1 = "on"
@@ -299,11 +314,12 @@ def set_wavetone_reset_mode(
 
 def set_wavetone_drift(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the drift amount.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Drift value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -319,11 +335,12 @@ def set_wavetone_drift(
 # Envelope methods
 def set_wavetone_attack(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the attack time.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Attack time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -338,11 +355,12 @@ def set_wavetone_attack(
 
 def set_wavetone_hold(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the hold time.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Hold time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -357,11 +375,12 @@ def set_wavetone_hold(
 
 def set_wavetone_decay(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the decay time.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Decay time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -376,11 +395,12 @@ def set_wavetone_decay(
 
 def set_wavetone_noise_level(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the noise level.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Noise level value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -396,11 +416,12 @@ def set_wavetone_noise_level(
 # Noise methods
 def set_wavetone_noise_base(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the noise base frequency.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Noise base frequency value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -415,11 +436,12 @@ def set_wavetone_noise_base(
 
 def set_wavetone_noise_width(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the noise width.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Noise width value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -434,11 +456,12 @@ def set_wavetone_noise_width(
 
 def set_wavetone_noise_type(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the noise type.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Noise type value ranging from 0 to 2.
             - 0 = "grain noise"
             - 1 = "tuned noise"
@@ -454,11 +477,12 @@ def set_wavetone_noise_type(
 
 def set_wavetone_noise_character(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> Tuple[int, int, int]:
+) -> SynthGenieResponse:
     """
     Set the noise character.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Noise character value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127

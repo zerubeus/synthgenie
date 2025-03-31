@@ -1,5 +1,8 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+
+load_dotenv()
 
 from synthgenie.routes.agent import router as agent_router
 

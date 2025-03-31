@@ -26,7 +26,7 @@ class BaseSynthController:
 
     def get_parameter(
         self, page: str, param_name: str, value: int, midi_channel: int, used_tool: str
-    ) -> tuple[int, int, int]:
+    ) -> SynthGenieResponse:
         """
         Set a page-based parameter via CC (original method for backward compatibility).
 
@@ -34,12 +34,12 @@ class BaseSynthController:
             page: Parameter page key in config (e.g. 'page_1', 'page_2').
             param_name: The name of the parameter to set.
             value: The CC value to send (0-127).
+            midi_channel: The MIDI channel to use (1-16).
+            used_tool: The tool that is being used (e.g. 'amp', 'fx', etc.).
 
-        Returns:
-            tuple[int, int, int]: The MIDI channel, CC MSB, and value.
+        returns:
+            SynthGenieResponse: A response object containing the MIDI CC and channel.
 
-        Raises:
-            ValueError: If page or param_name is invalid.
         """
         if page not in self.config:
             raise ValueError(f"Invalid page: {page}")
@@ -58,17 +58,16 @@ class BaseSynthController:
 
     def get_direct_parameter(
         self, param_name: str, value: int, midi_channel: int, used_tool: str
-    ) -> tuple[int, int, int]:
+    ) -> SynthGenieResponse:
         """
         Args:
             param_name: Parameter name in config.
             value: The value to send (0-127).
+            midi_channel: The MIDI channel to use (1-16).
+            used_tool: The tool that is being used (e.g. 'amp', 'fx', etc.).
 
         Returns:
-            tuple[int, int, int]: The MIDI channel, CC MSB, and value.
-
-        Raises:
-            ValueError: If the parameter is not in config.
+            SynthGenieResponse: A response object containing the MIDI CC and channel.
         """
         if param_name not in self.config:
             raise ValueError(f"Invalid parameter: {param_name}")

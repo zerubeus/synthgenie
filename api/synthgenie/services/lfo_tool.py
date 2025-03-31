@@ -1,5 +1,6 @@
 from pydantic_ai import RunContext
 from synthgenie.services.synth_controller import SynthControllerDeps
+from synthgenie.schemas.agent import SynthGenieResponse
 
 import logging
 
@@ -9,11 +10,12 @@ logger = logging.getLogger(__name__)
 # LFO1 Functions
 def set_lfo1_speed(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the speed of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Speed value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -28,11 +30,12 @@ def set_lfo1_speed(
 
 def set_lfo1_multiplier(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the multiplier of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Multiplier value ranging from 0 to 11.
             - 0 maps to 1
             - 11 maps to 2000
@@ -45,11 +48,14 @@ def set_lfo1_multiplier(
     )
 
 
-def set_lfo1_fade(ctx: RunContext[SynthControllerDeps], value: int, track: int) -> bool:
+def set_lfo1_fade(
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
+) -> SynthGenieResponse:
     """
     Set the fade in/out of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Fade value ranging from 0 to 127.
             - 0 maps to -64
             - 64 maps to 0
@@ -65,11 +71,12 @@ def set_lfo1_fade(ctx: RunContext[SynthControllerDeps], value: int, track: int) 
 
 def set_lfo1_destination(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the destination of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Destination value ranging from 0 to 99.
             - 0 = none (default)
             - 25 = wavetone_osc1_pitch
@@ -132,11 +139,12 @@ def set_lfo1_destination(
 
 def set_lfo1_waveform(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the waveform of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Waveform value ranging from 0 to 6.
             - 0 = "tri"
             - 1 = "sine"
@@ -155,11 +163,12 @@ def set_lfo1_waveform(
 
 def set_lfo1_start_phase(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the start phase of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Start phase value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -173,11 +182,12 @@ def set_lfo1_start_phase(
 
 def set_lfo1_trigger_mode(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the trigger mode of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Trigger mode value ranging from 0 to 4.
             - 0 = "free"
             - 1 = "trig"
@@ -194,11 +204,12 @@ def set_lfo1_trigger_mode(
 
 def set_lfo1_depth(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the depth of LFO1.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Depth value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -213,11 +224,12 @@ def set_lfo1_depth(
 # LFO2 Functions
 def set_lfo2_speed(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the speed of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Speed value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -232,11 +244,12 @@ def set_lfo2_speed(
 
 def set_lfo2_multiplier(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the multiplier of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Multiplier value ranging from 0 to 11.
             - 0 maps to 1
             - 11 maps to 2000
@@ -249,11 +262,14 @@ def set_lfo2_multiplier(
     )
 
 
-def set_lfo2_fade(ctx: RunContext[SynthControllerDeps], value: int, track: int) -> bool:
+def set_lfo2_fade(
+    ctx: RunContext[SynthControllerDeps], value: int, track: int
+) -> SynthGenieResponse:
     """
     Set the fade in/out of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Fade value ranging from 0 to 127.
             - 0 maps to -64
             - 64 maps to 0
@@ -269,11 +285,12 @@ def set_lfo2_fade(ctx: RunContext[SynthControllerDeps], value: int, track: int) 
 
 def set_lfo2_destination(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the destination of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Destination value ranging from 0 to 99.
             - 0 = none (default)
             - 1 = lfo1_speed
@@ -343,11 +360,12 @@ def set_lfo2_destination(
 
 def set_lfo2_waveform(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the waveform of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Waveform value ranging from 0 to 6.
             - 0 = "tri"
             - 1 = "sine"
@@ -366,11 +384,12 @@ def set_lfo2_waveform(
 
 def set_lfo2_start_phase(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the start phase of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Start phase value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -384,11 +403,12 @@ def set_lfo2_start_phase(
 
 def set_lfo2_trigger_mode(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the trigger mode of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Trigger mode value ranging from 0 to 4.
             - 0 = "free"
             - 1 = "trig"
@@ -405,11 +425,12 @@ def set_lfo2_trigger_mode(
 
 def set_lfo2_depth(
     ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> bool:
+) -> SynthGenieResponse:
     """
     Set the depth of LFO2.
 
     Args:
+        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
         value (int): Depth value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127

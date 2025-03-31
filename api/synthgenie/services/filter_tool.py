@@ -1,36 +1,36 @@
 from services.synth_controller import BaseSynthController
-from schemas.digitone import DigitoneConfig
+from data.digitone_params import digitone_config
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 filter_multi_mode_synth_controller = BaseSynthController(
-    DigitoneConfig.multi_mode_filter.parameters
+    digitone_config.multi_mode_filter.parameters
 )
 
 filter_lowpass4_synth_controller = BaseSynthController(
-    DigitoneConfig.lowpass_4_filter.parameters
+    digitone_config.lowpass_4_filter.parameters
 )
 
 equalizer_synth_controller = BaseSynthController(
-    DigitoneConfig.equalizer_filter.parameters
+    digitone_config.equalizer_filter.parameters
 )
 
 base_width_synth_controller = BaseSynthController(
-    DigitoneConfig.base_width_filter.parameters
+    digitone_config.base_width_filter.parameters
 )
 
 legacy_lp_hp_synth_controller = BaseSynthController(
-    DigitoneConfig.legacy_lp_hp_filter.parameters
+    digitone_config.legacy_lp_hp_filter.parameters
 )
 
 comb_minus_synth_controller = BaseSynthController(
-    DigitoneConfig.comb_minus_filter.parameters
+    digitone_config.comb_minus_filter.parameters
 )
 
 comb_plus_synth_controller = BaseSynthController(
-    DigitoneConfig.comb_plus_filter.parameters
+    digitone_config.comb_plus_filter.parameters
 )
 
 

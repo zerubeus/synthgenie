@@ -1,20 +1,20 @@
 import os
+import sqlite3
 from fastapi import HTTPException, Security, Depends
 from fastapi.security.api_key import APIKeyHeader
 from starlette.status import HTTP_403_FORBIDDEN
-import sqlite3
 
 from synthgenie.db.connection import get_db
-from synthgenie.db.crud import get_api_key as db_get_api_key
-from synthgenie.db.crud import create_api_key as db_create_api_key
-from synthgenie.db.crud import delete_api_key as db_delete_api_key
+from synthgenie.models.api_key import get_api_key as db_get_api_key
+from synthgenie.models.api_key import create_api_key as db_create_api_key
+from synthgenie.models.api_key import delete_api_key as db_delete_api_key
 
 API_KEY_NAME = "X-API-Key"
-api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+_api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
 
 def get_api_key(
-    api_key_header: str = Security(api_key_header),
+    api_key_header: str = Security(_api_key_header),
     conn: sqlite3.Connection = Depends(get_db),
 ) -> str:
     """

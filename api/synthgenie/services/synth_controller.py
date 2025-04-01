@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass, field
 
-from synthgenie.data.digitone_params import digitone_config
+from synthgenie.config.digitone_params import digitone_config
 from synthgenie.schemas.digitone import ParameterGroup
 from synthgenie.schemas.agent import SynthGenieResponse
 

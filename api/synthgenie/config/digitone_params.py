@@ -1,4 +1,4 @@
-from synthgenie.data.constants.filters import (
+from synthgenie.config.constants.filters import (
     MULTI_MODE_FILTER_PARAMS,
     LOWPASS_4_FILTER_PARAMS,
     LEGACY_LP_HP_FILTER_PARAMS,
@@ -8,13 +8,13 @@ from synthgenie.data.constants.filters import (
     BASE_WIDTH_FILTER_PARAMS,
 )
 
-from synthgenie.data.constants.fm_drum import FM_DRUM_PARAMS
-from synthgenie.data.constants.fm_tone import FM_TONE_PARAMS
-from synthgenie.data.constants.swarmer import SWARMER_PARAMS
-from synthgenie.data.constants.wavetone import WAVETONE_PARAMS
-from synthgenie.data.constants.lfo import LFO1_PARAMS, LFO2_PARAMS, LFO3_PARAMS
-from synthgenie.data.constants.amp import AMP_PARAMS_DATA
-from synthgenie.data.constants.fx import FX_PARAMS_DATA
+from synthgenie.config.constants.fm_drum import FM_DRUM_PARAMS
+from synthgenie.config.constants.fm_tone import FM_TONE_PARAMS
+from synthgenie.config.constants.swarmer import SWARMER_PARAMS
+from synthgenie.config.constants.wavetone import WAVETONE_PARAMS
+from synthgenie.config.constants.lfo import LFO1_PARAMS, LFO2_PARAMS, LFO3_PARAMS
+from synthgenie.config.constants.amp import AMP_PARAMS_DATA
+from synthgenie.config.constants.fx import FX_PARAMS_DATA
 from synthgenie.schemas.digitone import DigitoneConfig
 from synthgenie.utils.parameter_utils import (
     create_lfo_params,

@@ -1,26 +1,16 @@
 import os
 import sqlite3
 from fastapi import APIRouter, HTTPException, Security, Depends
-from pydantic import BaseModel
 
-from synthgenie.auth.api_key import get_api_key, register_api_key, revoke_api_key
 from synthgenie.db.connection import get_db
-from synthgenie.db.crud import get_user_api_keys
+from synthgenie.models.api_key import get_user_api_keys
+from synthgenie.schemas.api_key import ApiKeyResponse, ApiKeyRequest, RevokeRequest
+
+from synthgenie.services.auth import get_api_key, register_api_key, revoke_api_key
 
 router = APIRouter(prefix="/api-keys", tags=["api-keys"])
 
 
-class ApiKeyResponse(BaseModel):
-    api_key: str
-    message: str
-
-
-class ApiKeyRequest(BaseModel):
-    user_id: str
-
-
-class RevokeRequest(BaseModel):
-    api_key: str
 
 
 @router.post("/generate", response_model=ApiKeyResponse)

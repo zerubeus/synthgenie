@@ -1,4 +1,4 @@
-# FX parameters raw data without function calls
+# FX parameters raw config without function calls
 FX_PARAMS_DATA = {
     "BR": {
         "cc_msb": "78",

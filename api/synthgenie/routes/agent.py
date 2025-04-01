@@ -1,6 +1,5 @@
 import logging
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List
 
 from pydantic_ai import UsageLimitExceeded
 from pydantic_ai.usage import UsageLimits
@@ -9,7 +8,7 @@ from synthgenie.schemas.user import UserPrompt
 from synthgenie.services.agent import get_synthgenie_agent
 from synthgenie.schemas.agent import SynthGenieResponse
 from synthgenie.services.synth_controller import SynthControllerDeps
-from synthgenie.auth.api_key import get_api_key
+from synthgenie.services.auth import get_api_key
 
 # RESPONSE_TOKENS_LIMIT = 500000
 # REQUEST_TOKENS_LIMIT = 500000
@@ -21,7 +20,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/agent", tags=["synthgenie"])
 
 
-@router.post("/prompt", response_model=List[SynthGenieResponse])
+@router.post("/prompt", response_model=list[SynthGenieResponse])
 async def process_prompt(user_prompt: UserPrompt, api_key: str = Depends(get_api_key)):
     """
     Process a user prompt with the SynthGenie AI agent.

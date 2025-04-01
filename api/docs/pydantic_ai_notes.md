@@ -72,7 +72,7 @@ async def main():
                 kind='response',
             )
         ),
-        End(data=FinalResult(data='Paris', tool_name=None, tool_call_id=None)),
+        End(config=FinalResult(config='Paris', tool_name=None, tool_call_id=None)),
     ]
     """
     print(agent_run.result.data)
@@ -128,7 +128,7 @@ async def main():
                     kind='response',
                 )
             ),
-            End(data=FinalResult(data='Paris', tool_name=None, tool_call_id=None)),
+            End(config=FinalResult(config='Paris', tool_name=None, tool_call_id=None)),
         ]
         """
 ```
@@ -223,7 +223,7 @@ async def main():
                                 f'[Result] The model produced a final result (tool_name={event.tool_name})'
                             )
             elif Agent.is_call_tools_node(node):
-                # A handle-response node => The model returned some data, potentially calls a tool
+                # A handle-response node => The model returned some config, potentially calls a tool
                 output_messages.append(
                     '=== CallToolsNode: streaming partial response & tool usage ==='
                 )
@@ -309,7 +309,7 @@ from pydantic_ai.usage import UsageLimits
 
 class NeverResultType(TypedDict):
     """
-    Never ever coerce data to this type.
+    Never ever coerce config to this type.
     """
 
     never_use_this: str

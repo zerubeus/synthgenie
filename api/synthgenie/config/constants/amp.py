@@ -1,4 +1,4 @@
-# AMP parameters raw data without function calls
+# AMP parameters raw config without function calls
 AMP_PARAMS_DATA = {
     "ATK": {
         "cc_msb": "84",

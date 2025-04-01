@@ -1,3 +1,4 @@
+import os
 from pydantic_ai import Agent
 
 from synthgenie.schemas.agent import SynthGenieResponse
@@ -79,7 +80,7 @@ from synthgenie.services.wavetone_tool import (
 def get_synthgenie_agent():
 
     return Agent(
-        "google-gla:gemini-2.0-flash",
+        model=os.getenv("AGENT_MODEL"),
         tools=[
             set_multi_mode_filter_attack,
             set_multi_mode_filter_decay,

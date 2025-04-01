@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ChangeEvent, KeyboardEvent } from 'react';
-import { Send, User, Bot, Trash2, Copy } from 'lucide-react';
+import { Send, User, Bot, Trash2, Copy, Key } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
 // Simple WebMidi interfaces
@@ -30,6 +30,13 @@ type MidiAction = {
   value: number;
 };
 
+// Get the API base URL based on environment
+const getApiBaseUrl = () => {
+  // Check if we're in local development mode
+  const isLocal = process.env.NODE_ENV === 'development' && process.env.VITE_API_ENV === 'local';
+  return isLocal ? 'http://localhost:8080' : 'https://api.synthgenie.com';
+};
+
 const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: 'Hello! How can I help you today?' }
@@ -40,6 +47,12 @@ const ChatApp = () => {
   const [midiDevices, setMidiDevices] = useState<string[]>(['No MIDI devices detected']);
   const [midiAccess, setMidiAccess] = useState<MIDIAccess | null>(null);
   const [midiOutputs, setMidiOutputs] = useState<Map<string, MIDIOutput>>(new Map());
+  const [apiKey, setApiKey] = useState<string>(() => {
+    // Initialize from localStorage if available
+    return localStorage.getItem('synthgenie_api_key') || '';
+  });
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState('');
   
   // Detect MIDI devices on component mount
   useEffect(() => {
@@ -70,6 +83,7 @@ const ChatApp = () => {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const apiKeyInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -93,6 +107,13 @@ const ChatApp = () => {
     }
   }, [selectedDevice]);
 
+  // Focus API key input when it becomes visible
+  useEffect(() => {
+    if (showApiKeyInput && apiKeyInputRef.current) {
+      apiKeyInputRef.current.focus();
+    }
+  }, [showApiKeyInput]);
+
   // Send MIDI message to device
   const sendMidiCC = (channel: number, cc: number, value: number) => {
     if (!midiAccess || !selectedDevice) return;
@@ -110,15 +131,25 @@ const ChatApp = () => {
   // API request mutation using TanStack Query
   const promptMutation = useMutation({
     mutationFn: async (prompt: string) => {
-      const response = await fetch('http://localhost:8080/agent/prompt', {
+      // Check if API key is set
+      if (!apiKey) {
+        throw new Error('No API key set');
+      }
+      
+      const apiBaseUrl = getApiBaseUrl();
+      const response = await fetch(`${apiBaseUrl}/agent/prompt`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
         },
         body: JSON.stringify({ prompt }),
       });
       
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Invalid API key');
+        }
         throw new Error('Network response was not ok');
       }
       
@@ -147,10 +178,25 @@ const ChatApp = () => {
     },
     onError: (error) => {
       console.error('Error sending prompt:', error);
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: 'Sorry, there was an error processing your request. Please try again.' 
-      }]);
+      
+      // Custom response for no API key
+      if (error instanceof Error && error.message === 'No API key set') {
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: 'Please set your API key using the "SET API KEY" button below before chatting.' 
+        }]);
+      } else if (error instanceof Error && error.message === 'Invalid API key') {
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: 'Your API key appears to be invalid. Please check and update your API key.' 
+        }]);
+      } else {
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: 'Sorry, there was an error processing your request. Please try again.' 
+        }]);
+      }
+      
       setIsLoading(false);
     }
   });
@@ -201,6 +247,34 @@ const ChatApp = () => {
   const copyMessage = (content: string) => {
     navigator.clipboard.writeText(content);
     // You could add a toast notification here
+  };
+
+  const handleApiKeyToggle = () => {
+    if (apiKey) {
+      // If we already have an API key, clear it
+      setApiKey('');
+      localStorage.removeItem('synthgenie_api_key');
+      setShowApiKeyInput(false);
+    } else {
+      // Show input field to set API key
+      setShowApiKeyInput(true);
+    }
+  };
+
+  const handleSetApiKey = () => {
+    if (apiKeyInput.trim()) {
+      setApiKey(apiKeyInput.trim());
+      localStorage.setItem('synthgenie_api_key', apiKeyInput.trim());
+      setApiKeyInput('');
+      setShowApiKeyInput(false);
+    }
+  };
+
+  const handleApiKeyInputKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSetApiKey();
+    }
   };
 
   return (
@@ -331,9 +405,43 @@ const ChatApp = () => {
           </div>
         </div>
         
-        <p className="text-xs text-center text-gray-500 mt-2">
-          Press Enter to send, Shift+Enter for a new line
-        </p>
+        <div className="flex justify-between items-center mt-2">
+          <p className="text-xs text-gray-500">
+            Press Enter to send, Shift+Enter for a new line
+          </p>
+          
+          {/* API Key Management */}
+          <div className="flex items-center">
+            <button 
+              onClick={handleApiKeyToggle}
+              className="flex items-center text-xs text-blue-400 hover:text-indigo-400 transition-colors"
+            >
+              <Key size={14} className="mr-1" />
+              {apiKey ? "DELETE API KEY" : "SET API KEY"}
+            </button>
+          </div>
+        </div>
+        
+        {/* API Key Input Field */}
+        {showApiKeyInput && (
+          <div className="mt-2 flex">
+            <input
+              ref={apiKeyInputRef}
+              type="text"
+              value={apiKeyInput}
+              onChange={(e) => setApiKeyInput(e.target.value)}
+              onKeyDown={handleApiKeyInputKeyPress}
+              placeholder="Enter your API key"
+              className="flex-1 p-2 rounded-l-lg bg-gray-700 border border-gray-600 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button 
+              onClick={handleSetApiKey}
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded-r-lg px-3 text-sm"
+            >
+              Save
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

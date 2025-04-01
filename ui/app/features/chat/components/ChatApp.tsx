@@ -1,10 +1,33 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import { Send, User, Bot, Trash2, Copy } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+
+// Simple WebMidi interfaces
+interface MIDIInput {
+  name: string | null;
+}
+
+interface MIDIOutput {
+  name: string | null;
+  send: (data: number[]) => void;
+}
+
+interface MIDIAccess {
+  inputs: Map<string, MIDIInput>;
+  outputs: Map<string, MIDIOutput>;
+}
 
 type Message = {
   role: 'user' | 'assistant';
   content: string;
+};
+
+type MidiAction = {
+  used_tool: string;
+  midi_cc: number;
+  midi_channel: number;
+  value: number;
 };
 
 const ChatApp = () => {
@@ -15,20 +38,28 @@ const ChatApp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState('');
   const [midiDevices, setMidiDevices] = useState<string[]>(['No MIDI devices detected']);
+  const [midiAccess, setMidiAccess] = useState<MIDIAccess | null>(null);
+  const [midiOutputs, setMidiOutputs] = useState<Map<string, MIDIOutput>>(new Map());
   
   // Detect MIDI devices on component mount
   useEffect(() => {
     if (navigator.requestMIDIAccess) {
       navigator.requestMIDIAccess()
         .then(access => {
+          setMidiAccess(access as unknown as MIDIAccess);
           const devices: string[] = [];
-          access.inputs.forEach(input => {
-            devices.push(input.name || `MIDI Device ${devices.length + 1}`);
+          const outputs = new Map<string, MIDIOutput>();
+          
+          access.outputs.forEach((output: MIDIOutput) => {
+            const name = output.name || `MIDI Device ${devices.length + 1}`;
+            devices.push(name);
+            outputs.set(name, output);
           });
           
           if (devices.length > 0) {
             setMidiDevices(devices);
             setSelectedDevice(devices[0]);
+            setMidiOutputs(outputs);
           }
         })
         .catch(err => {
@@ -36,6 +67,7 @@ const ChatApp = () => {
         });
     }
   }, []);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -61,6 +93,68 @@ const ChatApp = () => {
     }
   }, [selectedDevice]);
 
+  // Send MIDI message to device
+  const sendMidiCC = (channel: number, cc: number, value: number) => {
+    if (!midiAccess || !selectedDevice) return;
+    
+    const output = midiOutputs.get(selectedDevice);
+    if (output) {
+      // MIDI CC message: 0xB0 (176) is the status byte for Control Change on channel 1
+      // For other channels, add the channel number - 1 to the status byte
+      const statusByte = 176 + (channel - 1);
+      output.send([statusByte, cc, value]);
+      console.log(`MIDI CC sent: Channel ${channel}, CC ${cc}, Value ${value}`);
+    }
+  };
+
+  // API request mutation using TanStack Query
+  const promptMutation = useMutation({
+    mutationFn: async (prompt: string) => {
+      const response = await fetch('http://localhost:8080/agent/prompt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
+      return response.json() as Promise<MidiAction[]>;
+    },
+    onSuccess: (data) => {
+      // Process the returned MIDI actions
+      let responseContent = '';
+      
+      // Execute MIDI commands and build response message
+      data.forEach((action) => {
+        // Add the action to the response content
+        responseContent += `${action.used_tool} -> ${action.value}\n`;
+        
+        // Send the MIDI command
+        sendMidiCC(action.midi_channel, action.midi_cc, action.value);
+      });
+      
+      // Add the assistant's response to the messages
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: responseContent.trim() 
+      }]);
+      
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      console.error('Error sending prompt:', error);
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: 'Sorry, there was an error processing your request. Please try again.' 
+      }]);
+      setIsLoading(false);
+    }
+  });
+
   const handleSendMessage = () => {
     if (input.trim() === '') return;
 
@@ -70,29 +164,11 @@ const ChatApp = () => {
     // Clear input
     setInput('');
     
-    // Simulate AI response with tool-specific responses
+    // Set loading state
     setIsLoading(true);
-    setTimeout(() => {
-      const synthResponses = [
-        "I've adjusted the oscillator parameters on your connected device. How does it sound?",
-        "I've sent the new patch to your MIDI device. Would you like to make any changes?",
-        "Your settings have been applied to the synthesizer. Would you like to add some effects?",
-        "I've updated the envelope settings on your device. Try playing a few notes to hear the difference.",
-        "I've modified the filter cutoff and resonance. Does that get closer to the sound you're looking for?",
-        "I've sent a new waveform combination to your synth. Let me know if you want to explore more options.",
-        "I've applied those LFO settings to your device. The modulation should create that evolving texture you wanted."
-      ];
-      
-      const deviceResponses = selectedDevice ? synthResponses : [
-        "It looks like you don't have any MIDI devices connected. Would you like help setting one up?",
-        "I can still help you design sounds, but you'll need to connect a MIDI device to hear them in real-time.",
-        "Without a connected MIDI device, I can provide theoretical sound design advice. What type of sound are you trying to create?"
-      ];
-      const randomResponse = deviceResponses[Math.floor(Math.random() * deviceResponses.length)];
-      
-      setMessages(prev => [...prev, { role: 'assistant', content: randomResponse }]);
-      setIsLoading(false);
-    }, 1500);
+    
+    // Send prompt to API
+    promptMutation.mutate(input);
   };
 
   // Auto-adjust textarea height
@@ -212,6 +288,7 @@ const ChatApp = () => {
               value={input}
               onChange={handleTextAreaInput}
               onKeyDown={handleKeyPress}
+              disabled={isLoading}
             />
             
             {/* Send button and tool selector inside textarea */}

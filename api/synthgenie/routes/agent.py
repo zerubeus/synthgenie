@@ -9,6 +9,9 @@ from synthgenie.services.agent import get_synthgenie_agent
 from synthgenie.schemas.agent import SynthGenieResponse
 from synthgenie.services.synth_controller import SynthControllerDeps
 from synthgenie.services.auth import get_api_key
+from synthgenie.db.connection import get_db
+from synthgenie.models.api_key import track_api_key_usage
+import sqlite3
 
 # RESPONSE_TOKENS_LIMIT = 500000
 # REQUEST_TOKENS_LIMIT = 500000
@@ -21,7 +24,11 @@ router = APIRouter(prefix="/agent", tags=["synthgenie"])
 
 
 @router.post("/prompt", response_model=list[SynthGenieResponse])
-async def process_prompt(user_prompt: UserPrompt, api_key: str = Depends(get_api_key)):
+async def process_prompt(
+    user_prompt: UserPrompt,
+    api_key: str = Depends(get_api_key),
+    conn: sqlite3.Connection = Depends(get_db),
+):
     """
     Process a user prompt with the SynthGenie AI agent.
 
@@ -40,6 +47,10 @@ async def process_prompt(user_prompt: UserPrompt, api_key: str = Depends(get_api
                 request_limit=REQUEST_LIMIT,
             ),
         )
+
+        # Track API key usage after successful response
+        track_api_key_usage(conn, api_key)
+
         return result.data
     except UsageLimitExceeded as e:
         logger.error(f"Usage limit exceeded: {e}")

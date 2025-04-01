@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
 
 
 class ApiKeyResponse(BaseModel):
@@ -12,3 +14,9 @@ class ApiKeyRequest(BaseModel):
 
 class RevokeRequest(BaseModel):
     api_key: str
+
+
+class ApiKeyUsage(BaseModel):
+    key: str
+    request_count: int
+    last_used_at: Optional[datetime] = None

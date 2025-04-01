@@ -45,6 +45,17 @@ def initialize_db():
         )
         """
         )
+
+        conn.execute(
+            """
+        CREATE TABLE IF NOT EXISTS api_key_usage (
+            key TEXT PRIMARY KEY,
+            request_count INTEGER DEFAULT 0,
+            last_used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (key) REFERENCES api_keys(key) ON DELETE CASCADE
+        )
+        """
+        )
         conn.commit()
 
 

@@ -5,14 +5,16 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 
-load_dotenv()
 
-from synthgenie.routes.agent import router as agent_router  # noqa: E402
-from synthgenie.routes.api_keys import router as api_keys_router  # noqa: E402
-from synthgenie.middleware.domain_verification import (  # noqa: E402
+from synthgenie.routes.agent import router as agent_router
+from synthgenie.routes.api_keys import router as api_keys_router
+from synthgenie.middleware.domain_verification import (
     DomainVerificationMiddleware,
 )
-from synthgenie.db.connection import initialize_db  # noqa: E402
+
+from synthgenie.db.connection import initialize_db
+
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 

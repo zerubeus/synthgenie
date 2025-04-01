@@ -1,7 +1,3 @@
-"""
-Database connection module for the Synthgenie API.
-"""
-
 import sqlite3
 import os
 import contextlib

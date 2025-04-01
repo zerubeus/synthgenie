@@ -4,7 +4,7 @@ import contextlib
 from typing import Iterator, Dict, Any
 
 # Create SQLite database connection
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./synthgenie.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/synthgenie.db")
 
 # Extract the database file path from the URL
 if DATABASE_URL.startswith("sqlite:///"):
@@ -12,6 +12,8 @@ if DATABASE_URL.startswith("sqlite:///"):
         DATABASE_PATH = ":memory:"
     else:
         DATABASE_PATH = DATABASE_URL.replace("sqlite:///", "")
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
 else:
     raise ValueError(f"Unsupported database URL: {DATABASE_URL}")
 

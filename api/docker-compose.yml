@@ -17,7 +17,7 @@ services:
       - AGENT_MODEL=${AGENT_MODEL}
       - ADMIN_API_KEY=${ADMIN_API_KEY}
     volumes:
-      - db-data:/app/synthgenie.db
+      - db-data:/app/data
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8000/docs']

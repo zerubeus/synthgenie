@@ -4,13 +4,11 @@ import sentry_sdk
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 
 from synthgenie.routes.agent import router as agent_router
 from synthgenie.routes.api_keys import router as api_keys_router
-from synthgenie.middleware.domain_verification import (
-    DomainVerificationMiddleware,
-)
 
 from synthgenie.db.connection import initialize_db
 
@@ -41,12 +39,15 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Allowed domains - synthgenie.com and its subdomains
+# Get base URL from environment
+base_url = os.getenv("BASE_URL", "synthgenie.com")
+
+# Allowed domains - base_url and its subdomains
 allowed_origins = [
-    "https://synthgenie.com",  # Main domain
-    "https://www.synthgenie.com",  # www subdomain
-    "https://api.synthgenie.com",  # API subdomain
-    "https://chat.synthgenie.com",  # Chat subdomain
+    f"https://{base_url}",  # Main domain
+    f"https://www.{base_url}",  # www subdomain
+    f"https://api.{base_url}",  # API subdomain
+    f"https://chat.{base_url}",  # Chat subdomain
 ]
 
 # For development, optionally include localhost
@@ -66,9 +67,16 @@ app.add_middleware(
     allow_credentials=True,
 )
 
-# Add domain verification middleware
-root_domain = "synthgenie.com"
-app.add_middleware(DomainVerificationMiddleware, allowed_domains=[root_domain])
+# Add TrustedHostMiddleware instead of custom domain verification
+# Skip host validation in development if specified
+if os.getenv("SKIP_DOMAIN_CHECK") != "true":
+    allowed_hosts = [base_url, f"*.{base_url}"]
+
+    # Add localhost patterns for development
+    if os.getenv("ENVIRONMENT") == "development":
+        allowed_hosts.extend(["localhost", "127.0.0.1"])
+
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
 
 # Include routers
 app.include_router(agent_router)

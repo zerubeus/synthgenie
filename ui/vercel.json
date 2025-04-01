@@ -1,5 +1,5 @@
 {
   "buildCommand": "bun install && bun run build",
   "installCommand": "bun install",
-  "framework": "vite"
+  "framework": "react-router"
 }

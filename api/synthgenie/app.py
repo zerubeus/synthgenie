@@ -12,12 +12,12 @@ from synthgenie.routes.api_keys import router as api_keys_router  # noqa: E402
 from synthgenie.middleware.domain_verification import (  # noqa: E402
     DomainVerificationMiddleware,
 )
-from synthgenie.db import engine, Base  # noqa: E402
+from synthgenie.db.connection import initialize_db  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+# Initialize database
+initialize_db()
 
 # Ensure API keys are configured
 if not os.getenv("ADMIN_API_KEY"):

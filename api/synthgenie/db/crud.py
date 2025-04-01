@@ -1,75 +1,83 @@
-from typing import List, Optional
-from sqlalchemy.orm import Session
+from typing import List, Optional, Dict, Any
 import secrets
+import sqlite3
+from datetime import datetime
 
-from synthgenie.db.models import ApiKey
 
-
-def create_api_key(db: Session, user_id: str) -> ApiKey:
+def create_api_key(conn: sqlite3.Connection, user_id: str) -> Dict[str, Any]:
     """
     Create a new API key for a user.
 
     Args:
-        db: Database session
+        conn: Database connection
         user_id: User ID to associate with the API key
 
     Returns:
-        The created API key
+        Dictionary containing the API key information
     """
     # Generate a secure API key
     api_key_value = secrets.token_urlsafe(32)
 
     # Create the API key in the database
-    api_key = ApiKey(key=api_key_value, user_id=user_id)
-    db.add(api_key)
-    db.commit()
-    db.refresh(api_key)
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO api_keys (key, user_id) VALUES (?, ?)", (api_key_value, user_id)
+    )
+    conn.commit()
 
-    return api_key
+    # Return the API key as a dictionary
+    return {
+        "key": api_key_value,
+        "user_id": user_id,
+        "created_at": datetime.now().isoformat(),
+    }
 
 
-def get_api_key(db: Session, key: str) -> Optional[ApiKey]:
+def get_api_key(conn: sqlite3.Connection, key: str) -> Optional[Dict[str, Any]]:
     """
     Get an API key by its value.
 
     Args:
-        db: Database session
+        conn: Database connection
         key: API key value
 
     Returns:
-        The API key if found, None otherwise
+        The API key information if found, None otherwise
     """
-    return db.query(ApiKey).filter(ApiKey.key == key).first()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM api_keys WHERE key = ?", (key,))
+    row = cursor.fetchone()
+    return dict(row) if row else None
 
 
-def get_user_api_keys(db: Session, user_id: str) -> List[ApiKey]:
+def get_user_api_keys(conn: sqlite3.Connection, user_id: str) -> List[Dict[str, Any]]:
     """
     Get all API keys for a user.
 
     Args:
-        db: Database session
+        conn: Database connection
         user_id: User ID
 
     Returns:
         List of API keys for the user
     """
-    return db.query(ApiKey).filter(ApiKey.user_id == user_id).all()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM api_keys WHERE user_id = ?", (user_id,))
+    return [dict(row) for row in cursor.fetchall()]
 
 
-def delete_api_key(db: Session, key: str) -> bool:
+def delete_api_key(conn: sqlite3.Connection, key: str) -> bool:
     """
     Delete an API key.
 
     Args:
-        db: Database session
+        conn: Database connection
         key: API key value
 
     Returns:
         True if the key was deleted, False otherwise
     """
-    api_key = get_api_key(db, key)
-    if api_key:
-        db.delete(api_key)
-        db.commit()
-        return True
-    return False
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM api_keys WHERE key = ?", (key,))
+    conn.commit()
+    return cursor.rowcount > 0

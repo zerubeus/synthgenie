@@ -1,10 +1,10 @@
 import os
+import sqlite3
 from fastapi import APIRouter, HTTPException, Security, Depends
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 
 from synthgenie.auth.api_key import get_api_key, register_api_key, revoke_api_key
-from synthgenie.db import get_db
+from synthgenie.db.connection import get_db
 from synthgenie.db.crud import get_user_api_keys
 
 router = APIRouter(prefix="/api-keys", tags=["api-keys"])
@@ -27,7 +27,7 @@ class RevokeRequest(BaseModel):
 async def create_api_key(
     request: ApiKeyRequest,
     admin_key: str = Security(get_api_key),
-    db: Session = Depends(get_db),
+    conn: sqlite3.Connection = Depends(get_db),
 ):
     """
     Generate a new API key for a user.
@@ -38,7 +38,7 @@ async def create_api_key(
     if not admin_api_key or admin_key != admin_api_key:
         raise HTTPException(status_code=403, detail="Only admin can generate API keys")
 
-    api_key = register_api_key(db, request.user_id)
+    api_key = register_api_key(conn, request.user_id)
     return ApiKeyResponse(
         api_key=api_key, message=f"API key generated for user {request.user_id}"
     )
@@ -48,7 +48,7 @@ async def create_api_key(
 async def delete_api_key(
     request: RevokeRequest,
     admin_key: str = Security(get_api_key),
-    db: Session = Depends(get_db),
+    conn: sqlite3.Connection = Depends(get_db),
 ):
     """
     Revoke an API key.
@@ -59,7 +59,7 @@ async def delete_api_key(
     if not admin_api_key or admin_key != admin_api_key:
         raise HTTPException(status_code=403, detail="Only admin can revoke API keys")
 
-    if revoke_api_key(db, request.api_key):
+    if revoke_api_key(conn, request.api_key):
         return ApiKeyResponse(
             api_key=request.api_key, message="API key successfully revoked"
         )
@@ -69,7 +69,9 @@ async def delete_api_key(
 
 @router.get("/list/{user_id}", response_model=list[str])
 async def list_user_api_keys(
-    user_id: str, admin_key: str = Security(get_api_key), db: Session = Depends(get_db)
+    user_id: str,
+    admin_key: str = Security(get_api_key),
+    conn: sqlite3.Connection = Depends(get_db),
 ):
     """
     List all API keys for a user.
@@ -80,5 +82,5 @@ async def list_user_api_keys(
     if not admin_api_key or admin_key != admin_api_key:
         raise HTTPException(status_code=403, detail="Only admin can list API keys")
 
-    api_keys = get_user_api_keys(db, user_id)
-    return [key.key for key in api_keys]
+    api_keys = get_user_api_keys(conn, user_id)
+    return [key["key"] for key in api_keys]

@@ -1,24 +1,31 @@
-from sqlalchemy import Column, String, DateTime
-from sqlalchemy.sql import func
+"""
+Database models and helper functions.
+"""
+
 from uuid import uuid4
+from typing import Dict, Any
 
-from synthgenie.db import Base
 
-
-def generate_uuid():
+def generate_uuid() -> str:
     """Generate a UUID string."""
     return str(uuid4())
 
 
-class ApiKey(Base):
-    """API key model."""
+def format_api_key(row: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Format an API key row from the database.
 
-    __tablename__ = "api_keys"
+    Args:
+        row: Database row as dictionary
 
-    # The API key itself serves as the primary key
-    key = Column(String, primary_key=True, index=True, default=generate_uuid)
-    user_id = Column(String, index=True, nullable=False)
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    Returns:
+        Formatted API key information
+    """
+    if not row:
+        return None
 
-    def __repr__(self):
-        return f"<ApiKey(user_id='{self.user_id}')>"
+    return {
+        "key": row["key"],
+        "user_id": row["user_id"],
+        "created_at": row["created_at"],
+    }

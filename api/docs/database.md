@@ -18,45 +18,53 @@ export DATABASE_URL="sqlite:///./synthgenie.db"
 export DATABASE_URL="sqlite:///:memory:"
 ```
 
-## Models
+## SQL Implementation
 
-The database currently includes the following models:
+The application uses Python's built-in `sqlite3` module for direct SQL queries instead of an ORM. The database schema is initialized at application startup with the following tables:
 
 ### API Keys
 
 The `api_keys` table stores API key information:
 
-| Column     | Type     | Description                     |
-| ---------- | -------- | ------------------------------- |
-| key        | String   | The API key (primary key)       |
-| user_id    | String   | User ID associated with the key |
-| created_at | DateTime | When the API key was created    |
+```sql
+CREATE TABLE IF NOT EXISTS api_keys (
+    key TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+```
+
+## Database Connection
+
+Database connections are managed with a context manager to ensure proper resource cleanup:
+
+```python
+@contextlib.contextmanager
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE_PATH)
+    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
+    try:
+        yield conn
+    finally:
+        conn.close()
+```
 
 ## Scaling Considerations
 
 While SQLite is sufficient for development and small-scale deployments, you might consider migrating to PostgreSQL or another database system for production use with higher traffic loads.
 
-To switch to PostgreSQL, you would:
+To switch to PostgreSQL, you would need to:
 
-1. Update the `DATABASE_URL` environment variable:
+1. Update the database module to support PostgreSQL connections
+2. Modify the SQL queries as needed for PostgreSQL compatibility
+3. Update the `DATABASE_URL` environment variable:
 
    ```bash
    export DATABASE_URL="postgresql://user:password@localhost/synthgenie"
    ```
 
-2. Install the PostgreSQL driver using uv:
+4. Install the PostgreSQL driver:
 
    ```bash
    uv pip install psycopg2-binary
    ```
-
-   Or add it to your pyproject.toml:
-
-   ```toml
-   dependencies = [
-       # ... existing dependencies
-       "psycopg2-binary>=2.9.9"
-   ]
-   ```
-
-3. Remove the SQLite-specific connection arguments in `synthgenie/db/__init__.py`

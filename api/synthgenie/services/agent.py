@@ -1,5 +1,7 @@
 import os
 from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from synthgenie.schemas.agent import SynthGenieResponse
 from synthgenie.services.amp_fx_tool import (
@@ -79,8 +81,19 @@ from synthgenie.services.wavetone_tool import (
 
 def get_synthgenie_agent():
 
+    model = os.getenv("AGENT_MODEL")
+
+    if os.getenv("OPEN_ROUTER_API_KEY"):
+        model = OpenAIModel(
+            model,
+            provider=OpenAIProvider(
+                api_key=os.getenv("OPEN_ROUTER_API_KEY"),
+                base_url=os.getenv("OPEN_ROUTER_BASE_URL"),
+            ),
+        )
+
     return Agent(
-        model=os.getenv("AGENT_MODEL"),
+        model,
         tools=[
             set_multi_mode_filter_attack,
             set_multi_mode_filter_decay,

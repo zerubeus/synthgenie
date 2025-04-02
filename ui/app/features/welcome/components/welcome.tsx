@@ -20,7 +20,7 @@ export function Welcome() {
     <div className="flex flex-col items-center justify-center min-h-[80vh] w-full p-6">      
       <div className="relative z-10 text-center max-w-5xl mx-auto p-8">
         <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 mb-4">
-          Synthgenie
+          SynthGenie
         </h1>
         
         <p className="text-xl md:text-2xl text-gray-400 mb-10">

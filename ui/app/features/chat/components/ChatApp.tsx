@@ -282,7 +282,7 @@ const ChatApp = () => {
       {/* Header */}
       <header className="bg-gray-900 border-b border-gray-800 p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
-          Synthgenie {selectedDevice && <span className="text-blue-400 font-medium">MIDI</span>}
+          SynthGenie {selectedDevice && <span className="text-blue-400 font-medium">MIDI</span>}
         </h1>
         <button 
           onClick={clearChat}

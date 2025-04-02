@@ -2,27 +2,59 @@ import os
 import psycopg2
 import psycopg2.extras
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
-# Get database connection URL from environment
-DATABASE_URL = os.getenv("DB_URL")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("POSTGRES_DB")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 
-# Create a connection pool
-_connection_pool = None
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}",
+)
+
+logger.info(f"Database connection URL: {DATABASE_URL}")
 
 
-def get_connection():
-    """Get a database connection from the pool."""
-    try:
-        # Connect to PostgreSQL
-        conn = psycopg2.connect(DATABASE_URL)
-        # Set autocommit mode
-        conn.autocommit = False
-        return conn
-    except Exception as e:
-        logger.error(f"Error connecting to PostgreSQL: {e}")
-        raise
+def get_connection(max_retries=5, retry_delay=2):
+    """
+    Get a database connection with retry mechanism.
+
+    Args:
+        max_retries: Maximum number of connection attempts
+        retry_delay: Seconds to wait between retries
+
+    Returns:
+        psycopg2 connection object
+    """
+    retry_count = 0
+    last_error = None
+
+    while retry_count < max_retries:
+        try:
+            logger.info(
+                f"Attempting database connection (attempt {retry_count + 1}/{max_retries})"
+            )
+            conn = psycopg2.connect(DATABASE_URL)
+            conn.autocommit = False
+            logger.info("Database connection successful")
+            return conn
+        except Exception as e:
+            last_error = e
+            retry_count += 1
+            logger.error(f"Error connecting to PostgreSQL: {e}")
+
+            if retry_count < max_retries:
+                logger.info(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+
+    logger.error(f"Failed to connect to database after {max_retries} attempts")
+    logger.error(f"Database URL: {DATABASE_URL}")
+    raise last_error
 
 
 def initialize_db():
@@ -32,7 +64,6 @@ def initialize_db():
         conn = get_connection()
         cursor = conn.cursor()
 
-        # Create API keys table
         cursor.execute(
             """
         CREATE TABLE IF NOT EXISTS api_keys (
@@ -43,7 +74,6 @@ def initialize_db():
         """
         )
 
-        # Create API key usage table
         cursor.execute(
             """
         CREATE TABLE IF NOT EXISTS api_key_usage (
@@ -77,7 +107,6 @@ def get_db():
     conn = None
     try:
         conn = get_connection()
-        # Use RealDictCursor to return rows as dictionaries
         conn.cursor_factory = psycopg2.extras.RealDictCursor
         yield conn
     finally:

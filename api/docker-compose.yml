@@ -28,7 +28,6 @@ services:
       - db
     networks:
       - dokploy-network
-      - default
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8000/docs']
       interval: 30s
@@ -64,4 +63,3 @@ volumes:
 networks:
   dokploy-network:
     external: true
-  default:

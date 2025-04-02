@@ -16,9 +16,12 @@ services:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - AGENT_MODEL=${AGENT_MODEL}
       - ADMIN_API_KEY=${ADMIN_API_KEY}
+      - DATABASE_URL=${DB_URL}
     volumes:
       - db-data:/app/data
     restart: unless-stopped
+    depends_on:
+      - db
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8000/docs']
       interval: 30s
@@ -26,6 +29,24 @@ services:
       retries: 3
       start_period: 10s
 
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=synthgenie
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 volumes:
   db-data:
+    driver: local
+  postgres-data:
     driver: local

@@ -1,44 +1,39 @@
-import sqlite3
 import os
-import contextlib
-from typing import Iterator, Dict, Any
+import psycopg2
+import psycopg2.extras
+import logging
 
-# Create SQLite database connection
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/synthgenie.db")
+logger = logging.getLogger(__name__)
 
-# Extract the database file path from the URL
-if DATABASE_URL.startswith("sqlite:///"):
-    if DATABASE_URL == "sqlite:///:memory:":
-        DATABASE_PATH = ":memory:"
-    else:
-        DATABASE_PATH = DATABASE_URL.replace("sqlite:///", "")
-        # Ensure the directory exists
-        os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
-else:
-    raise ValueError(f"Unsupported database URL: {DATABASE_URL}")
+# Get database connection URL from environment
+DATABASE_URL = os.getenv("DB_URL")
+
+# Create a connection pool
+_connection_pool = None
 
 
-@contextlib.contextmanager
-def get_db_connection() -> Iterator[sqlite3.Connection]:
-    """Get a database connection."""
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
+def get_connection():
+    """Get a database connection from the pool."""
     try:
-        yield conn
-    finally:
-        conn.close()
-
-
-def dict_factory(cursor: sqlite3.Cursor, row: tuple) -> Dict[str, Any]:
-    """Convert a row to a dictionary."""
-    fields = [column[0] for column in cursor.description]
-    return {key: value for key, value in zip(fields, row)}
+        # Connect to PostgreSQL
+        conn = psycopg2.connect(DATABASE_URL)
+        # Set autocommit mode
+        conn.autocommit = False
+        return conn
+    except Exception as e:
+        logger.error(f"Error connecting to PostgreSQL: {e}")
+        raise
 
 
 def initialize_db():
     """Initialize the database with required tables."""
-    with get_db_connection() as conn:
-        conn.execute(
+    conn = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # Create API keys table
+        cursor.execute(
             """
         CREATE TABLE IF NOT EXISTS api_keys (
             key TEXT PRIMARY KEY,
@@ -48,7 +43,8 @@ def initialize_db():
         """
         )
 
-        conn.execute(
+        # Create API key usage table
+        cursor.execute(
             """
         CREATE TABLE IF NOT EXISTS api_key_usage (
             key TEXT PRIMARY KEY,
@@ -58,11 +54,32 @@ def initialize_db():
         )
         """
         )
+
         conn.commit()
+        logger.info("Database initialized successfully")
+    except Exception as e:
+        logger.error(f"Error initializing database: {e}")
+        if conn:
+            conn.rollback()
+        raise
+    finally:
+        if conn:
+            conn.close()
+
+
+def dict_factory(cursor, row):
+    """Convert a row to a dictionary."""
+    return dict(row)
 
 
 def get_db():
     """Get database connection for dependency injection."""
-    with get_db_connection() as conn:
-        conn.row_factory = dict_factory
+    conn = None
+    try:
+        conn = get_connection()
+        # Use RealDictCursor to return rows as dictionaries
+        conn.cursor_factory = psycopg2.extras.RealDictCursor
         yield conn
+    finally:
+        if conn:
+            conn.close()

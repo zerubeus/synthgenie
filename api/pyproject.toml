@@ -21,6 +21,7 @@ dependencies = [
     "pydantic-ai>=0.0.46",
     "python-dotenv>=1.1.0",
     "sentry-sdk[fastapi]>=2.25.0",
+    "psycopg2-binary>=2.9.9",
 ]
 
 [project.scripts]

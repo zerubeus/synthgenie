@@ -1,9 +1,5 @@
 import os
-from datetime import datetime, timezone
 from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
-from pydantic_ai.providers.openai import OpenAIProvider
-import logging
 
 from synthgenie.schemas.agent import SynthGenieResponse
 from synthgenie.services.amp_fx_tool import (
@@ -80,62 +76,11 @@ from synthgenie.services.wavetone_tool import (
     set_wavetone_reset_mode,
 )
 
-original_process_response = OpenAIModel._process_response
-
-
-def patched_process_response(self, response):
-    if response.choices is None:
-        logging.error(f"Received response with None choices: {response}")
-        raise TypeError(f"API response did not contain 'choices'. Response: {response}")
-
-    if response.created is None:
-        current_time = int(datetime.now(timezone.utc).timestamp())
-        response.created = current_time
-        logging.warning(
-            f"Response created timestamp was None, using current time: {current_time}"
-        )
-
-    return original_process_response(self, response)
-
-
-OpenAIModel._process_response = patched_process_response
-
 
 def get_synthgenie_agent():
-    logger = logging.getLogger(__name__)
-    model_name = os.getenv("AGENT_MODEL")
-
-    if not model_name:
-        raise ValueError("AGENT_MODEL environment variable is not set")
-
-    logger.info(f"Using model: {model_name}")
-
-    if os.getenv("OPEN_ROUTER_API_KEY"):
-        logger.info("Using OpenRouter provider")
-        model = OpenAIModel(
-            model_name,
-            provider=OpenAIProvider(
-                api_key=os.getenv("OPEN_ROUTER_API_KEY"),
-                base_url=os.getenv("OPEN_ROUTER_BASE_URL"),
-            ),
-        )
-    else:
-        openai_api_key = os.getenv("OPENAI_API_KEY")
-        if not openai_api_key:
-            raise ValueError("OPENAI_API_KEY environment variable is not set")
-
-        logger.info("Using OpenAI provider")
-        model = OpenAIModel(
-            model_name,
-            provider=OpenAIProvider(
-                api_key=openai_api_key,
-                api_version=os.getenv("OPENAI_API_VERSION"),
-                organization=os.getenv("OPENAI_ORGANIZATION"),
-            ),
-        )
 
     return Agent(
-        model,
+        model=os.getenv("AGENT_MODEL"),
         tools=[
             set_multi_mode_filter_attack,
             set_multi_mode_filter_decay,

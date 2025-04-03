@@ -81,14 +81,21 @@ from synthgenie.services.wavetone_tool import (
 
 def get_synthgenie_agent():
 
-    model = os.getenv("AGENT_MODEL")
+    model_name = os.getenv("AGENT_MODEL")
 
     if os.getenv("OPEN_ROUTER_API_KEY"):
         model = OpenAIModel(
-            model,
+            model_name,
             provider=OpenAIProvider(
                 api_key=os.getenv("OPEN_ROUTER_API_KEY"),
                 base_url=os.getenv("OPEN_ROUTER_BASE_URL"),
+            ),
+        )
+    else:
+        model = OpenAIModel(
+            model_name,
+            provider=OpenAIProvider(
+                api_key=os.getenv("OPENAI_API_KEY"),
             ),
         )
 

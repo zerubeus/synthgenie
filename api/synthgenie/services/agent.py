@@ -80,14 +80,15 @@ from synthgenie.services.wavetone_tool import (
     set_wavetone_reset_mode,
 )
 
-# Apply monkey patch for OpenAIModel._process_response to handle missing timestamps
 original_process_response = OpenAIModel._process_response
 
 
 def patched_process_response(self, response):
-    # Handle case where response.created is None
+    if response.choices is None:
+        logging.error(f"Received response with None choices: {response}")
+        raise TypeError(f"API response did not contain 'choices'. Response: {response}")
+
     if response.created is None:
-        # Use current timestamp as fallback
         current_time = int(datetime.now(timezone.utc).timestamp())
         response.created = current_time
         logging.warning(
@@ -97,7 +98,6 @@ def patched_process_response(self, response):
     return original_process_response(self, response)
 
 
-# Apply the monkey patch
 OpenAIModel._process_response = patched_process_response
 
 

@@ -80,20 +80,25 @@ from synthgenie.services.wavetone_tool import (
     set_wavetone_reset_mode,
 )
 
+# Apply monkey patch for OpenAIModel._process_response to handle missing timestamps
+original_process_response = OpenAIModel._process_response
 
-# Create a patched version of OpenAIModel that handles missing timestamps
-class PatchedOpenAIModel(OpenAIModel):
-    def _process_response(self, response):
-        # Handle case where response.created is None
-        if response.created is None:
-            # Use current timestamp as fallback
-            current_time = int(datetime.now(timezone.utc).timestamp())
-            response.created = current_time
-            logging.warning(
-                f"Response created timestamp was None, using current time: {current_time}"
-            )
 
-        return super()._process_response(response)
+def patched_process_response(self, response):
+    # Handle case where response.created is None
+    if response.created is None:
+        # Use current timestamp as fallback
+        current_time = int(datetime.now(timezone.utc).timestamp())
+        response.created = current_time
+        logging.warning(
+            f"Response created timestamp was None, using current time: {current_time}"
+        )
+
+    return original_process_response(self, response)
+
+
+# Apply the monkey patch
+OpenAIModel._process_response = patched_process_response
 
 
 def get_synthgenie_agent():
@@ -106,32 +111,28 @@ def get_synthgenie_agent():
     logger.info(f"Using model: {model_name}")
 
     if os.getenv("OPEN_ROUTER_API_KEY"):
-        # OpenRouter configuration
         logger.info("Using OpenRouter provider")
-        provider = OpenAIProvider(
-            api_key=os.getenv("OPEN_ROUTER_API_KEY"),
-            base_url=os.getenv("OPEN_ROUTER_BASE_URL"),
+        model = OpenAIModel(
+            model_name,
+            provider=OpenAIProvider(
+                api_key=os.getenv("OPEN_ROUTER_API_KEY"),
+                base_url=os.getenv("OPEN_ROUTER_BASE_URL"),
+            ),
         )
     else:
-        # Standard OpenAI configuration
         openai_api_key = os.getenv("OPENAI_API_KEY")
         if not openai_api_key:
             raise ValueError("OPENAI_API_KEY environment variable is not set")
 
         logger.info("Using OpenAI provider")
-        provider = OpenAIProvider(
-            api_key=openai_api_key,
-            # Explicitly set API version if available
-            api_version=os.getenv("OPENAI_API_VERSION"),
+        model = OpenAIModel(
+            model_name,
+            provider=OpenAIProvider(
+                api_key=openai_api_key,
+                api_version=os.getenv("OPENAI_API_VERSION"),
+                organization=os.getenv("OPENAI_ORGANIZATION"),
+            ),
         )
-
-        # Add organization if specified
-        org_id = os.getenv("OPENAI_ORGANIZATION")
-        if org_id:
-            provider.openai_client.organization = org_id
-
-    # Create the model with the configured provider
-    model = OpenAIModel(model_name, provider=provider)
 
     return Agent(
         model,

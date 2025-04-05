@@ -17,8 +17,6 @@ DATABASE_URL = os.getenv(
     f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}",
 )
 
-logger.info(f"Database connection URL: {DATABASE_URL}")
-
 
 def get_connection(max_retries=5, retry_delay=2):
     """
@@ -53,7 +51,6 @@ def get_connection(max_retries=5, retry_delay=2):
                 time.sleep(retry_delay)
 
     logger.error(f"Failed to connect to database after {max_retries} attempts")
-    logger.error(f"Database URL: {DATABASE_URL}")
     raise last_error
 
 

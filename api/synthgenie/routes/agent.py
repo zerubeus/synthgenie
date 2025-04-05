@@ -55,10 +55,3 @@ async def process_prompt(
     except UsageLimitExceeded as e:
         logger.error(f"Usage limit exceeded: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    status = "ok"
-    return {"status": status}

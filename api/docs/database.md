@@ -1,70 +1,52 @@
-# Database Configuration
+# Database Documentation
 
-SynthGenie API uses SQLite as the database backend for storing API keys and other data. This solution was chosen for its minimal overhead and simplicity.
+## Overview
 
-## Database Setup
-
-The database is automatically created and initialized when the application starts. By default, it creates a file named `synthgenie.db` in the application's root directory.
+SynthGenie uses PostgreSQL as its primary database with pgvector extension for vector operations. The database stores API keys, tracks usage, and other application data.
 
 ## Configuration
 
-You can configure the database connection using environment variables:
+The database connection is configured using environment variables:
 
-```bash
-# Use SQLite file database (default)
-export DATABASE_URL="sqlite:///./synthgenie.db"
+- `DB_HOST`: Database host address
+- `DB_PORT`: Database port
+- `POSTGRES_DB`: Database name
+- `POSTGRES_USER`: Database username
+- `POSTGRES_PASSWORD`: Database password
+- `DATABASE_URL`: Full connection string (constructed from above variables if not provided)
 
-# For in-memory SQLite (testing)
-export DATABASE_URL="sqlite:///:memory:"
-```
+## Schema
 
-## SQL Implementation
+### Tables
 
-The application uses Python's built-in `sqlite3` module for direct SQL queries instead of an ORM. The database schema is initialized at application startup with the following tables:
+#### api_keys
 
-### API Keys
+Stores API keys for authentication and authorization.
 
-The `api_keys` table stores API key information:
+| Column     | Type      | Description                     |
+| ---------- | --------- | ------------------------------- |
+| key        | TEXT      | Primary key, the API key itself |
+| user_id    | TEXT      | Associated user identifier      |
+| created_at | TIMESTAMP | When the API key was created    |
 
-```sql
-CREATE TABLE IF NOT EXISTS api_keys (
-    key TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
-```
+#### api_key_usage
 
-## Database Connection
+Tracks usage statistics for API keys.
 
-Database connections are managed with a context manager to ensure proper resource cleanup:
+| Column        | Type      | Description                          |
+| ------------- | --------- | ------------------------------------ |
+| key           | TEXT      | Primary key, foreign key to api_keys |
+| request_count | INTEGER   | Number of requests made with key     |
+| last_used_at  | TIMESTAMP | When the key was last used           |
 
-```python
-@contextlib.contextmanager
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
-    try:
-        yield conn
-    finally:
-        conn.close()
-```
+## Connection Management
 
-## Scaling Considerations
+The application uses a connection management system with retry capabilities:
 
-While SQLite is sufficient for development and small-scale deployments, you might consider migrating to PostgreSQL or another database system for production use with higher traffic loads.
+- Maximum retry attempts: 5 (default)
+- Retry delay: 2 seconds (default)
+- Auto-commit is disabled by default
 
-To switch to PostgreSQL, you would need to:
+## Initialization
 
-1. Update the database module to support PostgreSQL connections
-2. Modify the SQL queries as needed for PostgreSQL compatibility
-3. Update the `DATABASE_URL` environment variable:
-
-   ```bash
-   export DATABASE_URL="postgresql://user:password@localhost/synthgenie"
-   ```
-
-4. Install the PostgreSQL driver:
-
-   ```bash
-   uv pip install psycopg2-binary
-   ```
+Database initialization creates the required tables if they don't exist. This process is handled by the `initialize_db()` function in the application codebase.

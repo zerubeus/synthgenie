@@ -41,7 +41,11 @@ const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
       role: 'assistant', 
-      content: 'Hello! How can I help you today?\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.' 
+      content: `Hello! How can I help you today?
+
+Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
+Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
+Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
     }
   ]);
   const [input, setInput] = useState('');
@@ -105,7 +109,11 @@ const ChatApp = () => {
     if (selectedDevice && messages.length === 1 && messages[0].role === 'assistant') {
       setMessages([{ 
         role: 'assistant', 
-        content: `Hello! I'm Synthgenie connected to "${selectedDevice}".\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.` 
+        content: `Hello! I'm Synthgenie connected to "${selectedDevice}".
+
+Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
+Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
+Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
       }]);
     }
   }, [selectedDevice]);
@@ -242,8 +250,16 @@ const ChatApp = () => {
     setMessages([{ 
       role: 'assistant', 
       content: selectedDevice 
-        ? `Hello! I'm Synthgenie connected to "${selectedDevice}".\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.` 
-        : 'Hello! How can I help you today?\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.' 
+        ? `Hello! I'm Synthgenie connected to "${selectedDevice}".
+
+          Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
+          Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
+          Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
+        : `Hello! How can I help you today?
+
+          Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
+          Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
+          Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
     }]);
   };
 
@@ -323,8 +339,7 @@ const ChatApp = () => {
                 }
               </div>
               <div className="flex-1">
-                <p className={`whitespace-pre-wrap text-white`}>
-                  {message.content}
+                <p className={`whitespace-pre-wrap text-white`} dangerouslySetInnerHTML={{ __html: message.content }}>
                 </p>
                 {message.role === 'assistant' && (
                   <button 

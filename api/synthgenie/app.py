@@ -1,4 +1,5 @@
 import os
+import logfire
 import logging
 import sentry_sdk
 from fastapi import FastAPI
@@ -15,6 +16,8 @@ from synthgenie.db.connection import initialize_db
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+logfire.configure(token=os.getenv("LOGFIRE_TOKEN"))
 
 # Initialize database
 initialize_db()

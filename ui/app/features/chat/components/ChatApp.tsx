@@ -296,6 +296,7 @@ const ChatApp = () => {
               <MessageSquareText size={12} className="mr-1" style={{ verticalAlign: 'middle' }} /> Discord
             </a>{' '}
             to join the beta.
+            <br />Only the Wavetone machine and multi-mode filter are currently supported and need to be pre-set before prompting.
           </p>
         </div>
         <button 

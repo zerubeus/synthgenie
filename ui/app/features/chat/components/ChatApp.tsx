@@ -286,14 +286,14 @@ const ChatApp = () => {
             SynthGenie {selectedDevice && <span className="text-blue-400 font-medium">MIDI</span>}
           </h1>
           <p className="text-xs text-gray-400 mt-1">
-            <span className="text-blue-400">Currently supporting Digitone 2 FM synthesizer only.</span> Connect via USB and get an API key from our{' '}
+            <span>Currently supporting Digitone 2 FM synthesizer only.</span> Connect via USB and get an API key from our{' '}
             <a 
               href="https://discord.gg/aB4N9Zue" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center text-indigo-400 hover:text-purple-400 transition-colors"
+              className="inline-flex items-center align-baseline text-indigo-400 hover:text-purple-400 transition-colors"
             >
-              <MessageSquareText size={12} className="mr-1" /> Discord
+              <MessageSquareText size={12} className="mr-1" style={{ verticalAlign: 'middle' }} /> Discord
             </a>{' '}
             to join the beta.
           </p>

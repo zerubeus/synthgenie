@@ -27,7 +27,7 @@ router = APIRouter(prefix="/agent", tags=["synthgenie"])
 async def process_prompt(
     user_prompt: UserPrompt,
     api_key: str = Depends(get_api_key),
-    conn: psycopg2.Connection = Depends(get_db),
+    conn: psycopg2.connection = Depends(get_db),
 ):
     """
     Process a user prompt with the SynthGenie AI agent.

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ChangeEvent, KeyboardEvent } from 'react';
-import { Send, User, Bot, Trash2, Copy, Key, MessageSquareText } from 'lucide-react';
+import { Send, User, Bot, Trash2, Copy, Key } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
 // Simple WebMidi interfaces
@@ -39,7 +39,10 @@ const getApiBaseUrl = () => {
 
 const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Hello! How can I help you today?' }
+    { 
+      role: 'assistant', 
+      content: 'Hello! How can I help you today?\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.' 
+    }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -102,7 +105,7 @@ const ChatApp = () => {
     if (selectedDevice && messages.length === 1 && messages[0].role === 'assistant') {
       setMessages([{ 
         role: 'assistant', 
-        content: `Hello! I'm Synthgenie connected to "${selectedDevice}". How can I help you create amazing sounds today?` 
+        content: `Hello! I'm Synthgenie connected to "${selectedDevice}".\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.` 
       }]);
     }
   }, [selectedDevice]);
@@ -239,8 +242,8 @@ const ChatApp = () => {
     setMessages([{ 
       role: 'assistant', 
       content: selectedDevice 
-        ? `Hello! I'm Synthgenie connected to "${selectedDevice}". How can I help you create amazing sounds today?` 
-        : 'Hello! How can I help you today?' 
+        ? `Hello! I'm Synthgenie connected to "${selectedDevice}".\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.` 
+        : 'Hello! How can I help you today?\n\nCurrently supporting **Digitone 2** FM synthesizer only.\nConnect via USB and get an API key from our Discord (https://discord.gg/aB4N9Zue) to join the beta.\nOnly the **Wavetone machine** and **multi-mode filter** are currently supported and need to be pre-set before prompting.' 
     }]);
   };
 
@@ -285,20 +288,6 @@ const ChatApp = () => {
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
             SynthGenie {selectedDevice && <span className="text-blue-400 font-medium">MIDI</span>}
           </h1>
-          <p className="text-xs text-gray-400 mt-1">
-            Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
-            <br />Connect via USB and get an API key from our{' '}
-            <a 
-              href="https://discord.gg/aB4N9Zue" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center align-baseline text-indigo-400 hover:text-purple-400 transition-colors"
-            >
-              <MessageSquareText size={12} className="mr-1" style={{ verticalAlign: 'middle' }} /> Discord
-            </a>{' '}
-            to join the beta.
-            <br />Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.
-          </p>
         </div>
         <button 
           onClick={clearChat}

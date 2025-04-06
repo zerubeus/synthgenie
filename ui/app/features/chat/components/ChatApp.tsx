@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ChangeEvent, KeyboardEvent } from 'react';
-import { Send, User, Bot, Trash2, Copy, Key } from 'lucide-react';
+import { Send, User, Bot, Trash2, Copy, Key, MessageSquareText } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 
 // Simple WebMidi interfaces
@@ -281,9 +281,23 @@ const ChatApp = () => {
     <div className="flex flex-col rounded-xl overflow-hidden shadow-2xl bg-gray-900 border border-gray-800">
       {/* Header */}
       <header className="bg-gray-900 border-b border-gray-800 p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
-          SynthGenie {selectedDevice && <span className="text-blue-400 font-medium">MIDI</span>}
-        </h1>
+        <div>
+          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+            SynthGenie {selectedDevice && <span className="text-blue-400 font-medium">MIDI</span>}
+          </h1>
+          <p className="text-xs text-gray-400 mt-1">
+            <span className="text-blue-400">Currently supporting Digitone 2 FM synthesizer only.</span> Connect via USB and get an API key from our{' '}
+            <a 
+              href="https://discord.gg/aB4N9Zue" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-indigo-400 hover:text-purple-400 transition-colors"
+            >
+              <MessageSquareText size={12} className="mr-1" /> Discord
+            </a>{' '}
+            to join the beta.
+          </p>
+        </div>
         <button 
           onClick={clearChat}
           className="p-2 text-gray-400 hover:text-blue-400 hover:bg-gray-800 rounded-full"

@@ -41,11 +41,7 @@ const ChatApp = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
       role: 'assistant', 
-      content: `Hello! How can I help you today?
-
-Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
-Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
-Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
+      content: 'Hello! How can I help you today?\n\nCurrently supporting <strong>Digitone 2</strong> FM synthesizer only.\nConnect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.\nOnly the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.' 
     }
   ]);
   const [input, setInput] = useState('');
@@ -109,14 +105,10 @@ Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong
     if (selectedDevice && messages.length === 1 && messages[0].role === 'assistant') {
       setMessages([{ 
         role: 'assistant', 
-        content: `Hello! I'm Synthgenie connected to "${selectedDevice}".
-
-Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
-Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
-Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
+        content: `Hello! I'm Synthgenie connected to "${selectedDevice}".\n\nCurrently supporting <strong>Digitone 2</strong> FM synthesizer only.\nConnect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.\nOnly the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.`
       }]);
     }
-  }, [selectedDevice]);
+  }, [selectedDevice, messages]);
 
   // Focus API key input when it becomes visible
   useEffect(() => {
@@ -250,16 +242,8 @@ Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong
     setMessages([{ 
       role: 'assistant', 
       content: selectedDevice 
-        ? `Hello! I'm Synthgenie connected to "${selectedDevice}".
-
-          Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
-          Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
-          Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
-        : `Hello! How can I help you today?
-
-          Currently supporting <strong>Digitone 2</strong> FM synthesizer only.
-          Connect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.
-          Only the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.` 
+        ? `Hello! I'm Synthgenie connected to "${selectedDevice}".\n\nCurrently supporting <strong>Digitone 2</strong> FM synthesizer only.\nConnect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.\nOnly the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.`
+        : 'Hello! How can I help you today?\n\nCurrently supporting <strong>Digitone 2</strong> FM synthesizer only.\nConnect via USB and get an API key from our <a href="https://discord.gg/aB4N9Zue" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-indigo-400 hover:text-purple-400">Discord</a> to join the beta.\nOnly the <strong>Wavetone machine</strong> and <strong>multi-mode filter</strong> are currently supported and need to be pre-set before prompting.'
     }]);
   };
 

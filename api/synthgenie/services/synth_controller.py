@@ -64,16 +64,20 @@ class BaseSynthController:
             SynthGenieResponse: A response object containing the MIDI CC and channel.
         """
         if param_name not in self.config:
-            raise ValueError(f"Invalid parameter: {param_name}")
+            raise ValueError(f"Invalid parameter name: {param_name}")
 
         param = self.config[param_name]
 
         try:
-            if not param.midi.cc_msb:
-                logger.error(f"No CC MSB defined for {param_name}")
-                return False
+            if not param.midi or not param.midi.cc_msb:
+                # Raise ValueError instead of returning False for missing CC
+                error_msg = f"No valid MIDI CC MSB defined for parameter: {param_name}"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
 
             cc_msb = param.midi.cc_msb
+
+            # TODO: Consider adding validation for 'value' against param.min/max here if needed
 
             return SynthGenieResponse(
                 used_tool=used_tool,
@@ -82,9 +86,15 @@ class BaseSynthController:
                 value=value,
             )
 
+        except ValueError as ve:
+            # Re-raise specific ValueErrors for clarity
+            logger.error(f"Configuration error for {param_name}: {ve}")
+            raise ve
         except Exception as e:
-            logger.error(f"Failed to set {param_name}: {e}")
-            raise Exception(f"Failed to set {param_name}") from e
+            # Catch other potential issues during parameter processing
+            logger.error(f"Failed to process parameter {param_name}: {e}")
+            # Re-raise as a generic exception or a custom one if preferred
+            raise Exception(f"Failed to process parameter {param_name}") from e
 
 
 @dataclass

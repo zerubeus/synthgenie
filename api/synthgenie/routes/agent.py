@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 import psycopg2
 from pydantic_ai import UsageLimitExceeded, Agent
 from pydantic_ai.usage import UsageLimits
-from pydantic_ai import FunctionToolResultEvent
+from pydantic_ai.messages import FunctionToolResultEvent
 
 from synthgenie.schemas.user import UserPrompt
 from synthgenie.services.agent import get_synthgenie_agent

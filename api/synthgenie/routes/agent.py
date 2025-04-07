@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, Depends
 import psycopg2
 from pydantic_ai import UsageLimitExceeded, Agent
 from pydantic_ai.usage import UsageLimits
+from pydantic_ai import FunctionToolResultEvent
 
 from synthgenie.schemas.user import UserPrompt
 from synthgenie.services.agent import get_synthgenie_agent
@@ -33,15 +34,17 @@ async def process_prompt(
     Process a user prompt with the SynthGenie AI agent.
 
     This implementation forces the agent to stop after the first cycle
-    of tool execution to prevent potential loops in generative tasks,
-    returning only the initial set of parameter changes.
+    of tool execution and collects results via events to prevent loops.
 
     Requires a valid API key.
     """
     deps = SynthControllerDeps()
     agent = get_synthgenie_agent()
     step_count = 0
-    first_tool_call_processed = False
+    first_tool_call_node_processed = False
+    collected_responses: list[SynthGenieResponse] = (
+        []
+    )  # Explicit list to collect results
 
     try:
         async with agent.iter(
@@ -62,33 +65,79 @@ async def process_prompt(
                     break
 
                 processed_node = node
+
+                # --- Event Collection Logic ---
+                # If processing the node where tools are called, stream events to capture results
+                if Agent.is_call_tools_node(processed_node):
+                    logger.info(
+                        "Streaming events from CallToolsNode to collect results..."
+                    )
+                    try:
+                        async with processed_node.stream(
+                            agent_run.ctx
+                        ) as handle_stream:
+                            async for event in handle_stream:
+                                if isinstance(event, FunctionToolResultEvent):
+                                    # Ensure the result content is the expected type
+                                    if isinstance(
+                                        event.result.content, SynthGenieResponse
+                                    ):
+                                        logger.debug(
+                                            f"Collected tool result: {event.result.content}"
+                                        )
+                                        collected_responses.append(event.result.content)
+                                    else:
+                                        logger.warning(
+                                            f"Tool {event.part.tool_name} result content was not SynthGenieResponse: {type(event.result.content)}"
+                                        )
+                        first_tool_call_node_processed = True
+                        logger.info(
+                            f"Finished streaming CallToolsNode. Collected {len(collected_responses)} responses."
+                        )
+                    except Exception as stream_exc:
+                        # Catch errors specifically during the event streaming/tool execution phase
+                        logger.exception(
+                            f"Error during CallToolsNode event streaming: {stream_exc}"
+                        )
+                        # Depending on desired behavior, we might raise here or just log and continue
+                        # Let's break the loop to be safe and report based on potentially partial results
+                        break
+                # --- End Event Collection ---
+
+                # Advance to the next node *after* potentially streaming the current one
                 node = await agent_run.next(processed_node)
 
-                if Agent.is_call_tools_node(processed_node):
-                    logger.info("Processed first CallToolsNode.")
-                    first_tool_call_processed = True
-
-                if first_tool_call_processed and Agent.is_model_request_node(node):
+                # **Core Stop Logic:** If we just processed the tools node, and the *next* step
+                # is the agent wanting to think again, stop now.
+                if first_tool_call_node_processed and Agent.is_model_request_node(node):
                     logger.info(
                         "First tool call cycle completed. Stopping agent before second reasoning step."
                     )
                     break
 
-            if agent_run.result and agent_run.result.data:
+            # --- Loop finished (End node, MAX_STEPS, stream error, or early break) ---
+
+            # Return the explicitly collected responses
+            if collected_responses:
                 logger.info(
-                    f"Agent finished or was stopped. Returning result after {step_count} steps."
+                    f"Agent finished or was stopped. Returning {len(collected_responses)} collected responses after {step_count} steps."
                 )
                 track_api_key_usage(conn, api_key)
-                return agent_run.result.data
+                return collected_responses
             else:
-                log_message = "Agent run finished without a final result."
-                if first_tool_call_processed:
-                    log_message = "Agent stopped after first tool cycle, but no result data found (tools might have failed or returned nothing)."
-                logger.error(f"{log_message} Step count: {step_count}")
-                raise HTTPException(
-                    status_code=500,
-                    detail="Agent failed to produce a valid result after the first execution cycle.",
+                # Handle cases where loop finished but no responses were collected
+                log_message = (
+                    "Agent run finished, but no tool responses were collected."
                 )
+                if first_tool_call_node_processed:
+                    log_message = "Agent processed tool calls, but failed to collect any valid SynthGenieResponse results (check tool implementations and logs)."
+                elif step_count >= MAX_STEPS:
+                    log_message = (
+                        f"Agent hit MAX_STEPS ({MAX_STEPS}) without collecting results."
+                    )
+                logger.error(f"{log_message} Step count: {step_count}")
+                # Use a more specific detail message
+                raise HTTPException(status_code=500, detail=log_message)
 
     except UsageLimitExceeded as e:
         logger.error(f"Usage limit exceeded: {e}")

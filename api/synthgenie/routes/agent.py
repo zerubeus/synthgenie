@@ -2,7 +2,7 @@ import logging
 from fastapi import APIRouter, HTTPException, Depends
 
 import psycopg2
-from pydantic_ai import UsageLimitExceeded
+from pydantic_ai import UsageLimitExceeded, Agent
 from pydantic_ai.usage import UsageLimits
 
 from synthgenie.schemas.user import UserPrompt
@@ -32,64 +32,70 @@ async def process_prompt(
     """
     Process a user prompt with the SynthGenie AI agent.
 
-    The agent will interpret the prompt and return a list of synthesizer parameter changes.
+    This implementation forces the agent to stop after the first cycle
+    of tool execution to prevent potential loops in generative tasks,
+    returning only the initial set of parameter changes.
 
     Requires a valid API key.
     """
     deps = SynthControllerDeps()
     agent = get_synthgenie_agent()
     step_count = 0
+    first_tool_call_processed = False
 
     try:
-        # Use agent.iter() for fine-grained control and loop prevention
         async with agent.iter(
             user_prompt.prompt,
             deps=deps,
-            usage_limits=UsageLimits(
-                request_limit=REQUEST_LIMIT,
-            ),
+            usage_limits=UsageLimits(request_limit=REQUEST_LIMIT),
         ) as agent_run:
-            async for node in agent_run:
+            node = agent_run.next_node
+
+            while node is not None and not Agent.is_end_node(node):
                 step_count += 1
-                logger.debug(
-                    f"Agent step {step_count}: {type(node).__name__}"
-                )  # Optional: log each step
+                logger.debug(f"Agent step {step_count}: {type(node).__name__}")
 
                 if step_count > MAX_STEPS:
                     logger.error(
-                        f"Agent exceeded maximum step limit ({MAX_STEPS}). Potential loop detected."
+                        f"Agent exceeded maximum step limit ({MAX_STEPS}). Forcing stop."
                     )
-                    raise HTTPException(
-                        status_code=500,
-                        detail=f"Agent processing exceeded maximum steps ({MAX_STEPS}). Please refine your prompt or contact support.",
+                    break
+
+                processed_node = node
+                node = await agent_run.next(processed_node)
+
+                if Agent.is_call_tools_node(processed_node):
+                    logger.info("Processed first CallToolsNode.")
+                    first_tool_call_processed = True
+
+                if first_tool_call_processed and Agent.is_model_request_node(node):
+                    logger.info(
+                        "First tool call cycle completed. Stopping agent before second reasoning step."
                     )
+                    break
 
-                # The loop finishes when an End node is reached or an exception occurs
-                # The final result is available in agent_run.result after the loop
-
-            # Check if the run completed successfully and has a result
-            if agent_run.result:
-                # Track API key usage after successful response
+            if agent_run.result and agent_run.result.data:
+                logger.info(
+                    f"Agent finished or was stopped. Returning result after {step_count} steps."
+                )
                 track_api_key_usage(conn, api_key)
                 return agent_run.result.data
             else:
-                # This case might occur if the loop finished unexpectedly without an End node
-                # or if an error occurred that wasn't caught (though agent.iter should handle most)
-                logger.error("Agent run finished without a final result.")
+                log_message = "Agent run finished without a final result."
+                if first_tool_call_processed:
+                    log_message = "Agent stopped after first tool cycle, but no result data found (tools might have failed or returned nothing)."
+                logger.error(f"{log_message} Step count: {step_count}")
                 raise HTTPException(
-                    status_code=500, detail="Agent failed to produce a result."
+                    status_code=500,
+                    detail="Agent failed to produce a valid result after the first execution cycle.",
                 )
 
     except UsageLimitExceeded as e:
         logger.error(f"Usage limit exceeded: {e}")
-        raise HTTPException(
-            status_code=429, detail=str(e)
-        )  # Use 429 for rate/usage limits
+        raise HTTPException(status_code=429, detail=str(e))
     except HTTPException as http_exc:
-        # Re-raise HTTPExceptions (like the one for MAX_STEPS)
         raise http_exc
     except Exception as e:
-        # Catch any other unexpected errors during agent execution
         logger.exception(f"An unexpected error occurred during agent processing: {e}")
         raise HTTPException(
             status_code=500,

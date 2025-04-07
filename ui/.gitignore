@@ -25,3 +25,5 @@ dist-ssr
 *.sw?
 .env
 .react-router
+.vercel
+build

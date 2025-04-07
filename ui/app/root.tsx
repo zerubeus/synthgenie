@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   isRouteErrorResponse,
   Links,
@@ -9,6 +9,8 @@ import {
   type ErrorResponse
 } from "react-router";
 import "./styles/global.css";
+
+const CURRENT_APP_VERSION = "v1.0.1"; // Replace with your actual versioning strategy
 
 export const links = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -24,6 +26,17 @@ export const links = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const storedVersion = localStorage.getItem('appVersion');
+    if (storedVersion !== CURRENT_APP_VERSION) {
+      console.log(`Cache cleared due to version mismatch. Old: ${storedVersion}, New: ${CURRENT_APP_VERSION}`);
+      localStorage.setItem('appVersion', CURRENT_APP_VERSION);
+      // Optionally clear other sensitive localStorage data here
+      // localStorage.removeItem('userToken');
+      window.location.reload();
+    }
+  }, []);
+
   return (
     <html lang="en">
       <head>

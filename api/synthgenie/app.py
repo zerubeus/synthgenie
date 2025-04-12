@@ -51,10 +51,11 @@ allowed_origins = [
 ]
 
 # For development, optionally include localhost
-if os.getenv("ENVIRONMENT") == "development":
+if os.getenv("API_ENV") == "development":
     allowed_origins.extend(
         [
             "http://localhost:3000",
+            "http://localhost:5173",
             "http://localhost:8000",
         ]
     )

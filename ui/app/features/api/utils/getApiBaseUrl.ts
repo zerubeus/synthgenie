@@ -8,9 +8,17 @@ export const getApiBaseUrl = (): string => {
   // Check if running in development mode AND specifically targeting the local API
   // Ensure VITE_API_ENV is set in your .env.development or similar
   const isLocal =
-    process.env.NODE_ENV === 'development' &&
-    process.env.VITE_API_ENV === 'local';
+    import.meta.env.MODE === 'development' &&
+    import.meta.env.VITE_API_ENV === 'local';
 
-  // Return the appropriate URL
-  return isLocal ? 'http://localhost:8080' : 'https://api.synthgenie.com';
+  if (isLocal) {
+    // Use custom port if specified, otherwise default to 8080
+    const localPort = import.meta.env.VITE_API_PORT || '8080';
+    // Use custom host if specified, otherwise default to localhost
+    const localHost = import.meta.env.VITE_API_HOST || 'localhost';
+    return `http://${localHost}:${localPort}`;
+  }
+
+  // Return the production URL
+  return 'https://api.synthgenie.com';
 };

@@ -6,11 +6,8 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-
-
 from synthgenie.routes.agent import router as agent_router
 from synthgenie.routes.api_keys import router as api_keys_router
-
 from synthgenie.db.connection import initialize_db
 
 load_dotenv()

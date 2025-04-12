@@ -8,9 +8,13 @@ import {
   ScrollRestoration,
   type ErrorResponse
 } from "react-router";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import "./styles/global.css";
 
 const CURRENT_APP_VERSION = "v1.0.1"; // Replace with your actual versioning strategy
+
+// Create a client instance
+const queryClient = new QueryClient();
 
 export const links = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,6 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <Meta />
         <Links />
       </head>
@@ -55,7 +60,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
+  );
 }
 
 interface ErrorBoundaryProps {

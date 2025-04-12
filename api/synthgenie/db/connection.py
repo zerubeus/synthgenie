@@ -6,17 +6,6 @@ import time
 
 logger = logging.getLogger(__name__)
 
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
-DB_NAME = os.getenv("POSTGRES_DB")
-DB_USER = os.getenv("POSTGRES_USER")
-DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}",
-)
-
 
 def get_connection(max_retries=5, retry_delay=2):
     """
@@ -32,25 +21,39 @@ def get_connection(max_retries=5, retry_delay=2):
     retry_count = 0
     last_error = None
 
+    db_host = os.getenv("DB_HOST", "db")
+    db_port = os.getenv("DB_PORT", "5432")
+    db_name = os.getenv("POSTGRES_DB")
+    db_user = os.getenv("POSTGRES_USER")
+    db_password = os.getenv("POSTGRES_PASSWORD")
+
+    if not all([db_host, db_port, db_name, db_user, db_password]):
+        logger.error("Database configuration environment variables are missing!")
+        pass
+
+    database_url = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
     while retry_count < max_retries:
         try:
             logger.info(
-                f"Attempting database connection (attempt {retry_count + 1}/{max_retries})"
+                f"Attempting database connection to {db_host}:{db_port} (attempt {retry_count + 1}/{max_retries})"
             )
-            conn = psycopg2.connect(DATABASE_URL)
+            conn = psycopg2.connect(database_url)
             conn.autocommit = False
             logger.info("Database connection successful")
             return conn
         except Exception as e:
             last_error = e
             retry_count += 1
-            logger.error(f"Error connecting to PostgreSQL: {e}")
+            logger.error(f"Error connecting to PostgreSQL at {db_host}:{db_port}: {e}")
 
             if retry_count < max_retries:
                 logger.info(f"Retrying in {retry_delay} seconds...")
                 time.sleep(retry_delay)
 
-    logger.error(f"Failed to connect to database after {max_retries} attempts")
+    logger.error(
+        f"Failed to connect to database at {db_host}:{db_port} after {max_retries} attempts"
+    )
     raise last_error
 
 

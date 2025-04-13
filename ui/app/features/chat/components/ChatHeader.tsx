@@ -1,11 +1,8 @@
-// src/features/chat/components/ChatHeader.tsx
 import React from 'react';
 import { Trash2 } from 'lucide-react';
 
 interface ChatHeaderProps {
-  /** The name of the currently selected MIDI device, if any. */
   selectedDevice: string | null | undefined;
-  /** Callback function to trigger when the clear chat button is clicked. */
   onClearChat: () => void;
 }
 

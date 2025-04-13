@@ -1,5 +1,3 @@
-// src/features/chat/utils/chatUtils.ts
-
 /**
  * This file contains utility functions specifically related to the chat feature,
  * such as formatting messages or generating specific content.

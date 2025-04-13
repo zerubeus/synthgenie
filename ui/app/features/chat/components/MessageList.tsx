@@ -1,4 +1,3 @@
-// src/features/chat/components/MessageList.tsx
 import React from 'react';
 import type { RefObject } from 'react';
 import { Bot } from 'lucide-react';
@@ -6,13 +5,9 @@ import type { Message } from '../types';
 import { MessageItem } from './MessageItem';
 
 interface MessageListProps {
-  /** The array of messages to display. */
   messages: Message[];
-  /** Whether the assistant is currently processing. */
   isLoading: boolean;
-  /** Ref object pointing to the element used for auto-scrolling. */
   messagesEndRef: RefObject<HTMLDivElement | null>;
-  /** Callback function to handle copying message content. */
   onCopyMessage: (content: string) => void;
 }
 

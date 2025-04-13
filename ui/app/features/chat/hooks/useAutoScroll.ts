@@ -1,4 +1,3 @@
-// src/features/chat/hooks/useAutoScroll.ts
 import { useRef, useEffect } from 'react';
 import type { RefObject, DependencyList } from 'react';
 

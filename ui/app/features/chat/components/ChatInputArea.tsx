@@ -1,22 +1,13 @@
-// src/features/chat/components/ChatInputArea.tsx
 import React, { useRef, useEffect } from 'react';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import { Send } from 'lucide-react';
-// Import custom hooks if you created them, e.g.:
-// import { useTextAreaAutoSize } from '../hooks/useTextAreaAutoSize';
 
 interface ChatInputAreaProps {
-  /** Current value of the text input. */
   input: string;
-  /** Callback to update the input value. */
   setInput: (value: string) => void;
-  /** Callback to trigger sending the message. */
   onSendMessage: () => void;
-  /** Indicates if a message is currently being processed (disables input/button). */
   isLoading: boolean;
-  /** The rendered MIDI Device Selector component. */
   midiDeviceSelector: React.ReactNode;
-  /** The rendered API Key Manager component UI. */
   apiKeyManager: React.ReactNode;
 }
 
@@ -29,50 +20,40 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
   setInput,
   onSendMessage,
   isLoading,
-  midiDeviceSelector, // Render this prop directly
-  apiKeyManager,    // Render this prop directly
+  midiDeviceSelector,
+  apiKeyManager,
 }) => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // --- Focus Input on Initial Mount ---
-  // (Consider if this focus logic should live here or in the parent ChatView)
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  // --- Auto-adjust textarea height ---
-  // (This could be moved to a useTextAreaAutoSize hook)
   const handleTextAreaInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const target = e.target;
     setInput(target.value);
 
-    // Reset height to recalculate scrollHeight correctly
     target.style.height = 'auto';
-    // Set height based on content, respecting min-height via CSS
     target.style.height = `${target.scrollHeight}px`;
   };
 
-  // --- Handle Enter Key Press ---
   const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); // Prevent default Enter behavior (new line)
+      e.preventDefault();
       if (input.trim() !== '' && !isLoading) {
         onSendMessage();
-        // Reset height after sending
         if (inputRef.current) {
-            inputRef.current.style.height = 'auto'; // Or back to min-height if needed
+            inputRef.current.style.height = 'auto';
         }
       }
     }
   };
 
-  // --- Handle Send Button Click ---
   const handleSendClick = () => {
     if (input.trim() !== '' && !isLoading) {
       onSendMessage();
-      // Reset height after sending
       if (inputRef.current) {
-          inputRef.current.style.height = 'auto'; // Or back to min-height if needed
+          inputRef.current.style.height = 'auto';
       }
     }
   };
@@ -81,7 +62,6 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
 
   return (
     <div className="p-4 bg-gray-800 border-t border-gray-700 flex-shrink-0">
-      {/* Textarea container with focus ring */}
       <div className="relative">
         <div className="border border-gray-700 rounded-lg bg-gray-900 overflow-hidden focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-800 focus-within:ring-blue-500 focus-within:border-blue-500 transition-shadow duration-150">
           <textarea
@@ -92,16 +72,11 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
             onChange={handleTextAreaInput}
             onKeyDown={handleKeyPress}
             disabled={isLoading}
-            rows={1} // Start with one row, auto-sizing will handle expansion
+            rows={1}
           />
 
-          {/* Controls inside the textarea container */}
           <div className="absolute bottom-3 right-3 flex items-center gap-2">
-            {/* MIDI Selector */}
-            {/* Render the component passed via props */}
             {midiDeviceSelector}
-
-            {/* Send Button */}
             <button
               onClick={handleSendClick}
               disabled={isSendDisabled}
@@ -119,15 +94,12 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
         </div>
       </div>
 
-      {/* Hint text and API Key Manager */}
-      <div className="flex justify-between items-start mt-2 gap-4"> {/* Use items-start for better alignment if API manager grows */}
-        <p className="text-xs text-gray-500 pt-1 flex-shrink-0"> {/* Added pt-1 */}
+      <div className="flex justify-between items-start mt-2 gap-4">
+        <p className="text-xs text-gray-500 pt-1 flex-shrink-0">
           Enter to send, Shift+Enter for new line
         </p>
 
-        {/* API Key Management UI */}
-        {/* Render the component passed via props */}
-        <div className="flex-shrink"> {/* Allow API manager to take space but not push hint text away excessively */}
+        <div className="flex-shrink">
              {apiKeyManager}
         </div>
       </div>

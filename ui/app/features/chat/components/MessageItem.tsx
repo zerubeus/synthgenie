@@ -1,12 +1,9 @@
-// src/features/chat/components/MessageItem.tsx
 import React from 'react';
 import { User, Bot, Copy } from 'lucide-react';
-import type { Message } from '../types'; // Use 'import type'
+import type { Message } from '../types';
 
 interface MessageItemProps {
-  /** The message object to display. */
   message: Message;
-  /** Callback function triggered when the copy icon is clicked on an assistant message. */
   onCopyMessage: (content: string) => void;
 }
 

@@ -1,31 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { RefObject } from 'react'; // Import RefObject type
+import type { RefObject } from 'react';
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { Message } from '../types'; // Chat Message type
-import type { MidiAction } from '../../api/types'; // API response type (needs to be defined in api/types)
-import { getInitialWelcomeMessage } from '../utils/chatUtils'; // Helper for welcome message
-import { useAutoScroll } from './useAutoScroll'; // Import the actual hook
+import type { Message } from '../types';
+import type { MidiAction } from '../../api/types';
+import { getInitialWelcomeMessage } from '../utils/chatUtils';
+import { useAutoScroll } from './useAutoScroll';
 
-// --- Props Interface ---
 interface UseChatMessagesProps {
-  /** The mutation object from useSynthGenieApi */
   promptMutation: UseMutationResult<MidiAction[], Error, string, unknown>;
-  /** Function to send MIDI CC messages */
   sendMidiCC: (channel: number, cc: number, value: number) => void;
-  /** The current API key (or null/empty string if not set) */
   apiKey: string | null | undefined;
-  /** The currently selected MIDI device name */
   selectedDevice: string | null | undefined;
 }
 
-// --- Return Interface ---
 interface UseChatMessagesReturn {
   messages: Message[];
   input: string;
-  isLoading: boolean; // Combined loading state
-  messagesEndRef: RefObject<HTMLDivElement | null>; // Corrected type to allow null
+  isLoading: boolean;
+  messagesEndRef: RefObject<HTMLDivElement | null>;
   setInput: React.Dispatch<React.SetStateAction<string>>;
-  handleSendMessage: () => void; // Simplified send handler
+  handleSendMessage: () => void;
   clearChat: () => void;
   copyMessage: (content: string) => void;
 }
@@ -40,23 +34,15 @@ export const useChatMessages = ({
   apiKey,
   selectedDevice,
 }: UseChatMessagesProps): UseChatMessagesReturn => {
-  // --- State ---
   const [messages, setMessages] = useState<Message[]>(() => [
-    // Initialize with welcome message using the utility
     { role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) },
   ]);
+
   const [input, setInput] = useState('');
-  // Use the mutation's loading state as the primary indicator
   const isLoading = promptMutation.isPending;
 
-  // --- Refs & Auto-Scroll ---
-  // Get the ref and trigger auto-scroll when messages change
   const messagesEndRef = useAutoScroll<HTMLDivElement>([messages]); // Use the hook
 
-  // --- Effects ---
-
-  // Update welcome message if device changes *after* initial load
-  // and only the welcome message is present.
   useEffect(() => {
     if (messages.length === 1 && messages[0].role === 'assistant') {
       const currentWelcomeMessage = getInitialWelcomeMessage(selectedDevice);
@@ -66,7 +52,6 @@ export const useChatMessages = ({
     }
   }, [selectedDevice, messages]);
 
-  // Effect to handle successful mutation results
   useEffect(() => {
     if (promptMutation.isSuccess && promptMutation.data) {
       const data = promptMutation.data;
@@ -95,24 +80,21 @@ export const useChatMessages = ({
         },
       ]);
 
-      // Reset mutation state after processing.
-      promptMutation.reset(); // Ensure reset is called
+      promptMutation.reset();
     }
-    // Use `promptMutation.reset` in deps array as its identity is stable
   }, [
     promptMutation.isSuccess,
     promptMutation.data,
     sendMidiCC,
-    promptMutation.reset, // Add reset to dependencies
+    promptMutation.reset,
+    promptMutation,
   ]);
 
-  // Effect to handle mutation errors
   useEffect(() => {
     if (promptMutation.isError && promptMutation.error) {
       const error = promptMutation.error;
       console.error('Error sending prompt:', error);
-      let errorMessage =
-        'Sorry, an unexpected error occurred. Please try again.';
+      let errorMessage = 'Sorry, an unexpected error occurred. Please try again.';
 
       if (error instanceof Error) {
         switch (error.message) {
@@ -120,8 +102,7 @@ export const useChatMessages = ({
             errorMessage = 'Please set your API key using the button below.';
             break;
           case 'Invalid API key':
-            errorMessage =
-              'Your API key appears to be invalid. Please check and update it.';
+            errorMessage = 'Your API key appears to be invalid. Please check and update it.';
             break;
           case 'Network response was not ok':
             errorMessage =
@@ -134,18 +115,17 @@ export const useChatMessages = ({
         errorMessage = 'An unknown error occurred.';
       }
 
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: errorMessage },
-      ]);
+      setMessages((prev) => [...prev, { role: 'assistant', content: errorMessage }]);
 
-      // Reset mutation state after processing the error
-      promptMutation.reset(); // Ensure reset is called
+      promptMutation.reset();
     }
-    // Use `promptMutation.reset` in deps array as its identity is stable
-  }, [promptMutation.isError, promptMutation.error, promptMutation.reset]); // Add reset to dependencies
-
-  // --- Handlers ---
+  }, [
+    promptMutation.isError,
+    promptMutation.error,
+    promptMutation.reset,
+    setMessages,
+    promptMutation,
+  ]);
 
   const handleSendMessage = useCallback(() => {
     const trimmedInput = input.trim();
@@ -171,9 +151,7 @@ export const useChatMessages = ({
   }, [input, isLoading, promptMutation, apiKey, setMessages, setInput]);
 
   const clearChat = useCallback(() => {
-    setMessages([
-      { role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) },
-    ]);
+    setMessages([{ role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) }]);
     if (promptMutation.isError || promptMutation.isSuccess) {
       promptMutation.reset();
     }
@@ -189,7 +167,6 @@ export const useChatMessages = ({
     navigator.clipboard.writeText(content).then(
       () => {
         console.log('Content copied to clipboard successfully.');
-        // Optional: Add user feedback (e.g., toast message "Copied!")
       },
       (err) => {
         console.error('Failed to copy content to clipboard: ', err);
@@ -198,7 +175,6 @@ export const useChatMessages = ({
     );
   }, []);
 
-  // --- Return values ---
   return {
     messages,
     input,

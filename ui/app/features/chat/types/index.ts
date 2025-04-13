@@ -1,5 +1,3 @@
-// src/features/chat/types/index.ts
-
 /**
  * Represents the role of the sender of a chat message.
  * - 'user': The end-user interacting with the application.
@@ -40,17 +38,4 @@ export type Message = {
    * Could be a Date object, Unix timestamp (number), or ISO string.
    */
   timestamp?: Date | number | string;
-
-  // --- Potential Future Enhancements ---
-  // Add more fields as needed, for example:
-  // error?: boolean; // Flag if the message represents an error state
-  // metadata?: Record<string, any>; // For attaching extra data without cluttering the main type
 };
-
-// You can export other chat-specific types from this file if they arise.
-// For example, if you had specific types for chat actions or commands:
-//
-// export type ChatCommand = {
-//   type: 'clear' | 'set_param';
-//   payload?: any;
-// };

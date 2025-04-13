@@ -1,4 +1,3 @@
-// src/features/chat/hooks/useTextAreaAutoSize.ts
 import { useRef, useEffect } from 'react';
 import type { RefObject } from 'react';
 
@@ -51,32 +50,8 @@ export const useTextAreaAutoSize = (
       // If scrollHeight exceeds max-height, `overflow-y: auto` (set via CSS)
       // should activate the scrollbar.
       textArea.style.height = `${scrollHeight}px`;
-
-      // --- Optional: Adjust overflow style directly (Alternative to CSS) ---
-      // Generally, it's better to control overflow via CSS (`overflow-y: auto` combined with `max-height`).
-      // Uncomment this block if you prefer direct style manipulation.
-      /*
-      const computedStyle = window.getComputedStyle(textArea);
-      const maxHeight = parseInt(computedStyle.maxHeight, 10);
-
-      if (maxHeight && scrollHeight >= maxHeight) {
-        // If content reaches or exceeds max-height, ensure scrollbar is visible
-        if (textArea.style.overflowY !== 'auto') { // Avoid unnecessary style changes
-            textArea.style.overflowY = 'auto';
-        }
-      } else {
-        // Otherwise, hide the scrollbar (if content fits within max-height)
-         if (textArea.style.overflowY !== 'hidden') { // Avoid unnecessary style changes
-             textArea.style.overflowY = 'hidden';
-         }
-      }
-      */
     }
-  }, [value]); // Re-run this effect whenever the textarea value changes
+  }, [value]);
 
-  // Return the ref object so the component can attach it to the textarea
   return textAreaRef;
 };
-
-// Default export is also fine if preferred
-// export default useTextAreaAutoSize;

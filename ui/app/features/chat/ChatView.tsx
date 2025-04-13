@@ -1,6 +1,5 @@
-// src/features/chat/ChatView.tsx
 import React from 'react';
-import type { ChangeEvent } from 'react'; // Import ChangeEvent type
+import type { ChangeEvent } from 'react';
 
 // --- Feature Hooks ---
 import { useMidi } from '../midi/hooks/useMidi';
@@ -12,8 +11,8 @@ import { useChatMessages } from './hooks/useChatMessages';
 import { ChatHeader } from './components/ChatHeader';
 import { MessageList } from './components/MessageList';
 import { ChatInputArea } from './components/ChatInputArea';
-import { MidiDeviceSelector } from '../midi/components/MidiDeviceSelector'; // To render within InputArea
-import { ApiKeyManager } from '../api/components/ApiKeyManager';         // To render within InputArea
+import { MidiDeviceSelector } from '../midi/components/MidiDeviceSelector';
+import { ApiKeyManager } from '../api/components/ApiKeyManager';
 
 /**
  * The main view component for the SynthGenie Chat application.
@@ -21,52 +20,41 @@ import { ApiKeyManager } from '../api/components/ApiKeyManager';         // To r
  * and the chat message display and input logic.
  */
 const ChatView: React.FC = () => {
-  // --- Initialize Hooks ---
-
-  // 1. API Key Management Hook
   const {
     apiKey,
     showApiKeyInput,
     apiKeyInputValue,
     setApiKeyInputValue,
-    handleSaveApiKey, // Renamed for clarity from 'saveApiKey' if needed
-    handleApiKeyToggle, // Renamed for clarity from 'toggleShowApiKeyInput' if needed
-    handleClearApiKey, // Renamed for clarity from 'clearApiKey' if needed
-  } = useApiKey(); // Assuming useApiKey hook exports these
+    handleSaveApiKey,
+    handleApiKeyToggle,
+    handleClearApiKey,
+  } = useApiKey();
 
-  // 2. MIDI Handling Hook
   const {
     midiDevices,
     selectedDevice,
     setSelectedDevice,
     sendMidiCC,
-    // midiAccess, // Usually not needed directly in the view
-    // midiOutputs, // Usually not needed directly in the view
   } = useMidi();
 
-  // 3. SynthGenie API Mutation Hook (depends on apiKey)
-  const promptMutation = useSynthGenieApi(apiKey); // Use the result directly
+  const promptMutation = useSynthGenieApi(apiKey);
 
-  // 4. Chat Message & Flow Logic Hook (depends on others)
   const {
     messages,
     input,
-    isLoading, // Derived from promptMutation.isPending within the hook
+    isLoading,
     messagesEndRef,
     setInput,
-    handleSendMessage, // Hook's internal send logic
+    handleSendMessage,
     clearChat,
     copyMessage,
   } = useChatMessages({
-    promptMutation, // Pass the mutation object
-    sendMidiCC,     // Pass the MIDI sending function
-    apiKey,         // Pass API key status for checks
-    selectedDevice, // Pass device for context/welcome message
+    promptMutation,
+    sendMidiCC,
+    apiKey,
+    selectedDevice,
   });
 
-  // --- Render Logic ---
-
-  // Prepare the component nodes to pass into ChatInputArea
   const midiSelectorComponent = (
     <MidiDeviceSelector
       devices={midiDevices}
@@ -91,16 +79,13 @@ const ChatView: React.FC = () => {
 
 
   return (
-    // Main container - flex column, takes full height, defines background
     <div className="flex flex-col h-screen rounded-xl overflow-hidden shadow-2xl bg-gray-900 border border-gray-800">
 
-      {/* 1. Header Area */}
       <ChatHeader
         selectedDevice={selectedDevice}
-        onClearChat={clearChat} // Pass the clearChat handler from useChatMessages
+        onClearChat={clearChat}
       />
 
-      {/* 2. Message List Area (Should grow to fill available space) */}
       <MessageList
         messages={messages}
         isLoading={isLoading}
@@ -108,18 +93,17 @@ const ChatView: React.FC = () => {
         onCopyMessage={copyMessage}
       />
 
-      {/* 3. Input Area (Fixed height at the bottom) */}
       <ChatInputArea
         input={input}
         setInput={setInput}
-        onSendMessage={handleSendMessage} // Pass the send handler from useChatMessages
+        onSendMessage={handleSendMessage}
         isLoading={isLoading}
-        midiDeviceSelector={midiSelectorComponent} // Pass the rendered component
-        apiKeyManager={apiKeyManagerComponent}     // Pass the rendered component
+        midiDeviceSelector={midiSelectorComponent}
+        apiKeyManager={apiKeyManagerComponent}
       />
 
     </div>
   );
 };
 
-export default ChatView; // Or named export: export { ChatView };
+export default ChatView;

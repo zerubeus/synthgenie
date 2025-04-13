@@ -30,12 +30,7 @@ const ChatView: React.FC = () => {
     handleClearApiKey,
   } = useApiKey();
 
-  const {
-    midiDevices,
-    selectedDevice,
-    setSelectedDevice,
-    sendMidiCC,
-  } = useMidi();
+  const { midiDevices, selectedDevice, setSelectedDevice, sendMidiCC } = useMidi();
 
   const promptMutation = useSynthGenieApi(apiKey);
 
@@ -77,14 +72,9 @@ const ChatView: React.FC = () => {
     />
   );
 
-
   return (
     <div className="flex flex-col h-screen rounded-xl overflow-hidden shadow-2xl bg-gray-900 border border-gray-800">
-
-      <ChatHeader
-        selectedDevice={selectedDevice}
-        onClearChat={clearChat}
-      />
+      <ChatHeader selectedDevice={selectedDevice} onClearChat={clearChat} />
 
       <MessageList
         messages={messages}
@@ -101,7 +91,6 @@ const ChatView: React.FC = () => {
         midiDeviceSelector={midiSelectorComponent}
         apiKeyManager={apiKeyManagerComponent}
       />
-
     </div>
   );
 };

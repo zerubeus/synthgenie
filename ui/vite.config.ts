@@ -5,8 +5,5 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
-  ssr: {
-    noExternal: command === 'build' ? true : undefined,
-  },
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
 }));

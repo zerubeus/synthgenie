@@ -44,24 +44,6 @@ export default tseslint.config(
             'object',
             'type',
           ],
-          pathGroups: [
-            {
-              pattern: '@/**',
-              group: 'internal',
-            },
-            {
-              pattern: '@shared/**',
-              group: 'internal',
-            },
-            {
-              pattern: '@features/**',
-              group: 'internal',
-            },
-            {
-              pattern: '@assets/**',
-              group: 'internal',
-            },
-          ],
           pathGroupsExcludedImportTypes: ['type'],
           'newlines-between': 'always',
           alphabetize: {

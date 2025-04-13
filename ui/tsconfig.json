@@ -24,17 +24,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "app/*"
-      ],
-      "@shared/*": [
-        "app/shared/*"
-      ],
-      "@features/*": [
-        "app/features/*"
-      ],
-      "@assets/*": [
-        "app/assets/*"
+      "~/*": [
+        "./app/*"
       ]
     },
     "esModuleInterop": true,

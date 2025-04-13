@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
-import type { UseMutationResult } from '@tanstack/react-query';
-import type { MidiAction } from '../types';
 import { getApiBaseUrl } from '../utils/getApiBaseUrl';
+import type { UseMutationResult } from '@tanstack/react-query';
+
+import type { MidiAction } from '../types';
 
 type PromptInput = string;
 
@@ -46,9 +47,7 @@ export const useSynthGenieApi = (
         error = new Error('Invalid API key');
         error.status = 401;
       } else {
-        error = new Error(
-          `Network response was not ok (Status: ${response.status})`
-        );
+        error = new Error(`Network response was not ok (Status: ${response.status})`);
         error.status = response.status;
       }
       throw error;

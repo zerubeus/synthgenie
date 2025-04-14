@@ -11,7 +11,7 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import "./styles/global.css";
 
-const CURRENT_APP_VERSION = "v1.0.1"; // Replace with your actual versioning strategy
+const CURRENT_APP_VERSION = "v1.0.1"; // TODO: Set up a versioning strategy to refresh the cache when the version changes
 
 // Create a client instance
 const queryClient = new QueryClient();
@@ -35,7 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     if (storedVersion !== CURRENT_APP_VERSION) {
       console.log(`Cache cleared due to version mismatch. Old: ${storedVersion}, New: ${CURRENT_APP_VERSION}`);
       localStorage.setItem('appVersion', CURRENT_APP_VERSION);
-      // Optionally clear other sensitive localStorage data here
+      // TODO: Optionally clear other sensitive localStorage data here
       // localStorage.removeItem('userToken');
       window.location.reload();
     }

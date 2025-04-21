@@ -3,6 +3,7 @@
 `uv remove`: Remove a dependency from the project.
 `uv sync`: Sync the project's dependencies with the environment.
 `uv lock`: Create a lockfile for the project's dependencies.
+`uv lock --upgrade-package <package>`: Upgrade a specific package in pyproject and lockfile.
 `uv run`: Run a command in the project environment.
 `uv tree`: View the dependency tree for the project.
 `uv build`: Build the project into distribution archives.

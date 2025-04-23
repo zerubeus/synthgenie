@@ -7,7 +7,7 @@ from pydantic_ai.usage import UsageLimits
 from pydantic_ai.messages import FunctionToolResultEvent
 
 from synthgenie.schemas.user import UserPrompt
-from synthgenie.synthesizers.digitone.agents.agent import get_synthgenie_agent
+from synthgenie.synthesizers.digitone.agents.sound_design_agent import get_synthgenie_agent
 from synthgenie.schemas.agent import SynthGenieResponse
 from synthgenie.services.synth_controller import SynthControllerDeps
 from synthgenie.services.auth import get_api_key

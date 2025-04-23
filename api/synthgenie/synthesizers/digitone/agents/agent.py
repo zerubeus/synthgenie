@@ -2,7 +2,7 @@ import os
 from pydantic_ai import Agent
 
 from synthgenie.schemas.agent import SynthGenieResponse
-from synthgenie.services.amp_fx_tool import (
+from synthgenie.synthesizers.digitone.tools.amp_fx_tool import (
     set_amp_attack,
     set_amp_decay,
     set_amp_envelope_mode,
@@ -21,7 +21,7 @@ from synthgenie.services.amp_fx_tool import (
     set_fx_sample_rate_reduction,
     set_fx_sample_rate_routing,
 )
-from synthgenie.services.filter_tool import (
+from synthgenie.synthesizers.digitone.tools.filter_tool import (
     set_multi_mode_filter_attack,
     set_multi_mode_filter_decay,
     set_multi_mode_filter_envelope_depth,
@@ -31,7 +31,7 @@ from synthgenie.services.filter_tool import (
     set_multi_mode_filter_sustain,
     set_multi_mode_filter_type,
 )
-from synthgenie.services.lfo_tool import (
+from synthgenie.synthesizers.digitone.tools.lfo_tool import (
     set_lfo1_depth,
     set_lfo1_destination,
     set_lfo1_fade,
@@ -50,7 +50,7 @@ from synthgenie.services.lfo_tool import (
     set_lfo2_waveform,
 )
 from synthgenie.services.synth_controller import SynthControllerDeps
-from synthgenie.services.wavetone_tool import (
+from synthgenie.synthesizers.digitone.tools.wavetone_tool import (
     set_wavetone_attack,
     set_wavetone_decay,
     set_wavetone_drift,

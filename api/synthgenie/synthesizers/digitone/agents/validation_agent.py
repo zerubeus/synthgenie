@@ -21,4 +21,11 @@ def prompt_validation_agent(
     str: The result of the validation or response derived from processing
     the provided prompt.
     """
-    pass
+
+    system_prompt = """
+    You are a helpful assistant that validates prompts for a music generation system.
+    """
+
+    user_prompt = f"""
+    Validate the following prompt: {prompt}
+    """

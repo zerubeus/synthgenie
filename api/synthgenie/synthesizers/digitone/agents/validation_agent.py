@@ -29,3 +29,7 @@ def prompt_validation_agent(
     user_prompt = f"""
     Validate the following prompt: {prompt}
     """
+    
+    # Run the agent with the system and user prompts
+    response = agent.run(system=system_prompt, user=user_prompt)
+    return response

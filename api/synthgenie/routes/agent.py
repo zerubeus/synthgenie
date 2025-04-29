@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic_ai import Agent, UsageLimitExceeded
 from pydantic_ai.messages import FunctionToolResultEvent
 from pydantic_ai.usage import UsageLimits
+from pydantic_graph import End
 
 from synthgenie.db.connection import get_db
 from synthgenie.models.api_key import track_api_key_usage
@@ -49,7 +50,7 @@ async def process_prompt(
         ) as agent_run:
             node = agent_run.next_node
 
-            while not Agent.is_end_node(node):
+            while not isinstance(node, End):
                 step_count += 1
                 logger.debug(f'Agent step {step_count}: {type(node).__name__}')
 
@@ -88,6 +89,9 @@ async def process_prompt(
                 # --- End Event Collection ---
 
                 # Advance to the next node *after* potentially streaming the current one
+                if isinstance(processed_node, End):
+                    break
+
                 node = await agent_run.next(processed_node)
 
                 # **Core Stop Logic:** If we just processed the tools node, and the *next* step

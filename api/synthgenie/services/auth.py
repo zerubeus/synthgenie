@@ -6,8 +6,7 @@ from psycopg2.extensions import connection as PgConnection
 from starlette.status import HTTP_403_FORBIDDEN
 
 from synthgenie.db.connection import get_db
-from synthgenie.models.api_key import create_api_key, delete_api_key
-from synthgenie.models.api_key import get_api_key as _get_api_key_from_db
+from synthgenie.models.api_key import create_api_key, delete_api_key, get_api_key_from_db
 
 API_KEY_NAME = 'X-API-Key'
 _api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
@@ -29,7 +28,7 @@ def get_api_key(
         return api_key_header
 
     # Then check against registered API keys in database
-    api_key_data = _get_api_key_from_db(conn, api_key_header)
+    api_key_data = get_api_key_from_db(conn, api_key_header)
     if api_key_data:
         return api_key_header
 

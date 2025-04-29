@@ -49,7 +49,7 @@ async def process_prompt(
         ) as agent_run:
             node = agent_run.next_node
 
-            while node is not None and not Agent.is_end_node(node):
+            while not Agent.is_end_node(node):
                 step_count += 1
                 logger.debug(f'Agent step {step_count}: {type(node).__name__}')
 
@@ -73,7 +73,7 @@ async def process_prompt(
                                         collected_responses.append(event.result.content)
                                     else:
                                         logger.warning(
-                                            f'Tool {event.part.tool_name} result content was not SynthGenieResponse: {type(event.result.content)}'
+                                            f'Tool call {event.tool_call_id} result content was not SynthGenieResponse: {type(event.result.content)}'
                                         )
                         first_tool_call_node_processed = True
                         logger.info(

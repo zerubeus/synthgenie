@@ -36,7 +36,7 @@ def create_api_key(conn: psycopg2.extensions.connection, user_id: str) -> dict[s
     }
 
 
-def get_api_key(conn: psycopg2.extensions.connection, key: str) -> Optional[dict[str, Any]]:
+def get_api_key_from_db(conn: psycopg2.extensions.connection, key: str) -> Optional[dict[str, Any]]:
     """
     Get an API key by its value.
 

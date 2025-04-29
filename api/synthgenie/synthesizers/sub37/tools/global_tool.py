@@ -8,24 +8,6 @@ from pydantic_ai import RunContext
 from synthgenie.schemas.agent import SynthGenieResponse
 
 
-def set_mod_wheel_high_res(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the Mod Wheel (High-Resolution CC 1/33).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): High-resolution value for Mod Wheel (0-16383).
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod_wheel_high_res',
-        midi_channel=midi_channel,
-        value=value,
-        midi_cc=1,
-        midi_cc_lsb=33,
-    )
-
-
 def set_bank_select_msb(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
     Set the Bank Select MSB (CC 0).

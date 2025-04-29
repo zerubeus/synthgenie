@@ -477,3 +477,21 @@ def set_mod2_filter_amt_cc(ctx: RunContext, value: int, midi_channel: int = 3) -
         value=value,
         midi_cc=16,
     )
+
+
+def set_mod_wheel_high_res(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the Mod Wheel (High-Resolution CC 1/33).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): High-resolution value for Mod Wheel (0-16383).
+        midi_channel (int): MIDI channel (default is 3).
+    """
+    return SynthGenieResponse(
+        used_tool='set_mod_wheel_high_res',
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc=1,
+        midi_cc_lsb=33,
+    )

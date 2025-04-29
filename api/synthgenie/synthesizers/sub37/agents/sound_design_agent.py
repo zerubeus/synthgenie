@@ -65,6 +65,14 @@ from synthgenie.synthesizers.sub37.tools.filter_tool import (
     set_filter_resonance_nrpn,
     set_filter_slope_nrpn,
 )
+from synthgenie.synthesizers.sub37.tools.fx_tool import (
+    set_arp_on_off,
+    set_arpeggiator_latch,
+    set_filter_eg_multi_trig,
+    set_glide,
+    set_glide_dest_osc,
+    set_hold_pedal,
+)
 
 
 def get_sub37_sound_design_agent():
@@ -127,6 +135,12 @@ def get_sub37_sound_design_agent():
             set_amp_eg_reset,
             set_amp_eg_vel_amt,
             set_amp_eg_delay,
+            set_hold_pedal,
+            set_glide,
+            set_arpeggiator_latch,
+            set_arp_on_off,
+            set_glide_dest_osc,
+            set_filter_eg_multi_trig,
         ],
         output_type=list[SynthGenieResponse],
         instrument=True,

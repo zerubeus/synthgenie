@@ -1,82 +1,83 @@
-from pydantic_ai import RunContext
-from synthgenie.services.synth_controller import SynthControllerDeps
-from synthgenie.schemas.agent import SynthGenieResponse
-
 import logging
+
+from pydantic_ai import RunContext
+
+from synthgenie.schemas.agent import SynthGenieResponse
 
 logger = logging.getLogger(__name__)
 
 
 # LFO1 Functions
-def set_lfo1_speed(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_speed(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the speed of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Speed value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
             Display range: 0-127.
             Default is 48.
-        track (int): The track number to set the LFO speed for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO speed for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "SPD", value, track, "set_lfo1_speed"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_speed',
+        midi_cc=102,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo1_multiplier(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_multiplier(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the multiplier of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Multiplier value ranging from 0 to 11.
             - 0 maps to 1
             - 11 maps to 2000
             Display range: 1-2000.
             Default is 2.
-        track (int): The track number to set the LFO multiplier for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO multiplier for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "MULT", value, track, "set_lfo1_multiplier"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_multiplier',
+        midi_cc=103,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo1_fade(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_fade(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the fade in/out of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Fade value ranging from 0 to 127.
             - 0 maps to -64
             - 64 maps to 0
             - 127 maps to 63
             Display range: -64 to 63.
             Default is 0.
-        track (int): The track number to set the LFO fade for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO fade for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "FADE", value, track, "set_lfo1_fade"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_fade',
+        midi_cc=104,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo1_destination(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_destination(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the destination of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Destination value ranging from 0 to 99.
             - 0 = none (default)
             - 25 = wavetone_osc1_pitch
@@ -130,21 +131,22 @@ def set_lfo1_destination(
             - 97 = fx_srr_routing
             - 98 = fx_overdrive
             - 99 = fx_overdrive_routing
-        track (int): The track number to set the LFO destination for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO destination for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "DEST", value, track, "set_lfo1_destination"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_destination',
+        midi_cc=105,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo1_waveform(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_waveform(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the waveform of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Waveform value ranging from 0 to 6.
             - 0 = "tri"
             - 1 = "sine"
@@ -154,40 +156,42 @@ def set_lfo1_waveform(
             - 5 = "ramp"
             - 6 = "rand"
             Default is "sine" (1).
-        track (int): The track number to set the LFO waveform for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO waveform for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "WAVE", value, track, "set_lfo1_waveform"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_waveform',
+        midi_cc=106,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo1_start_phase(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_start_phase(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the start phase of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Start phase value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
             Display range: 0-127.
-        track (int): The track number to set the LFO start phase for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO start phase for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "SPH", value, track, "set_lfo1_start_phase"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_start_phase',
+        midi_cc=107,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo1_trigger_mode(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_trigger_mode(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the trigger mode of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Trigger mode value ranging from 0 to 4.
             - 0 = "free"
             - 1 = "trig"
@@ -195,102 +199,107 @@ def set_lfo1_trigger_mode(
             - 3 = "one"
             - 4 = "half"
             Default is "free" (0).
-        track (int): The track number to set the LFO trigger mode for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO trigger mode for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "MODE", value, track, "set_lfo1_trigger_mode"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_trigger_mode',
+        midi_cc=108,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo1_depth(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo1_depth(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the depth of LFO1.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Depth value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
             Display range: 0-127.
-        track (int): The track number to set the LFO depth for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO depth for. 1-16
     """
-    return ctx.deps.lfo1_synth_controller.get_direct_parameter(
-        "DEP", value, track, "set_lfo1_depth"
+    return SynthGenieResponse(
+        used_tool='set_lfo1_depth',
+        midi_cc=109,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
 # LFO2 Functions
-def set_lfo2_speed(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_speed(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the speed of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Speed value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
             Display range: 0-127.
             Default is 48.
-        track (int): The track number to set the LFO speed for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO speed for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "SPD", value, track, "set_lfo2_speed"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_speed',
+        midi_cc=111,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo2_multiplier(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_multiplier(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the multiplier of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Multiplier value ranging from 0 to 11.
             - 0 maps to 1
             - 11 maps to 2000
             Display range: 1-2000.
             Default is 2.
-        track (int): The track number to set the LFO multiplier for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO multiplier for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "MULT", value, track, "set_lfo2_multiplier"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_multiplier',
+        midi_cc=112,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo2_fade(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_fade(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the fade in/out of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Fade value ranging from 0 to 127.
             - 0 maps to -64
             - 64 maps to 0
             - 127 maps to 63
             Display range: -64 to 63.
             Default is 0.
-        track (int): The track number to set the LFO fade for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO fade for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "FADE", value, track, "set_lfo2_fade"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_fade',
+        midi_cc=113,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo2_destination(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_destination(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the destination of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Destination value ranging from 0 to 99.
             - 0 = none (default)
             - 1 = lfo1_speed
@@ -351,21 +360,22 @@ def set_lfo2_destination(
             - 97 = fx_srr_routing
             - 98 = fx_overdrive
             - 99 = fx_overdrive_routing
-        track (int): The track number to set the LFO destination for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO destination for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "DEST", value, track, "set_lfo2_destination"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_destination',
+        midi_cc=114,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo2_waveform(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_waveform(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the waveform of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Waveform value ranging from 0 to 6.
             - 0 = "tri"
             - 1 = "sine"
@@ -375,40 +385,42 @@ def set_lfo2_waveform(
             - 5 = "ramp"
             - 6 = "rand"
             Default is "sine" (1).
-        track (int): The track number to set the LFO waveform for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO waveform for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "WAVE", value, track, "set_lfo2_waveform"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_waveform',
+        midi_cc=115,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo2_start_phase(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_start_phase(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the start phase of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Start phase value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
             Display range: 0-127.
-        track (int): The track number to set the LFO start phase for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO start phase for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "SPH", value, track, "set_lfo2_start_phase"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_start_phase',
+        midi_cc=116,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo2_trigger_mode(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_trigger_mode(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the trigger mode of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Trigger mode value ranging from 0 to 4.
             - 0 = "free"
             - 1 = "trig"
@@ -416,27 +428,31 @@ def set_lfo2_trigger_mode(
             - 3 = "one"
             - 4 = "half"
             Default is "free" (0).
-        track (int): The track number to set the LFO trigger mode for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO trigger mode for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "MODE", value, track, "set_lfo2_trigger_mode"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_trigger_mode',
+        midi_cc=117,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_lfo2_depth(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_lfo2_depth(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the depth of LFO2.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Depth value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
             Display range: 0-127.
-        track (int): The track number to set the LFO depth for. 1-16
+        midi_channel (int): The MIDI channel (track) to set the LFO depth for. 1-16
     """
-    return ctx.deps.lfo2_synth_controller.get_direct_parameter(
-        "DEP", value, track, "set_lfo2_depth"
+    return SynthGenieResponse(
+        used_tool='set_lfo2_depth',
+        midi_cc=118,
+        midi_channel=midi_channel,
+        value=value,
     )

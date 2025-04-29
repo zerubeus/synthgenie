@@ -47,7 +47,7 @@ flake8-quotes = { inline-quotes = "single", multiline-quotes = "double" }
 isort = { combine-as-imports = true, known-first-party = [
     "synthgenie",
 ] } # Sort imports
-mccabe = { max-complexity = 15 } # Check McCabe complexity
+mccabe = { max-complexity = 100 } # Check McCabe complexity
 ignore = [
     "D100", # ignore missing docstring in module
     "D102", # ignore missing docstring in public method

@@ -1,7 +1,9 @@
 import os
+
 from pydantic_ai import Agent
 
 from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.services.synth_controller import SynthControllerDeps
 from synthgenie.synthesizers.digitone.tools.amp_fx_tool import (
     set_amp_attack,
     set_amp_decay,
@@ -49,7 +51,6 @@ from synthgenie.synthesizers.digitone.tools.lfo_tool import (
     set_lfo2_trigger_mode,
     set_lfo2_waveform,
 )
-from synthgenie.services.synth_controller import SynthControllerDeps
 from synthgenie.synthesizers.digitone.tools.wavetone_tool import (
     set_wavetone_attack,
     set_wavetone_decay,
@@ -78,9 +79,8 @@ from synthgenie.synthesizers.digitone.tools.wavetone_tool import (
 
 
 def get_synthgenie_agent():
-
     return Agent(
-        model=os.getenv("AGENT_MODEL"),
+        model=os.getenv('AGENT_MODEL'),
         tools=[
             set_multi_mode_filter_attack,
             set_multi_mode_filter_decay,
@@ -148,7 +148,7 @@ def get_synthgenie_agent():
             set_wavetone_noise_character,
         ],
         deps_type=SynthControllerDeps,
-        result_type=list[SynthGenieResponse],
+        output_type=list[SynthGenieResponse],
         instrument=True,
         system_prompt=(
             """

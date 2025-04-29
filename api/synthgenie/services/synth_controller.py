@@ -2,8 +2,8 @@ import logging
 from dataclasses import dataclass, field
 
 from synthgenie.config.digitone_params import digitone_config
-from synthgenie.schemas.digitone import ParameterGroup
 from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.schemas.digitone import ParameterGroup
 
 logger = logging.getLogger(__name__)
 
@@ -38,9 +38,9 @@ class BaseSynthController:
             SynthGenieResponse: A response object containing the MIDI CC and channel.
         """
         if page not in self.config:
-            raise ValueError(f"Invalid page: {page}")
+            raise ValueError(f'Invalid page: {page}')
         if param_name not in self.config[page].parameters:
-            raise ValueError(f"Invalid parameter: {param_name} on {page}")
+            raise ValueError(f'Invalid parameter: {param_name} on {page}')
 
         param = self.config[page].parameters[param_name]
         cc_msb = param.midi.cc_msb
@@ -64,14 +64,14 @@ class BaseSynthController:
             SynthGenieResponse: A response object containing the MIDI CC and channel.
         """
         if param_name not in self.config:
-            raise ValueError(f"Invalid parameter name: {param_name}")
+            raise ValueError(f'Invalid parameter name: {param_name}')
 
         param = self.config[param_name]
 
         try:
             if not param.midi or not param.midi.cc_msb:
                 # Raise ValueError instead of returning False for missing CC
-                error_msg = f"No valid MIDI CC MSB defined for parameter: {param_name}"
+                error_msg = f'No valid MIDI CC MSB defined for parameter: {param_name}'
                 logger.error(error_msg)
                 raise ValueError(error_msg)
 
@@ -88,13 +88,13 @@ class BaseSynthController:
 
         except ValueError as ve:
             # Re-raise specific ValueErrors for clarity
-            logger.error(f"Configuration error for {param_name}: {ve}")
+            logger.error(f'Configuration error for {param_name}: {ve}')
             raise ve
         except Exception as e:
             # Catch other potential issues during parameter processing
-            logger.error(f"Failed to process parameter {param_name}: {e}")
+            logger.error(f'Failed to process parameter {param_name}: {e}')
             # Re-raise as a generic exception or a custom one if preferred
-            raise Exception(f"Failed to process parameter {param_name}") from e
+            raise Exception(f'Failed to process parameter {param_name}') from e
 
 
 @dataclass
@@ -111,56 +111,36 @@ class SynthControllerDeps:
 
     # LFO controllers
     lfo1_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.lfo.lfo_groups["lfo_1"]
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.lfo.lfo_groups['lfo_1'])
     )
     lfo2_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.lfo.lfo_groups["lfo_2"]
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.lfo.lfo_groups['lfo_2'])
     )
     lfo3_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.lfo.lfo_groups["lfo_3"]
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.lfo.lfo_groups['lfo_3'])
     )
 
     # Filter controllers
     filter_multi_mode_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.multi_mode_filter.parameters
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.multi_mode_filter.parameters)
     )
     filter_lowpass4_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.lowpass_4_filter.parameters
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.lowpass_4_filter.parameters)
     )
     filter_equalizer_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.equalizer_filter.parameters
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.equalizer_filter.parameters)
     )
     filter_base_width_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.base_width_filter.parameters
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.base_width_filter.parameters)
     )
     filter_legacy_lp_hp_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.legacy_lp_hp_filter.parameters
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.legacy_lp_hp_filter.parameters)
     )
     filter_comb_minus_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.comb_minus_filter.parameters
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.comb_minus_filter.parameters)
     )
     filter_comb_plus_synth_controller: BaseSynthController = field(
-        default_factory=lambda: BaseSynthController(
-            digitone_config.comb_plus_filter.parameters
-        )
+        default_factory=lambda: BaseSynthController(digitone_config.comb_plus_filter.parameters)
     )
 
     wavetone_synth_controller: BaseSynthController = field(

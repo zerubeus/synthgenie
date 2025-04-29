@@ -3,7 +3,6 @@ import os
 from pydantic_ai import Agent
 
 from synthgenie.schemas.agent import SynthGenieResponse
-from synthgenie.services.synth_controller import SynthControllerDeps
 from synthgenie.synthesizers.digitone.tools.amp_fx_tool import (
     set_amp_attack,
     set_amp_decay,
@@ -147,7 +146,6 @@ def get_synthgenie_agent():
             set_wavetone_noise_type,
             set_wavetone_noise_character,
         ],
-        deps_type=SynthControllerDeps,
         output_type=list[SynthGenieResponse],
         instrument=True,
         system_prompt=(

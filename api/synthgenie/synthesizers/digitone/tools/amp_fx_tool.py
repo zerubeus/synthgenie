@@ -1,7 +1,6 @@
 from pydantic_ai import RunContext
 
 from synthgenie.schemas.agent import SynthGenieResponse
-from synthgenie.services.synth_controller import SynthControllerDeps
 
 
 # Amp Functions
@@ -218,7 +217,7 @@ def set_fx_bit_reduction(ctx: RunContext, value: int, midi_channel: int) -> Synt
     )
 
 
-def set_fx_overdrive(ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int) -> SynthGenieResponse:
+def set_fx_overdrive(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the overdrive amount.
 
@@ -239,9 +238,7 @@ def set_fx_overdrive(ctx: RunContext[SynthControllerDeps], value: int, midi_chan
     )
 
 
-def set_fx_sample_rate_reduction(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_sample_rate_reduction(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the sample rate reduction amount.
 

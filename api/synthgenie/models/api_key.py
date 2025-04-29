@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any, Optional
 
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2.extras import DictCursor, DictRow
 
 logger = logging.getLogger(__name__)
 
@@ -47,9 +47,9 @@ def get_api_key(conn: psycopg2.extensions.connection, key: str) -> Optional[dict
     Returns:
         The API key information if found, None otherwise
     """
-    cursor = conn.cursor(cursor_factory=DictCursor)
-    cursor.execute('SELECT * FROM api_keys WHERE key = %s', (key,))
-    row = cursor.fetchone()
+    cursor: DictCursor = conn.cursor(cursor_factory=DictCursor)
+    cursor.execute('SELECT * FROM api_keys WHERE key = %s', (key,))  # type: ignore
+    row: DictRow | None = cursor.fetchone()
     return dict(row) if row else None
 
 
@@ -64,8 +64,8 @@ def get_user_api_keys(conn: psycopg2.extensions.connection, user_id: str) -> lis
     Returns:
         List of API keys for the user
     """
-    cursor = conn.cursor(cursor_factory=DictCursor)
-    cursor.execute('SELECT * FROM api_keys WHERE user_id = %s', (user_id,))
+    cursor: DictCursor = conn.cursor(cursor_factory=DictCursor)
+    cursor.execute('SELECT * FROM api_keys WHERE user_id = %s', (user_id,))  # type: ignore
     return [dict(row) for row in cursor.fetchall()]
 
 
@@ -94,22 +94,22 @@ def track_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> None:
         conn: Database connection
         key: API key value
     """
-    cursor = conn.cursor(cursor_factory=DictCursor)
+    cursor: DictCursor = conn.cursor(cursor_factory=DictCursor)
 
     try:
         # Check if key exists in usage table
-        cursor.execute('SELECT key FROM api_key_usage WHERE key = %s', (key,))
+        cursor.execute('SELECT key FROM api_key_usage WHERE key = %s', (key,))  # type: ignore
         exists = cursor.fetchone()
 
         if exists:
             # Update existing record
-            cursor.execute(
+            cursor.execute(  # type: ignore
                 'UPDATE api_key_usage SET request_count = request_count + 1, last_used_at = CURRENT_TIMESTAMP WHERE key = %s',
                 (key,),
             )
         else:
             # Insert new record
-            cursor.execute(
+            cursor.execute(  # type: ignore
                 'INSERT INTO api_key_usage (key, request_count, last_used_at) VALUES (%s, 1, CURRENT_TIMESTAMP)',
                 (key,),
             )
@@ -132,9 +132,9 @@ def get_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> Optiona
     Returns:
         Dictionary with usage statistics if found, None otherwise
     """
-    cursor = conn.cursor(cursor_factory=DictCursor)
-    cursor.execute('SELECT * FROM api_key_usage WHERE key = %s', (key,))
-    row = cursor.fetchone()
+    cursor: DictCursor = conn.cursor(cursor_factory=DictCursor)
+    cursor.execute('SELECT * FROM api_key_usage WHERE key = %s', (key,))  # type: ignore
+    row: DictRow | None = cursor.fetchone()
     return dict(row) if row else None
 
 
@@ -148,8 +148,8 @@ def get_all_api_key_usage(conn: psycopg2.extensions.connection) -> list[dict[str
     Returns:
         List of dictionaries with usage statistics
     """
-    cursor = conn.cursor(cursor_factory=DictCursor)
-    cursor.execute(
+    cursor: DictCursor = conn.cursor(cursor_factory=DictCursor)
+    cursor.execute(  # type: ignore
         """
         SELECT a.key, a.user_id, a.created_at, COALESCE(u.request_count, 0) as request_count, u.last_used_at
         FROM api_keys a

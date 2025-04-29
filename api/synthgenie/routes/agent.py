@@ -7,7 +7,7 @@ from synthgenie.db.connection import get_db
 from synthgenie.schemas.agent import SynthGenieResponse
 from synthgenie.schemas.user import UserPrompt
 from synthgenie.services.auth import get_api_key
-from synthgenie.synthesizers.digitone.agents.sound_design_agent import run_synthgenie_agent
+from synthgenie.synthesizers.digitone.agents.agent_workflow import run_digitone_agent_workflow
 
 logger = logging.getLogger(__name__)
 
@@ -28,4 +28,4 @@ async def process_digitone_prompt(
 
     Requires a valid API key.
     """
-    return await run_synthgenie_agent(user_prompt.prompt, api_key, conn)
+    return await run_digitone_agent_workflow(user_prompt.prompt, api_key, conn)

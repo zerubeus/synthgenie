@@ -90,7 +90,7 @@ REQUEST_LIMIT = 64  # Keep existing request limit
 logger = logging.getLogger(__name__)
 
 
-def get_synthgenie_agent():
+def get_digitone_agent():
     return Agent(
         model=os.getenv('AGENT_MODEL'),
         tools=[
@@ -192,16 +192,16 @@ def get_synthgenie_agent():
     )
 
 
-async def run_synthgenie_agent(user_prompt: str, api_key: str, conn: psycopg2.extensions.connection):
+async def run_digitone_sound_design_agent(user_prompt: str, api_key: str, conn: psycopg2.extensions.connection):
     """
-    Process a user prompt with the SynthGenie AI agent.
+    Process a user prompt with the Digitone AI agent.
 
     This implementation forces the agent to stop after the first cycle
     of tool execution and collects results via events to prevent loops.
 
     Requires a valid API key.
     """
-    agent = get_synthgenie_agent()
+    agent = get_digitone_agent()
     step_count = 0
     first_tool_call_node_processed = False
     collected_responses: list[SynthGenieResponse] = []  # Explicit list to collect results

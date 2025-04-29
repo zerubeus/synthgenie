@@ -43,3 +43,7 @@ class SynthGenieResponse(BaseModel):
             ]
         }
     }
+
+
+class SynthGenieAmbiguousResponse(BaseModel):
+    message: str

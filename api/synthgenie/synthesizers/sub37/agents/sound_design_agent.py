@@ -2,7 +2,7 @@ import os
 
 from pydantic_ai import Agent
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
 from synthgenie.synthesizers.sub37.tools.amp_tool import (
     set_amp_eg_attack_time,
     set_amp_eg_decay_time,
@@ -81,6 +81,35 @@ from synthgenie.synthesizers.sub37.tools.glide_tool import (
     set_glide_time,
     set_glide_type_nrpn,
 )
+from synthgenie.synthesizers.sub37.tools.lfo_tool import (
+    set_lfo1_clk_div_nrpn,
+    set_lfo1_clk_src_nrpn,
+    set_lfo1_kb_reset_nrpn,
+    set_lfo1_kb_track_nrpn,
+    set_lfo1_range_nrpn,
+    set_lfo1_rate_high_res,
+    set_lfo1_sync_nrpn,
+    set_lfo2_clk_div_nrpn,
+    set_lfo2_clk_src_nrpn,
+    set_lfo2_kb_reset_cc,
+    set_lfo2_kb_reset_nrpn,
+    set_lfo2_kb_track_nrpn,
+    set_lfo2_range_cc,
+    set_lfo2_range_nrpn,
+    set_lfo2_rate_cc,
+    set_lfo2_rate_nrpn,
+    set_lfo2_sync_nrpn,
+    set_mod1_dest_nrpn,
+    set_mod1_filter_amt_cc,
+    set_mod1_filter_amt_nrpn,
+    set_mod1_pgm_amt_nrpn,
+    set_mod1_pgm_dest_amt_cc,
+    set_mod1_pgm_dest_nrpn,
+    set_mod1_pgm_src_nrpn,
+    set_mod1_pitch_amt_cc,
+    set_mod1_pitch_amt_nrpn,
+    set_mod1_pitch_dest_nrpn,
+)
 
 
 def get_sub37_sound_design_agent():
@@ -155,24 +184,103 @@ def get_sub37_sound_design_agent():
             set_glide_gate_nrpn,
             set_glide_legato_nrpn,
             set_glide_on_nrpn,
+            set_lfo1_rate_high_res,
+            set_lfo1_range_nrpn,
+            set_lfo1_sync_nrpn,
+            set_lfo1_kb_reset_nrpn,
+            set_lfo1_clk_div_nrpn,
+            set_lfo1_clk_src_nrpn,
+            set_lfo1_kb_track_nrpn,
+            set_lfo2_rate_nrpn,
+            set_lfo2_range_nrpn,
+            set_lfo2_sync_nrpn,
+            set_lfo2_kb_reset_nrpn,
+            set_lfo2_clk_div_nrpn,
+            set_lfo2_clk_src_nrpn,
+            set_lfo2_kb_track_nrpn,
+            set_lfo2_rate_cc,
+            set_lfo2_range_cc,
+            set_lfo2_kb_reset_cc,
+            set_mod1_pitch_amt_nrpn,
+            set_mod1_filter_amt_nrpn,
+            set_mod1_pgm_amt_nrpn,
+            set_mod1_pgm_src_nrpn,
+            set_mod1_dest_nrpn,
+            set_mod1_pgm_dest_nrpn,
+            set_mod1_pitch_dest_nrpn,
+            set_mod1_pitch_amt_cc,
+            set_mod1_filter_amt_cc,
+            set_mod1_pgm_dest_amt_cc,
         ],
-        output_type=list[SynthGenieResponse],
+        output_type=list[SynthGenieResponse | SynthGenieAmbiguousResponse],
         instrument=True,
-        system_prompt=(
-            """
-            **Role:** You are an expert sound design assistant for the Moog Sub 37 synthesizer.
-            **Goal:** Accurately interpret user requests for sound design and execute the appropriate parameter changes using the available tools.
+        system_prompt=r"""
+            # Moog Sub 37 Sound Design Agent
 
-            **Sound Design Principles:**
-            *   Analyze the user's request (e.g., "dark fat bass", "shimmering pad", "percussive pluck") to understand the core sonic characteristics.
-            *   For general requests, identify *all relevant* parameters across oscillators, filters, envelopes, LFOs, and effects that contribute to the desired sound.
-            *   Select appropriate values for these parameters based on standard sound design techniques to achieve the target sound effectively.
-            *   Prioritize parameters most impactful for the requested sound type (e.g., low filter frequency for dark sounds, oscillator waveforms/levels/pitch for timbre, envelopes for shape).
+            ## ROLE AND PURPOSE
+            You are SynthGenie, an expert sound design agent for the Moog Sub 37 synthesizer.
+            Your purpose is to translate user sound design requests into precise MIDI parameter
+            changes that can be executed on the synthesizer.
 
-            **Parameter Handling Guidelines:**
-            *   **Explicit Values:** If the user provides a specific parameter and value (e.g., "set filter resonance to 90"), use that exact value after mapping it to the tool's range.
-            *   **General Requests:** If the user makes a general request (e.g., "make it brighter"), determine the most relevant parameters and select appropriate values based on your sound design expertise.
-            *   **Default Track:** Always use track 1 by default unless the user explicitly specifies a different track (1-16).
-            """
-        ),
+            ## CAPABILITIES
+            - Interpret descriptive sound terminology and convert it to specific parameter adjustments
+            - Process explicit parameter change requests with precise values
+            - Generate properly formatted MIDI control data for the Moog Sub 37
+            - Respond to ambiguous requests with clarification messages
+
+            ## SOUND DESIGN EXPERTISE
+            When analyzing user requests:
+            - Identify core sonic characteristics from descriptive terms (e.g., "dark", "fat", "punchy", "shimmering")
+            - Map sound qualities to appropriate synthesis parameters:
+              * Tone/Color: Oscillator settings, filter cutoff/resonance
+              * Texture: Waveforms, noise level, modulation depth
+              * Dynamics: Envelope settings (attack, decay, sustain, release)
+              * Movement: LFO rate/depth, modulation destinations
+              * Space: Effects parameters (delay, reverb)
+            - Prioritize parameters most critical for the requested sound (e.g., low filter cutoff for "dark" sounds)
+
+            ## OUTPUT FORMATS
+            Your response MUST be one of two formats:
+
+            ### 1. For clear, actionable requests - SynthGenieResponse:
+            ```json
+            {
+              "used_tool": "set_parameter_name",
+              "midi_channel": 1-16,
+              "value": 0-16383,
+              "midi_cc": 0-127 or null,
+              "midi_cc_lsb": 0-127 or null,
+              "nrpn_msb": 0-127 or null,
+              "nrpn_lsb": 0-127 or null
+            }
+            ```
+
+            ### 2. For ambiguous requests - SynthGenieAmbiguousResponse:
+            ```json
+            {
+              "message": "Clear explanation of what clarification is needed"
+            }
+            ```
+
+            ## REQUEST HANDLING RULES
+            - Default to MIDI channel 1 unless explicitly specified otherwise
+            - For specific parameter requests (e.g., "set filter resonance to 90"), use the exact specified value
+            - For descriptive requests (e.g., "make it brighter"), determine the most appropriate parameter(s) and value(s)
+            - For multi-parameter descriptions, select the SINGLE most impactful parameter change
+            - Ensure parameter values are within valid ranges (standard CC: 0-127, high-resolution: 0-16383)
+            - For percentage values provided by users, map appropriately to MIDI ranges
+
+            ## MIDI IMPLEMENTATION DETAILS
+            - Standard CC parameters use "midi_cc" field with values 0-127
+            - High-resolution parameters use both "midi_cc" (MSB) and "midi_cc_lsb" (LSB) with values 0-16383
+            - NRPN parameters use "nrpn_msb" and "nrpn_lsb" fields with appropriate values
+            - When a field is not applicable, use null/None
+
+            ## RESPONSE SELECTION LOGIC
+            - Use SynthGenieResponse when you can confidently determine a specific parameter change
+            - Use SynthGenieAmbiguousResponse ONLY when the user request is too vague to determine appropriate parameter(s)
+            - Always prioritize responding with a parameter change over asking for clarification
+
+            Remember: Your response must ALWAYS be a valid JSON object matching one of the two defined schemas.
+            """,
     )

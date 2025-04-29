@@ -1,13 +1,15 @@
-from typing import List, Optional, Dict, Any
-import secrets
-import psycopg2
-from datetime import datetime
 import logging
+import secrets
+from datetime import datetime
+from typing import Any, Optional
+
+import psycopg2
+from psycopg2.extras import DictCursor
 
 logger = logging.getLogger(__name__)
 
 
-def create_api_key(conn, user_id: str) -> Dict[str, Any]:
+def create_api_key(conn: psycopg2.extensions.connection, user_id: str) -> dict[str, Any]:
     """
     Create a new API key for a user.
 
@@ -23,20 +25,18 @@ def create_api_key(conn, user_id: str) -> Dict[str, Any]:
 
     # Create the API key in the database
     cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO api_keys (key, user_id) VALUES (%s, %s)", (api_key_value, user_id)
-    )
+    cursor.execute('INSERT INTO api_keys (key, user_id) VALUES (%s, %s)', (api_key_value, user_id))
     conn.commit()
 
     # Return the API key as a dictionary
     return {
-        "key": api_key_value,
-        "user_id": user_id,
-        "created_at": datetime.now().isoformat(),
+        'key': api_key_value,
+        'user_id': user_id,
+        'created_at': datetime.now().isoformat(),
     }
 
 
-def get_api_key(conn, key: str) -> Optional[Dict[str, Any]]:
+def get_api_key(conn: psycopg2.extensions.connection, key: str) -> Optional[dict[str, Any]]:
     """
     Get an API key by its value.
 
@@ -47,13 +47,13 @@ def get_api_key(conn, key: str) -> Optional[Dict[str, Any]]:
     Returns:
         The API key information if found, None otherwise
     """
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM api_keys WHERE key = %s", (key,))
+    cursor = conn.cursor(cursor_factory=DictCursor)
+    cursor.execute('SELECT * FROM api_keys WHERE key = %s', (key,))
     row = cursor.fetchone()
-    return row if row else None
+    return dict(row) if row else None
 
 
-def get_user_api_keys(conn, user_id: str) -> List[Dict[str, Any]]:
+def get_user_api_keys(conn: psycopg2.extensions.connection, user_id: str) -> list[dict[str, Any]]:
     """
     Get all API keys for a user.
 
@@ -64,12 +64,12 @@ def get_user_api_keys(conn, user_id: str) -> List[Dict[str, Any]]:
     Returns:
         List of API keys for the user
     """
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM api_keys WHERE user_id = %s", (user_id,))
-    return list(cursor.fetchall())
+    cursor = conn.cursor(cursor_factory=DictCursor)
+    cursor.execute('SELECT * FROM api_keys WHERE user_id = %s', (user_id,))
+    return [dict(row) for row in cursor.fetchall()]
 
 
-def delete_api_key(conn, key: str) -> bool:
+def delete_api_key(conn: psycopg2.extensions.connection, key: str) -> bool:
     """
     Delete an API key.
 
@@ -81,12 +81,12 @@ def delete_api_key(conn, key: str) -> bool:
         True if the key was deleted, False otherwise
     """
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM api_keys WHERE key = %s", (key,))
+    cursor.execute('DELETE FROM api_keys WHERE key = %s', (key,))
     conn.commit()
     return cursor.rowcount > 0
 
 
-def track_api_key_usage(conn, key: str) -> None:
+def track_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> None:
     """
     Track usage of an API key by incrementing its request counter.
 
@@ -94,34 +94,34 @@ def track_api_key_usage(conn, key: str) -> None:
         conn: Database connection
         key: API key value
     """
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=DictCursor)
 
     try:
         # Check if key exists in usage table
-        cursor.execute("SELECT key FROM api_key_usage WHERE key = %s", (key,))
+        cursor.execute('SELECT key FROM api_key_usage WHERE key = %s', (key,))
         exists = cursor.fetchone()
 
         if exists:
             # Update existing record
             cursor.execute(
-                "UPDATE api_key_usage SET request_count = request_count + 1, last_used_at = CURRENT_TIMESTAMP WHERE key = %s",
+                'UPDATE api_key_usage SET request_count = request_count + 1, last_used_at = CURRENT_TIMESTAMP WHERE key = %s',
                 (key,),
             )
         else:
             # Insert new record
             cursor.execute(
-                "INSERT INTO api_key_usage (key, request_count, last_used_at) VALUES (%s, 1, CURRENT_TIMESTAMP)",
+                'INSERT INTO api_key_usage (key, request_count, last_used_at) VALUES (%s, 1, CURRENT_TIMESTAMP)',
                 (key,),
             )
 
         conn.commit()
     except psycopg2.Error as e:
         # Log error but don't fail the request
-        logger.error(f"Error tracking API key usage: {e}")
+        logger.error(f'Error tracking API key usage: {e}')
         conn.rollback()
 
 
-def get_api_key_usage(conn, key: str) -> Optional[Dict[str, Any]]:
+def get_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> Optional[dict[str, Any]]:
     """
     Get usage statistics for an API key.
 
@@ -132,13 +132,13 @@ def get_api_key_usage(conn, key: str) -> Optional[Dict[str, Any]]:
     Returns:
         Dictionary with usage statistics if found, None otherwise
     """
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM api_key_usage WHERE key = %s", (key,))
+    cursor = conn.cursor(cursor_factory=DictCursor)
+    cursor.execute('SELECT * FROM api_key_usage WHERE key = %s', (key,))
     row = cursor.fetchone()
-    return row if row else None
+    return dict(row) if row else None
 
 
-def get_all_api_key_usage(conn) -> List[Dict[str, Any]]:
+def get_all_api_key_usage(conn: psycopg2.extensions.connection) -> list[dict[str, Any]]:
     """
     Get usage statistics for all API keys.
 
@@ -148,7 +148,7 @@ def get_all_api_key_usage(conn) -> List[Dict[str, Any]]:
     Returns:
         List of dictionaries with usage statistics
     """
-    cursor = conn.cursor()
+    cursor = conn.cursor(cursor_factory=DictCursor)
     cursor.execute(
         """
         SELECT a.key, a.user_id, a.created_at, COALESCE(u.request_count, 0) as request_count, u.last_used_at
@@ -156,4 +156,4 @@ def get_all_api_key_usage(conn) -> List[Dict[str, Any]]:
         LEFT JOIN api_key_usage u ON a.key = u.key
     """
     )
-    return list(cursor.fetchall())
+    return [dict(row) for row in cursor.fetchall()]

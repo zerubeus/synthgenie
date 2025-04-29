@@ -274,12 +274,11 @@ def get_sub37_sound_design_agent():
             - Standard CC parameters use "midi_cc" field with values 0-127
             - High-resolution parameters use both "midi_cc" (MSB) and "midi_cc_lsb" (LSB) with values 0-16383
             - NRPN parameters use "nrpn_msb" and "nrpn_lsb" fields with appropriate values
-            - When a field is not applicable, use null/None
+            - When a field is not applicable, don't include it in the response
 
             ## RESPONSE SELECTION LOGIC
             - Use SynthGenieResponse when you can confidently determine a specific parameter change
             - Use SynthGenieAmbiguousResponse ONLY when the user request is too vague to determine appropriate parameter(s)
-            - Always prioritize responding with a parameter change over asking for clarification
 
             Remember: Your response must ALWAYS be a valid JSON object matching one of the two defined schemas.
             """,

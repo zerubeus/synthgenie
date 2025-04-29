@@ -1,7 +1,7 @@
-from pydantic_ai import Agent
+from pydantic_ai.agent import Agent
 
 
-def prompt_validation_agent(
+async def prompt_validation_agent(
     prompt: str,
 ) -> bool:
     """
@@ -57,4 +57,7 @@ def prompt_validation_agent(
         Remember: Your ONLY responses should be either "True" or "False" with no additional text or explanation.
 
     """
-    agent = Agent('openai:gpt-4o', output_type=bool, system_prompt=system_prompt)
+    validation_agent = Agent('openai:gpt-4o', output_type=bool, system_prompt=system_prompt)
+
+    result = await validation_agent.run(prompt)
+    return result.output

@@ -73,6 +73,14 @@ from synthgenie.synthesizers.sub37.tools.fx_tool import (
     set_glide_dest_osc,
     set_hold_pedal,
 )
+from synthgenie.synthesizers.sub37.tools.glide_tool import (
+    set_glide_gate_nrpn,
+    set_glide_legato_nrpn,
+    set_glide_on_nrpn,
+    set_glide_osc_nrpn,
+    set_glide_time,
+    set_glide_type_nrpn,
+)
 
 
 def get_sub37_sound_design_agent():
@@ -141,6 +149,12 @@ def get_sub37_sound_design_agent():
             set_arp_on_off,
             set_glide_dest_osc,
             set_filter_eg_multi_trig,
+            set_glide_time,
+            set_glide_osc_nrpn,
+            set_glide_type_nrpn,
+            set_glide_gate_nrpn,
+            set_glide_legato_nrpn,
+            set_glide_on_nrpn,
         ],
         output_type=list[SynthGenieResponse],
         instrument=True,

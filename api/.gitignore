@@ -6,4 +6,5 @@ __pycache__
 .idea
 .vscode
 .env.dokploy
+.ruff_cache
 

@@ -9,7 +9,7 @@ from pydantic_ai.usage import UsageLimits
 from pydantic_graph import End
 
 from synthgenie.models.api_key import track_api_key_usage
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
 from synthgenie.synthesizers.digitone.tools.amp_fx_tool import (
     set_amp_attack,
     set_amp_decay,
@@ -159,7 +159,7 @@ def get_digitone_agent():
             set_wavetone_noise_type,
             set_wavetone_noise_character,
         ],
-        output_type=list[SynthGenieResponse],
+        output_type=list[SynthGenieResponse | SynthGenieAmbiguousResponse],
         instrument=True,
         system_prompt=(
             """
@@ -187,6 +187,9 @@ def get_digitone_agent():
             *   **LFOs:** Control speed, multiplier, waveform, depth, fade, destination, phase, and trigger modes for both LFO1 and LFO2.
             *   **Filters:** Modify cutoff frequency, resonance, filter type, and envelope parameters (attack, decay, sustain, release, depth).
             *   **Wavetone Synthesis:** Adjust oscillator pitch, waveform, phase distortion, levels, offsets, modulation, phase reset, drift, and noise parameters.
+
+            **Response Handling:**
+            *   **Ambiguous Responses:** If the user's request is too vague to determine appropriate parameter(s), return a SynthGenieAmbiguousResponse.
             """
         ),
     )
@@ -204,7 +207,7 @@ async def run_digitone_sound_design_agent(user_prompt: str, api_key: str, conn: 
     agent = get_digitone_agent()
     step_count = 0
     first_tool_call_node_processed = False
-    collected_responses: list[SynthGenieResponse] = []  # Explicit list to collect results
+    collected_responses: list[SynthGenieResponse | SynthGenieAmbiguousResponse] = []
 
     try:
         async with agent.iter(

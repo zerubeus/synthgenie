@@ -1,7 +1,9 @@
 import os
 
+import psycopg2
 from pydantic_ai import Agent
 
+from synthgenie.models.api_key import track_api_key_usage
 from synthgenie.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
 from synthgenie.synthesizers.sub37.tools.amp_tool import (
     set_amp_eg_attack_time,
@@ -283,3 +285,25 @@ def get_sub37_sound_design_agent():
             Remember: Your response must ALWAYS be a valid JSON object matching one of the two defined schemas.
             """,
     )
+
+
+async def run_sub37_sound_design_agent(
+    user_prompt: str, api_key: str, conn: psycopg2.extensions.connection
+) -> list[SynthGenieResponse | SynthGenieAmbiguousResponse]:
+    """
+    Process a user prompt with the Sub37 AI agent.
+
+    This implementation runs the agent and returns the output.
+
+    Requires a valid API key.
+    """
+    agent = get_sub37_sound_design_agent()
+
+    result = await agent.run(user_prompt)
+
+    track_api_key_usage(conn, api_key)
+
+    if isinstance(result.output, list):
+        return result.output
+    else:
+        return [result.output]

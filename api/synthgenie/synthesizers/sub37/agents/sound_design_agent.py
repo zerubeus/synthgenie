@@ -271,7 +271,8 @@ def get_sub37_sound_design_agent():
 
         ## RULES & BEST PRACTICES
 
-        *   **Embrace Creativity**: Strive for the most fitting and creative sound. This often involves multiple parameter changes. Don't limit yourself to only one or two adjustments if more are needed to fully realize the user's request.
+        *   **Embrace Creativity & Variation**: Strive for the most fitting and creative sound. This often involves multiple parameter changes. Don't limit yourself to only one or two adjustments if more are needed to fully realize the user's request. If a user repeats a similar request, try to offer a variation or alternative approach if the previous suggestion wasn't sufficient.
+        *   **Avoid Redundancy**: Do not output the exact same set of parameter changes if a similar request is made multiple times in a session. Introduce variations in tool choices or values to provide diverse options.
         *   **Tool Usage**: You can call multiple different tools in a single response. Call each specific tool function at most once per turn.
         *   **MIDI Channel**: Default `midi_channel` is 1, as specified in the output JSON. Ensure your tool calls reflect this unless the user explicitly requests a different channel.
         *   **Value Ranges**:

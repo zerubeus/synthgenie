@@ -1,0 +1,5 @@
+services:
+  api:
+    command: sh -c "uvicorn synthgenie.app:app --host 0.0.0.0 --port $${PORT} --reload --reload-dir /app/synthgenie"
+    # The volume mount for ./synthgenie:/app/synthgenie is inherited from the base docker-compose.yml
+    # and is essential for hot-reloading to work. 

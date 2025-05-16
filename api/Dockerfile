@@ -17,4 +17,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
 
 ENV PORT=8000
 
-CMD ["sh", "-c", "uvicorn synthgenie.app:app --host 0.0.0.0 --port ${PORT} --reload"] 
+CMD ["sh", "-c", "uvicorn synthgenie.app:app --host 0.0.0.0 --port ${PORT}"] 

@@ -1,17 +1,15 @@
 from pydantic_ai import RunContext
-from synthgenie.services.synth_controller import SynthControllerDeps
+
 from synthgenie.schemas.agent import SynthGenieResponse
 
 
 # Amp Functions
-def set_amp_attack(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_amp_attack(ctx: RunContext, value: int, track: int) -> SynthGenieResponse:
     """
     Set the attack time of the amplitude envelope.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Attack time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -19,19 +17,20 @@ def set_amp_attack(
             Default is 8.
         track (int): The track number to set the amp attack for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "ATK", value, track, "set_amp_attack"
+    return SynthGenieResponse(
+        used_tool='set_amp_attack',
+        midi_cc=84,
+        midi_channel=track,
+        value=value,
     )
 
 
-def set_amp_hold(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_amp_hold(ctx: RunContext, value: int, track: int) -> SynthGenieResponse:
     """
     Set the hold time of the amplitude envelope.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Hold time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -39,19 +38,20 @@ def set_amp_hold(
             Default is 127.
         track (int): The track number to set the amp hold for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "HOLD", value, track, "set_amp_hold"
+    return SynthGenieResponse(
+        used_tool='set_amp_hold',
+        midi_cc=85,
+        midi_channel=track,
+        value=value,
     )
 
 
-def set_amp_decay(
-    ctx: RunContext[SynthControllerDeps], value: int, track: int
-) -> SynthGenieResponse:
+def set_amp_decay(ctx: RunContext, value: int, track: int) -> SynthGenieResponse:
     """
     Set the decay time of the amplitude envelope.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Decay time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -59,19 +59,20 @@ def set_amp_decay(
             Default is 32.
         track (int): The track number to set the amp decay for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "DEC", value, track, "set_amp_decay"
+    return SynthGenieResponse(
+        used_tool='set_amp_decay',
+        midi_cc=86,
+        midi_channel=track,
+        value=value,
     )
 
 
-def set_amp_sustain(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_amp_sustain(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the sustain level of the amplitude envelope.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Sustain level value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -79,19 +80,20 @@ def set_amp_sustain(
             Default is 96.
         track (int): The track number to set the amp sustain for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "SUS", value, midi_channel, "set_amp_sustain"
+    return SynthGenieResponse(
+        used_tool='set_amp_sustain',
+        midi_cc=87,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_amp_release(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_amp_release(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the release time of the amplitude envelope.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Release time value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -99,19 +101,20 @@ def set_amp_release(
             Default is 24.
         track (int): The track number to set the amp release for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "REL", value, midi_channel, "set_amp_release"
+    return SynthGenieResponse(
+        used_tool='set_amp_release',
+        midi_cc=88,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_amp_envelope_reset(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_amp_envelope_reset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the envelope reset mode.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Envelope reset mode value ranging from 0 to 1.
             - 0 = "off"
             - 1 = "on"
@@ -119,19 +122,20 @@ def set_amp_envelope_reset(
             Default is "on" (1).
         track (int): The track number to set the amp envelope reset for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "Env. RSET", value, midi_channel, "set_amp_envelope_reset"
+    return SynthGenieResponse(
+        used_tool='set_amp_envelope_reset',
+        midi_cc=92,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_amp_envelope_mode(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_amp_envelope_mode(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the envelope mode.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Envelope mode value ranging from 0 to 1.
             - 0 = "AHD"
             - 1 = "ADSR"
@@ -139,19 +143,20 @@ def set_amp_envelope_mode(
             Default is "ADSR" (1).
         track (int): The track number to set the amp envelope mode for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "MODE", value, midi_channel, "set_amp_envelope_mode"
+    return SynthGenieResponse(
+        used_tool='set_amp_envelope_mode',
+        midi_cc=91,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_amp_pan(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_amp_pan(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the stereo panning position.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Pan position value ranging from 0 to 127.
             - 0 maps to -64
             - 64 maps to 0
@@ -161,19 +166,20 @@ def set_amp_pan(
             Default is 0 (center).
         track (int): The track number to set the amp pan for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "PAN", value, midi_channel, "set_amp_pan"
+    return SynthGenieResponse(
+        used_tool='set_amp_pan',
+        midi_cc=89,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_amp_volume(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_amp_volume(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the overall volume level.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Volume level value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -181,20 +187,21 @@ def set_amp_volume(
             Default is 110.
         track (int): The track number to set the amp volume for. 1-16
     """
-    return ctx.deps.amp_synth_controller.get_direct_parameter(
-        "VOL", value, midi_channel, "set_amp_volume"
+    return SynthGenieResponse(
+        used_tool='set_amp_volume',
+        midi_cc=90,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
 # FX Functions
-def set_fx_bit_reduction(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_bit_reduction(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the bit reduction amount.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Bit reduction value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -202,19 +209,20 @@ def set_fx_bit_reduction(
             Default is 0.
         track (int): The track number to set the FX bit reduction for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "BR", value, midi_channel, "set_fx_bit_reduction"
+    return SynthGenieResponse(
+        used_tool='set_fx_bit_reduction',
+        midi_cc=78,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_fx_overdrive(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_overdrive(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the overdrive amount.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Overdrive value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -222,19 +230,20 @@ def set_fx_overdrive(
             Default is 0.
         track (int): The track number to set the FX overdrive for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "OVER", value, midi_channel, "set_fx_overdrive"
+    return SynthGenieResponse(
+        used_tool='set_fx_overdrive',
+        midi_cc=81,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_fx_sample_rate_reduction(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_sample_rate_reduction(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the sample rate reduction amount.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Sample rate reduction value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -242,19 +251,20 @@ def set_fx_sample_rate_reduction(
             Default is 0.
         track (int): The track number to set the FX sample rate reduction for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "SRR", value, midi_channel, "set_fx_sample_rate_reduction"
+    return SynthGenieResponse(
+        used_tool='set_fx_sample_rate_reduction',
+        midi_cc=79,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_fx_sample_rate_routing(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_sample_rate_routing(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the sample rate reduction routing.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Sample rate routing value ranging from 0 to 1.
             - 0 = "pre"
             - 1 = "post"
@@ -262,19 +272,20 @@ def set_fx_sample_rate_routing(
             Default is "pre" (0).
         track (int): The track number to set the FX sample rate routing for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "SR.RT(pre/post)", value, midi_channel, "set_fx_sample_rate_routing"
+    return SynthGenieResponse(
+        used_tool='set_fx_sample_rate_routing',
+        midi_cc=80,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_fx_overdrive_routing(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_overdrive_routing(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the overdrive routing.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Overdrive routing value ranging from 0 to 1.
             - 0 = "pre"
             - 1 = "post"
@@ -282,19 +293,20 @@ def set_fx_overdrive_routing(
             Default is "pre" (0).
         track (int): The track number to set the FX overdrive routing for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "OD.RT(pre/post)", value, midi_channel, "set_fx_overdrive_routing"
+    return SynthGenieResponse(
+        used_tool='set_fx_overdrive_routing',
+        midi_cc=82,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_fx_delay(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_delay(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the delay send amount.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Delay send value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -302,19 +314,20 @@ def set_fx_delay(
             Default is 0.
         track (int): The track number to set the FX delay for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "DEL", value, midi_channel, "set_fx_delay"
+    return SynthGenieResponse(
+        used_tool='set_fx_delay',
+        midi_cc=30,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_fx_reverb(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_reverb(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the reverb send amount.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Reverb send value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -322,19 +335,20 @@ def set_fx_reverb(
             Default is 0.
         track (int): The track number to set the FX reverb for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "REV", value, midi_channel, "set_fx_reverb"
+    return SynthGenieResponse(
+        used_tool='set_fx_reverb',
+        midi_cc=31,
+        midi_channel=midi_channel,
+        value=value,
     )
 
 
-def set_fx_chorus(
-    ctx: RunContext[SynthControllerDeps], value: int, midi_channel: int
-) -> SynthGenieResponse:
+def set_fx_chorus(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the chorus send amount.
 
     Args:
-        ctx (RunContext[SynthControllerDeps]): The run context containing dependencies.
+        ctx (RunContext): The run context containing dependencies.
         value (int): Chorus send value ranging from 0 to 127.
             - 0 maps to 0
             - 127 maps to 127
@@ -342,6 +356,10 @@ def set_fx_chorus(
             Default is 0.
         track (int): The track number to set the FX chorus for. 1-16
     """
-    return ctx.deps.fx_synth_controller.get_direct_parameter(
-        "CHR", value, midi_channel, "set_fx_chorus"
+
+    return SynthGenieResponse(
+        used_tool='set_fx_chorus',
+        midi_cc=29,
+        midi_channel=midi_channel,
+        value=value,
     )

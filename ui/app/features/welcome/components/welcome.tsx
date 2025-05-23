@@ -21,9 +21,15 @@ export function Welcome() {
           SynthGenie
         </h1>
         
-        <p className="text-xl md:text-2xl text-gray-400 mb-10">
+        <p className="text-xl md:text-2xl text-gray-400 mb-6">
           Your AI sound designer — connect your synth, let's shape the sound
         </p>
+        
+        <div className="mb-10 p-4 bg-gray-800/50 rounded-lg border border-gray-700 max-w-2xl mx-auto">
+          <p className="text-sm text-gray-300">
+            <span className="text-blue-400 font-medium">🎹 MIDI Required:</span> Connect a Moog or Elektron Digitone device to access the chat
+          </p>
+        </div>
         
         <div 
           className={`relative mx-auto max-w-4xl transition-all duration-3000 ease-out ${

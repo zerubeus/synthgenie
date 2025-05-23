@@ -30,7 +30,7 @@ export const MidiAccessRestriction: React.FC<MidiAccessRestrictionProps> = ({
   error,
 }) => {
   return (
-    <div className="flex flex-col h-screen bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl">
+    <div className="flex flex-col h-screen bg-gray-900 border border-gray-800 overflow-hidden shadow-2xl">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4">
         <h1 className="text-xl font-bold text-white">SynthGenie Chat</h1>

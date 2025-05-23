@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import type { RefObject } from 'react';
 import type { UseMutationResult } from '@tanstack/react-query';
 import type { Message } from '../types';
-import type { MidiAction } from '../../api/types';
+import type { SynthGenieResponse } from '../../api/types';
 import { getInitialWelcomeMessage } from '../utils/chatUtils';
 import { useAutoScroll } from './useAutoScroll';
 
 interface UseChatMessagesProps {
-  promptMutation: UseMutationResult<MidiAction[], Error, string, unknown>;
-  sendMidiCC: (channel: number, cc: number, value: number) => void;
+  promptMutation: UseMutationResult<SynthGenieResponse, Error, { prompt: string; deviceName: string }, unknown>;
+  sendMidiMessage: (response: SynthGenieResponse) => void;
   apiKey: string | null | undefined;
   selectedDevice: string | null | undefined;
 }
@@ -30,7 +30,7 @@ interface UseChatMessagesReturn {
  */
 export const useChatMessages = ({
   promptMutation,
-  sendMidiCC,
+  sendMidiMessage,
   apiKey,
   selectedDevice,
 }: UseChatMessagesProps): UseChatMessagesReturn => {
@@ -54,29 +54,37 @@ export const useChatMessages = ({
 
   useEffect(() => {
     if (promptMutation.isSuccess && promptMutation.data) {
-      const data = promptMutation.data;
+      const response = promptMutation.data;
       let responseContent = '';
 
-      if (Array.isArray(data)) {
-        data.forEach((action) => {
-          responseContent += `Sent: ${action.used_tool} (CC ${action.midi_cc}, Ch ${action.midi_channel}, Val ${action.value})\n`;
-          try {
-            sendMidiCC(action.midi_channel, action.midi_cc, action.value);
-          } catch (midiError) {
-            console.error('Error sending MIDI CC:', midiError, action);
-            responseContent += `  -> Error sending MIDI for this action.\n`;
-          }
-        });
+      // Handle the new single response format
+      const { used_tool, midi_channel, value, midi_cc, midi_cc_lsb, nrpn_msb, nrpn_lsb } = response;
+      
+      // Determine message type for display
+      if (nrpn_msb !== null && nrpn_msb !== undefined && 
+          nrpn_lsb !== null && nrpn_lsb !== undefined) {
+        responseContent = `Sent: ${used_tool} (NRPN MSB ${nrpn_msb}, LSB ${nrpn_lsb}, Ch ${midi_channel}, Val ${value})`;
+      } else if (midi_cc !== null && midi_cc !== undefined &&
+                 midi_cc_lsb !== null && midi_cc_lsb !== undefined) {
+        responseContent = `Sent: ${used_tool} (High-Res CC ${midi_cc}/${midi_cc_lsb}, Ch ${midi_channel}, Val ${value})`;
+      } else if (midi_cc !== null && midi_cc !== undefined) {
+        responseContent = `Sent: ${used_tool} (CC ${midi_cc}, Ch ${midi_channel}, Val ${value})`;
       } else {
-        console.warn('Received non-array data on mutation success:', data);
-        responseContent = "Received data, but couldn't process actions.";
+        responseContent = `Processed: ${used_tool} (Ch ${midi_channel}, Val ${value})`;
+      }
+
+      try {
+        sendMidiMessage(response);
+      } catch (midiError) {
+        console.error('Error sending MIDI message:', midiError, response);
+        responseContent += `\n  -> Error sending MIDI for this action.`;
       }
 
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: responseContent.trim() || 'Action processed.',
+          content: responseContent,
         },
       ]);
 
@@ -85,7 +93,7 @@ export const useChatMessages = ({
   }, [
     promptMutation.isSuccess,
     promptMutation.data,
-    sendMidiCC,
+    sendMidiMessage,
     promptMutation.reset,
     promptMutation,
   ]);
@@ -104,11 +112,27 @@ export const useChatMessages = ({
           case 'Invalid API key':
             errorMessage = 'Your API key appears to be invalid. Please check and update it.';
             break;
-          case 'Network response was not ok':
-            errorMessage =
-              'There was a problem communicating with the SynthGenie service (Network Error).';
-            break;
           default:
+            // Check for specific error statuses
+            if ('status' in error) {
+              switch (error.status) {
+                case 422:
+                  errorMessage = error.message || 'This prompt is not about sound design. Please try a different request.';
+                  break;
+                case 400:
+                  if (error.message.includes('Unsupported synthesizer')) {
+                    errorMessage = `Your synthesizer (${selectedDevice}) is not supported. Please connect a Moog or Elektron Digitone device.`;
+                  } else {
+                    errorMessage = error.message;
+                  }
+                  break;
+                default:
+                  errorMessage = error.message || 'There was a problem communicating with the SynthGenie service.';
+                  break;
+              }
+            } else {
+              errorMessage = error.message;
+            }
             break;
         }
       } else {
@@ -125,6 +149,7 @@ export const useChatMessages = ({
     promptMutation.reset,
     setMessages,
     promptMutation,
+    selectedDevice,
   ]);
 
   const handleSendMessage = useCallback(() => {
@@ -145,10 +170,23 @@ export const useChatMessages = ({
       return;
     }
 
+    if (!selectedDevice) {
+      setMessages((prev) => [
+        ...prev,
+        { role: 'user', content: trimmedInput },
+        {
+          role: 'assistant',
+          content: 'Please select a MIDI device before sending messages.',
+        },
+      ]);
+      setInput('');
+      return;
+    }
+
     setMessages((prev) => [...prev, { role: 'user', content: trimmedInput }]);
-    promptMutation.mutate(trimmedInput);
+    promptMutation.mutate({ prompt: trimmedInput, deviceName: selectedDevice });
     setInput('');
-  }, [input, isLoading, promptMutation, apiKey, setMessages, setInput]);
+  }, [input, isLoading, promptMutation, apiKey, selectedDevice, setMessages, setInput]);
 
   const clearChat = useCallback(() => {
     setMessages([{ role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) }]);

@@ -16,22 +16,26 @@ SynthGenie aims to democratize sound design by:
 
 ## 🛠️ Core Features
 
-### 🎹 MIDI Integration
+### 🎹 Enhanced MIDI Integration
 - **Real-time device detection** via Web MIDI API
 - **Automatic parameter mapping** for supported synthesizers
+- **Multiple MIDI message types**: Standard CC, High-Resolution CC (14-bit), and NRPN
 - **Bidirectional communication** with hardware devices
 - **Multi-channel MIDI support** (1-16 channels)
-- **Control Change (CC) message handling**
+- **Intelligent message routing** based on synthesizer capabilities
 
 ### 🤖 AI-Powered Sound Design
 - **Natural language processing** for sound descriptions
 - **Intelligent parameter translation** from text to MIDI values
 - **Context-aware suggestions** based on synthesizer capabilities
 - **Real-time parameter adjustment** during conversations
+- **Synthesizer-specific optimization** for Moog and Elektron devices
 
 ### 🔒 Device Access Control
 - **Restricted access** to users with compatible MIDI devices
-- **Supported devices**: Moog synthesizers and Elektron Digitone series
+- **Supported devices**: 
+  - **Moog Subsequent 37/25** (with high-resolution CC and NRPN support)
+  - **Elektron Digitone series** (standard CC support)
 - **Real-time device validation** and status monitoring
 - **Graceful fallback** for unsupported browsers/devices
 
@@ -59,9 +63,11 @@ SynthGenie aims to democratize sound design by:
 - **Web MIDI API** for direct hardware communication
 - **Custom MIDI hooks** for device management and message handling
 - **Real-time device monitoring** with automatic reconnection
+- **Multi-format MIDI support** (CC, High-Res CC, NRPN)
 
 ### API Communication
 - **RESTful API** integration with the SynthGenie backend
+- **Synthesizer-specific endpoints** for optimized parameter mapping
 - **API key authentication** for secure access
 - **Error handling** with user-friendly messages
 - **Environment-based** endpoint configuration
@@ -76,7 +82,7 @@ ui/
 │   │   │   ├── components/       # API-related UI components
 │   │   │   ├── hooks/            # API hooks (useSynthGenieApi)
 │   │   │   ├── types/            # API type definitions
-│   │   │   └── utils/            # API utilities (getApiBaseUrl)
+│   │   │   └── utils/            # API utilities (endpoint detection)
 │   │   ├── chat/                 # Chat functionality
 │   │   │   ├── components/       # Chat UI components
 │   │   │   │   ├── ChatHeader.tsx
@@ -93,7 +99,7 @@ ui/
 │   │   │   ├── components/       # MIDI UI components
 │   │   │   │   └── MidiDeviceSelector.tsx
 │   │   │   ├── hooks/            # MIDI hooks
-│   │   │   │   ├── useMidi.ts    # Core MIDI functionality
+│   │   │   │   ├── useMidi.ts    # Enhanced MIDI functionality
 │   │   │   │   └── useMidiDeviceValidation.ts
 │   │   │   └── types/            # MIDI type definitions
 │   │   └── welcome/              # Welcome page
@@ -113,6 +119,7 @@ ui/
 ├── docs/                         # Documentation
 │   └── design_system.md          # Design system guidelines
 ├── package.json                  # Dependencies and scripts
+├── bun.lockb                     # Bun lock file
 ├── tsconfig.json                 # TypeScript configuration
 ├── vite.config.ts                # Vite build configuration
 ├── react-router.config.ts        # React Router configuration
@@ -131,7 +138,7 @@ Each feature is self-contained with its own:
 
 ### SynthGenie API
 
-The frontend communicates with the SynthGenie API to process natural language sound design requests.
+The frontend communicates with the SynthGenie API to process natural language sound design requests. The API now supports synthesizer-specific endpoints and enhanced MIDI message formats.
 
 #### Base URLs
 - **Production**: `https://api.synthgenie.com`
@@ -142,8 +149,13 @@ All API requests require an API key passed in the `X-API-Key` header.
 
 #### Endpoints
 
-##### POST `/agent/prompt`
-Processes natural language sound design requests and returns MIDI actions.
+The API now features synthesizer-specific endpoints for optimized parameter mapping:
+
+##### POST `/agent/sub37/prompt`
+Processes natural language requests for Moog Subsequent 37 synthesizers.
+
+##### POST `/agent/digitone/prompt`
+Processes natural language requests for Elektron Digitone synthesizers.
 
 **Request:**
 ```json
@@ -152,27 +164,49 @@ Processes natural language sound design requests and returns MIDI actions.
 }
 ```
 
-**Response:**
+**Response (New Format):**
 ```json
-[
-  {
-    "used_tool": "filter_resonance",
-    "midi_cc": 71,
-    "midi_channel": 1,
-    "value": 85
-  },
-  {
-    "used_tool": "lfo_rate",
-    "midi_cc": 76,
-    "midi_channel": 1,
-    "value": 64
-  }
-]
+{
+  "used_tool": "set_filter_cutoff",
+  "midi_channel": 1,
+  "value": 100,
+  "midi_cc": 74,
+  "midi_cc_lsb": null,
+  "nrpn_msb": null,
+  "nrpn_lsb": null
+}
+```
+
+**High-Resolution CC Example:**
+```json
+{
+  "used_tool": "set_amp_eg_attack_time",
+  "midi_channel": 3,
+  "value": 8192,
+  "midi_cc": 28,
+  "midi_cc_lsb": 60,
+  "nrpn_msb": null,
+  "nrpn_lsb": null
+}
+```
+
+**NRPN Example:**
+```json
+{
+  "used_tool": "set_arp_rate",
+  "midi_channel": 3,
+  "value": 10000,
+  "midi_cc": null,
+  "midi_cc_lsb": null,
+  "nrpn_msb": 3,
+  "nrpn_lsb": 19
+}
 ```
 
 #### Error Handling
 - **401**: Invalid or missing API key
-- **400**: Invalid request format
+- **422**: Query is not about sound design
+- **400**: Invalid request format or unsupported synthesizer
 - **500**: Server error
 
 ### Environment Configuration
@@ -193,8 +227,8 @@ NODE_ENV=development
 
 ### Prerequisites
 
-- **Node.js** 18+ and npm/yarn/bun
-- **Compatible MIDI device** (Moog or Elektron Digitone series)
+- **Bun** 1.0+ (package manager)
+- **Compatible MIDI device** (Moog Subsequent 37 or Elektron Digitone series)
 - **Modern browser** with Web MIDI API support (Chrome, Edge, Opera)
 - **SynthGenie API key** (contact support for access)
 
@@ -208,10 +242,6 @@ NODE_ENV=development
 
 2. **Install dependencies:**
    ```bash
-   npm install
-   # or
-   yarn install
-   # or
    bun install
    ```
 
@@ -223,7 +253,7 @@ NODE_ENV=development
 
 4. **Start development server:**
    ```bash
-   npm run dev
+   bun dev
    ```
 
 5. **Open in browser:**
@@ -233,17 +263,17 @@ NODE_ENV=development
 
 ```bash
 # Build for production
-npm run build
+bun build
 
 # Start production server
-npm run start
+bun start
 ```
 
 ## 🎹 Using SynthGenie
 
 ### 1. Connect Your MIDI Device
 
-1. **Power on** your Moog or Elektron Digitone synthesizer
+1. **Power on** your Moog Subsequent 37 or Elektron Digitone synthesizer
 2. **Connect via USB** or MIDI interface to your computer
 3. **Open SynthGenie** in a supported browser
 4. **Grant MIDI permissions** when prompted
@@ -267,26 +297,27 @@ Once connected, you can start describing sounds in natural language:
 - *"Make it sound more vintage and warm"*
 
 #### What Happens:
-1. **AI Processing**: Your prompt is sent to the SynthGenie API
-2. **Parameter Translation**: AI converts your description to MIDI CC values
-3. **MIDI Transmission**: Parameters are sent to your synthesizer
-4. **Real-time Feedback**: You hear the changes immediately
-5. **Chat History**: All actions are logged in the conversation
+1. **Device Detection**: System automatically detects your synthesizer type
+2. **Endpoint Selection**: Routes request to appropriate API endpoint
+3. **AI Processing**: Your prompt is processed by synthesizer-specific AI
+4. **Parameter Translation**: AI converts description to appropriate MIDI format
+5. **MIDI Transmission**: Parameters sent using optimal message type (CC/High-Res CC/NRPN)
+6. **Real-time Feedback**: You hear the changes immediately
+7. **Chat History**: All actions are logged in the conversation
 
-### 4. Supported Devices
+### 4. Supported Devices & MIDI Formats
 
-#### Moog Synthesizers
-- Moog One
-- Moog Subsequent 37/25
-- Moog Matriarch
-- Moog Grandmother
-- Other Moog devices with MIDI CC support
+#### Moog Subsequent 37/25
+- **Standard CC**: Basic parameter control (0-127)
+- **High-Resolution CC**: 14-bit precision (0-16383) for smooth parameter changes
+- **NRPN**: Non-Registered Parameter Numbers for advanced synthesis parameters
+- **Automatic format selection** based on parameter requirements
 
 #### Elektron Digitone Series
-- Elektron Digitone
-- Elektron Digitone Keys
+- **Standard CC**: Parameter control optimized for Elektron's CC mapping
+- **Multi-timbral support** across multiple MIDI channels
 
-*Note: Device names must contain "moog" or "digitone" (case-insensitive) to be recognized.*
+*Note: Device names must contain "moog", "subsequent", "sub37", or "digitone" (case-insensitive) to be recognized.*
 
 ## 🔧 Development
 
@@ -294,25 +325,26 @@ Once connected, you can start describing sounds in natural language:
 
 ```bash
 # Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
+bun dev              # Start development server
+bun build            # Build for production
+bun start            # Start production server
 
 # Code Quality
-npm run lint         # Run ESLint
-npm run test         # Run tests with Vitest
+bun lint             # Run ESLint
+bun test             # Run tests with Vitest
 
 # Type Checking
-npx tsc --noEmit     # Check TypeScript types
+bunx tsc --noEmit    # Check TypeScript types
 ```
 
 ### Key Development Patterns
 
-#### Custom Hooks
-- **useMidi**: Core MIDI device management
-- **useMidiDeviceValidation**: Device access control
-- **useChatMessages**: Chat state and API integration
+#### Enhanced Custom Hooks
+- **useMidi**: Core MIDI device management with multi-format support
+- **useMidiDeviceValidation**: Device access control with synthesizer detection
+- **useChatMessages**: Chat state and API integration with new response format
 - **useApiKey**: API key management with localStorage
+- **useSynthGenieApi**: Enhanced API hook with endpoint routing
 
 #### Component Architecture
 - **Feature-based organization** for scalability
@@ -377,7 +409,7 @@ SynthGenie follows a consistent design system documented in `docs/design_system.
 2. **Verify device connection** and power
 3. **Grant MIDI permissions** when prompted
 4. **Try refreshing** the page
-5. **Check device name** contains "moog" or "digitone"
+5. **Check device name** contains supported synthesizer identifiers
 
 #### API Key Issues
 1. **Verify key format** (contact support if unsure)
@@ -390,6 +422,12 @@ SynthGenie follows a consistent design system documented in `docs/design_system.
 2. **Verify API key** is set correctly
 3. **Check browser console** for errors
 4. **Try clearing chat** and starting fresh
+
+#### Unsupported Synthesizer Errors
+1. **Verify device name** contains "moog", "subsequent", "sub37", or "digitone"
+2. **Check MIDI device connection**
+3. **Try reconnecting the device**
+4. **Contact support** if your supported device isn't recognized
 
 ### Browser Compatibility
 

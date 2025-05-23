@@ -34,7 +34,7 @@ const ChatView: React.FC = () => {
     handleClearApiKey,
   } = useApiKey();
 
-  const { setSelectedDevice, sendMidiCC } = useMidi();
+  const { setSelectedDevice, sendMidiMessage } = useMidi();
   
   const {
     hasValidDevice,
@@ -58,7 +58,7 @@ const ChatView: React.FC = () => {
     copyMessage,
   } = useChatMessages({
     promptMutation,
-    sendMidiCC,
+    sendMidiMessage,
     apiKey,
     selectedDevice,
   });

@@ -3,6 +3,7 @@ import type { ChangeEvent } from 'react';
 
 // --- Feature Hooks ---
 import { useMidi } from '../midi/hooks/useMidi';
+import { useMidiDeviceValidation } from '../midi/hooks/useMidiDeviceValidation';
 import { useApiKey } from '../api/hooks/useApiKey';
 import { useSynthGenieApi } from '../api/hooks/useSynthGenieApi';
 import { useChatMessages } from './hooks/useChatMessages';
@@ -11,6 +12,7 @@ import { useChatMessages } from './hooks/useChatMessages';
 import { ChatHeader } from './components/ChatHeader';
 import { MessageList } from './components/MessageList';
 import { ChatInputArea } from './components/ChatInputArea';
+import { MidiAccessRestriction } from './components/MidiAccessRestriction';
 import { MidiDeviceSelector } from '../midi/components/MidiDeviceSelector';
 import { ApiKeyManager } from '../api/components/ApiKeyManager';
 
@@ -18,6 +20,8 @@ import { ApiKeyManager } from '../api/components/ApiKeyManager';
  * The main view component for the SynthGenie Chat application.
  * It integrates MIDI device handling, API key management, API communication,
  * and the chat message display and input logic.
+ * 
+ * Access is restricted to users with valid MIDI devices (containing "moog" or "digitone").
  */
 const ChatView: React.FC = () => {
   const {
@@ -30,7 +34,16 @@ const ChatView: React.FC = () => {
     handleClearApiKey,
   } = useApiKey();
 
-  const { midiDevices, selectedDevice, setSelectedDevice, sendMidiCC } = useMidi();
+  const { setSelectedDevice, sendMidiCC } = useMidi();
+  
+  const {
+    hasValidDevice,
+    isInitializing,
+    midiDevices,
+    selectedDevice,
+    validDevices,
+    error,
+  } = useMidiDeviceValidation();
 
   const promptMutation = useSynthGenieApi(apiKey);
 
@@ -50,6 +63,21 @@ const ChatView: React.FC = () => {
     selectedDevice,
   });
 
+  // Show restriction screen if no valid device is connected
+  if (!hasValidDevice) {
+    return (
+      <MidiAccessRestriction
+        midiDevices={midiDevices}
+        selectedDevice={selectedDevice || ''}
+        onDeviceChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedDevice(e.target.value)}
+        validDevices={validDevices}
+        isInitializing={isInitializing}
+        error={error}
+      />
+    );
+  }
+
+  // Render normal chat interface when valid device is connected
   const midiSelectorComponent = (
     <MidiDeviceSelector
       devices={midiDevices}

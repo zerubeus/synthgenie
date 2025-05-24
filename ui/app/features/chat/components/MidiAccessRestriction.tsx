@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ChangeEvent } from 'react';
 import { MidiDeviceSelector } from '../../midi/components/MidiDeviceSelector';
+import { getSynthDisplayName } from '../../api/utils/getApiBaseUrl';
 
 interface MidiAccessRestrictionProps {
   /** Array of all detected MIDI devices */
@@ -63,11 +64,11 @@ export const MidiAccessRestriction: React.FC<MidiAccessRestrictionProps> = ({
               <ul className="space-y-1 text-sm">
                 <li className="flex items-center">
                   <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
-                  Devices containing "Moog" in the name
+                  {getSynthDisplayName('sub37')} (names containing "moog", "subsequent", or "sub37")
                 </li>
                 <li className="flex items-center">
                   <span className="w-2 h-2 bg-indigo-400 rounded-full mr-2"></span>
-                  Devices containing "Digitone" in the name
+                  {getSynthDisplayName('digitone')} (names containing "digitone")
                 </li>
               </ul>
             </div>

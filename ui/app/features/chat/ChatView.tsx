@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import type { ChangeEvent } from 'react';
+import { detectSynthType } from '../api/utils/getApiBaseUrl';
+import type { SynthType } from '../api/types';
 
 // --- Feature Hooks ---
 import { useMidi } from '../midi/hooks/useMidi';
@@ -14,6 +16,7 @@ import { MessageList } from './components/MessageList';
 import { ChatInputArea } from './components/ChatInputArea';
 import { MidiAccessRestriction } from './components/MidiAccessRestriction';
 import { MidiDeviceSelector } from '../midi/components/MidiDeviceSelector';
+import { SynthSelector } from '../midi/components/SynthSelector';
 import { ApiKeyManager } from '../api/components/ApiKeyManager';
 
 /**
@@ -63,17 +66,39 @@ const ChatView: React.FC = () => {
     selectedDevice,
   });
 
-  // Helper function to handle device change with debugging
-  const handleDeviceChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  // Simplified device change handler
+  const handleDeviceChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     const newDevice = e.target.value;
-    console.log('🎹 Device switching:', {
-      from: selectedDevice,
-      to: newDevice,
-      hasValidDevice,
-      validDevices,
+    console.log('🎹 Device switch attempt:', {
+      fromDevice: selectedDevice,
+      toDevice: newDevice,
     });
     setSelectedDevice(newDevice);
-  };
+    console.log('✅ setSelectedDevice called with:', newDevice);
+  }, [selectedDevice, setSelectedDevice]);
+
+  // Synth change handler - finds a device of the selected synth type
+  const handleSynthChange = useCallback((synthType: SynthType) => {
+    console.log('🎛️ Synth switch attempt:', {
+      fromDevice: selectedDevice,
+      toSynthType: synthType,
+    });
+    
+    // Find a device that matches the selected synth type
+    const matchingDevice = midiDevices.find(device => detectSynthType(device) === synthType);
+    
+    if (matchingDevice) {
+      setSelectedDevice(matchingDevice);
+      console.log('✅ setSelectedDevice called with:', matchingDevice);
+    } else {
+      console.warn('⚠️ No device found for synth type:', synthType);
+    }
+  }, [selectedDevice, setSelectedDevice, midiDevices]);
+
+  // Add effect to monitor selectedDevice changes
+  React.useEffect(() => {
+    console.log('📱 ChatView selectedDevice state changed to:', selectedDevice);
+  }, [selectedDevice]);
 
   // Show restriction screen if no valid device is connected
   if (!hasValidDevice) {
@@ -90,11 +115,11 @@ const ChatView: React.FC = () => {
   }
 
   // Render normal chat interface when valid device is connected
-  const midiSelectorComponent = (
-    <MidiDeviceSelector
-      devices={midiDevices}
+  const synthSelectorComponent = (
+    <SynthSelector
+      midiDevices={midiDevices}
       selectedDevice={selectedDevice || ''}
-      onChange={handleDeviceChange}
+      onSynthChange={handleSynthChange}
       disabled={isLoading}
     />
   );
@@ -128,7 +153,7 @@ const ChatView: React.FC = () => {
         setInput={setInput}
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
-        midiDeviceSelector={midiSelectorComponent}
+        midiDeviceSelector={synthSelectorComponent}
         apiKeyManager={apiKeyManagerComponent}
       />
     </div>

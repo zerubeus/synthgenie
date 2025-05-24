@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useMidi } from './useMidi';
 import { detectSynthType } from '../../api/utils/getApiBaseUrl';
 
@@ -24,25 +24,38 @@ interface UseMidiDeviceValidationReturn {
  * Valid devices must be supported by the API (Moog Subsequent 37 or Elektron Digitone).
  */
 export const useMidiDeviceValidation = (): UseMidiDeviceValidationReturn => {
-  const { midiDevices, selectedDevice, isInitializing, error } = useMidi();
+  const midiHookResult = useMidi();
+  const { midiDevices, selectedDevice, isInitializing, error } = midiHookResult;
+
+  // Debug the entire hook result
+  useEffect(() => {
+    console.log('🔍 useMidiDeviceValidation: useMidi() returned:', {
+      selectedDevice,
+      midiDevices,
+      isInitializing,
+      error
+    });
+  }, [selectedDevice, midiDevices, isInitializing, error]);
+
+  // Debug effect to monitor selectedDevice changes in validation hook
+  useEffect(() => {
+    console.log('🔍 useMidiDeviceValidation: selectedDevice effect triggered with:', selectedDevice);
+  }, [selectedDevice]);
 
   const validDevices = useMemo(() => {
-    const valid = midiDevices.filter(device => {
+    const result = midiDevices.filter(device => {
       if (device === NO_DEVICES_MESSAGE) return false;
       
       // Use the same detection logic as the API
-      const synthType = detectSynthType(device);
-      console.log('🔍 Device validation:', { device, synthType });
-      return synthType !== null;
+      return detectSynthType(device) !== null;
     });
-    
-    console.log('✅ Valid devices found:', valid);
-    return valid;
+    console.log('🔍 useMidiDeviceValidation: validDevices calculated:', result);
+    return result;
   }, [midiDevices]);
 
   const hasValidDevice = useMemo(() => {
     if (isInitializing || !selectedDevice || selectedDevice === NO_DEVICES_MESSAGE) {
-      console.log('❌ No valid device - initializing or no selection:', {
+      console.log('🔍 useMidiDeviceValidation: hasValidDevice = false (no device/initializing)', {
         isInitializing,
         selectedDevice,
         isNoDevicesMessage: selectedDevice === NO_DEVICES_MESSAGE
@@ -53,15 +66,19 @@ export const useMidiDeviceValidation = (): UseMidiDeviceValidationReturn => {
     // Use the same detection logic as the API
     const synthType = detectSynthType(selectedDevice);
     const isValid = synthType !== null;
-    
-    console.log('🎯 Selected device validation:', {
+    console.log('🎯 useMidiDeviceValidation: validation result:', {
       selectedDevice,
       synthType,
       isValid
     });
-    
     return isValid;
   }, [selectedDevice, isInitializing]);
+
+  console.log('🔍 useMidiDeviceValidation: returning values:', {
+    hasValidDevice,
+    selectedDevice,
+    validDevices
+  });
 
   return {
     hasValidDevice,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Trash2 } from 'lucide-react';
+import { getDeviceDisplayName } from '../../api/utils/getApiBaseUrl';
 
 interface ChatHeaderProps {
   selectedDevice: string | null | undefined;
@@ -26,7 +27,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           )}
         </h1>
         {selectedDevice && (
-           <p className="text-xs text-gray-500 mt-1">Connected to: {selectedDevice}</p>
+           <p className="text-xs text-gray-500 mt-1">Connected to: {getDeviceDisplayName(selectedDevice)}</p>
         )}
       </div>
 

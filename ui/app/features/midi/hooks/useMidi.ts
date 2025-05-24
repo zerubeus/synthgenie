@@ -46,6 +46,11 @@ export const useMidi = (): UseMidiReturn => {
   const [isInitializing, setIsInitializing] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Debug effect to monitor selectedDevice changes in useMidi hook
+  useEffect(() => {
+    console.log('🔧 useMidi: selectedDevice state updated to:', selectedDevice);
+  }, [selectedDevice]);
+
   // Use a ref to hold the outputs map to avoid including it in useCallback dependencies
   // where its identity might change frequently.
   const outputsRef = useRef(midiOutputs);
@@ -82,8 +87,10 @@ export const useMidi = (): UseMidiReturn => {
       // If no device is selected OR the previously selected device disappeared, select the first one
       setSelectedDevice((currentSelected) => {
         if (!currentSelected || !detectedDevices.includes(currentSelected)) {
+          console.log('🎛️ Auto-selecting first device:', detectedDevices[0]);
           return detectedDevices[0]; // Default to the first available device
         }
+        console.log('🎛️ Keeping current selection:', currentSelected);
         return currentSelected; // Keep current selection if still valid
       });
     } else {

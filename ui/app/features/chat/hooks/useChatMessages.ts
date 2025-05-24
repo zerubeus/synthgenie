@@ -7,7 +7,7 @@ import { getInitialWelcomeMessage } from '../utils/chatUtils';
 import { useAutoScroll } from './useAutoScroll';
 
 interface UseChatMessagesProps {
-  promptMutation: UseMutationResult<SynthGenieResponse, Error, { prompt: string; deviceName: string }, unknown>;
+  promptMutation: UseMutationResult<SynthGenieResponse[], Error, { prompt: string; deviceName: string }, unknown>;
   sendMidiMessage: (response: SynthGenieResponse) => void;
   apiKey: string | null | undefined;
   selectedDevice: string | null | undefined;
@@ -54,31 +54,39 @@ export const useChatMessages = ({
 
   useEffect(() => {
     if (promptMutation.isSuccess && promptMutation.data) {
-      const response = promptMutation.data;
-      let responseContent = '';
+      const responses = promptMutation.data;
+      const responseLines: string[] = [];
 
-      // Handle the new single response format
-      const { used_tool, midi_channel, value, midi_cc, midi_cc_lsb, nrpn_msb, nrpn_lsb } = response;
-      
-      // Determine message type for display
-      if (nrpn_msb !== null && nrpn_msb !== undefined && 
-          nrpn_lsb !== null && nrpn_lsb !== undefined) {
-        responseContent = `Sent: ${used_tool} (NRPN MSB ${nrpn_msb}, LSB ${nrpn_lsb}, Ch ${midi_channel}, Val ${value})`;
-      } else if (midi_cc !== null && midi_cc !== undefined &&
-                 midi_cc_lsb !== null && midi_cc_lsb !== undefined) {
-        responseContent = `Sent: ${used_tool} (High-Res CC ${midi_cc}/${midi_cc_lsb}, Ch ${midi_channel}, Val ${value})`;
-      } else if (midi_cc !== null && midi_cc !== undefined) {
-        responseContent = `Sent: ${used_tool} (CC ${midi_cc}, Ch ${midi_channel}, Val ${value})`;
-      } else {
-        responseContent = `Processed: ${used_tool} (Ch ${midi_channel}, Val ${value})`;
-      }
+      // Handle array of responses
+      responses.forEach((response, index) => {
+        const { used_tool, midi_channel, value, midi_cc, midi_cc_lsb, nrpn_msb, nrpn_lsb } = response;
+        
+        // Determine message type for display
+        let messageType = '';
+        if (nrpn_msb !== null && nrpn_msb !== undefined && 
+            nrpn_lsb !== null && nrpn_lsb !== undefined) {
+          messageType = `NRPN MSB ${nrpn_msb}, LSB ${nrpn_lsb}`;
+        } else if (midi_cc !== null && midi_cc !== undefined &&
+                   midi_cc_lsb !== null && midi_cc_lsb !== undefined) {
+          messageType = `High-Res CC ${midi_cc}/${midi_cc_lsb}`;
+        } else if (midi_cc !== null && midi_cc !== undefined) {
+          messageType = `CC ${midi_cc}`;
+        } else {
+          messageType = 'Unknown format';
+        }
 
-      try {
-        sendMidiMessage(response);
-      } catch (midiError) {
-        console.error('Error sending MIDI message:', midiError, response);
-        responseContent += `\n  -> Error sending MIDI for this action.`;
-      }
+        const responseText = `${index + 1}. ${used_tool} (${messageType}, Ch ${midi_channel}, Val ${value})`;
+        responseLines.push(responseText);
+
+        try {
+          sendMidiMessage(response);
+        } catch (midiError) {
+          console.error('Error sending MIDI message:', midiError, response);
+          responseLines.push(`   -> Error sending MIDI for this action.`);
+        }
+      });
+
+      const responseContent = `Sent ${responses.length} MIDI action${responses.length > 1 ? 's' : ''}:\n${responseLines.join('\n')}`;
 
       setMessages((prev) => [
         ...prev,

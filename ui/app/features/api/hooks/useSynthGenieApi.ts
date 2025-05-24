@@ -27,8 +27,8 @@ interface ApiError extends Error {
  */
 export const useSynthGenieApi = (
   apiKey: string | null | undefined
-): UseMutationResult<SynthGenieResponse, ApiError, PromptInput> => {
-  const mutationFn = async (input: PromptInput): Promise<SynthGenieResponse> => {
+): UseMutationResult<SynthGenieResponse[], ApiError, PromptInput> => {
+  const mutationFn = async (input: PromptInput): Promise<SynthGenieResponse[]> => {
     if (!apiKey) {
       const error: ApiError = new Error('No API key set');
       throw error;
@@ -87,12 +87,19 @@ export const useSynthGenieApi = (
         throw error;
       }
       
-      // Validate that we got a proper SynthGenieResponse
-      if (!isSynthGenieResponse(data)) {
-        throw new Error('API response format is invalid.');
+      // Validate that we got an array of SynthGenieResponse objects
+      if (!Array.isArray(data)) {
+        throw new Error('API response was not an array as expected.');
       }
       
-      return data as SynthGenieResponse;
+      // Validate each item in the array
+      for (const item of data) {
+        if (!isSynthGenieResponse(item)) {
+          throw new Error('API response contains invalid item format.');
+        }
+      }
+      
+      return data as SynthGenieResponse[];
     } catch (jsonError) {
       console.error('Failed to parse API response JSON:', jsonError);
       const error: ApiError = new Error('Failed to parse API response.');
@@ -100,7 +107,7 @@ export const useSynthGenieApi = (
     }
   };
 
-  return useMutation<SynthGenieResponse, ApiError, PromptInput>({
+  return useMutation<SynthGenieResponse[], ApiError, PromptInput>({
     mutationFn,
   });
 };

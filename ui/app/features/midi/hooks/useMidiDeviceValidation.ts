@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { useMidi } from './useMidi';
+import { detectSynthType } from '../../api/utils/getApiBaseUrl';
 
-// Valid device keywords (case-insensitive)
-const VALID_DEVICE_KEYWORDS = ['moog', 'digitone'];
 const NO_DEVICES_MESSAGE = 'No MIDI devices detected';
 
 interface UseMidiDeviceValidationReturn {
@@ -22,31 +21,46 @@ interface UseMidiDeviceValidationReturn {
 
 /**
  * Hook to validate if the user has a valid MIDI device connected.
- * Valid devices must contain "moog" or "digitone" in their name (case-insensitive).
+ * Valid devices must be supported by the API (Moog Subsequent 37 or Elektron Digitone).
  */
 export const useMidiDeviceValidation = (): UseMidiDeviceValidationReturn => {
   const { midiDevices, selectedDevice, isInitializing, error } = useMidi();
 
   const validDevices = useMemo(() => {
-    return midiDevices.filter(device => {
+    const valid = midiDevices.filter(device => {
       if (device === NO_DEVICES_MESSAGE) return false;
       
-      const deviceNameLower = device.toLowerCase();
-      return VALID_DEVICE_KEYWORDS.some(keyword => 
-        deviceNameLower.includes(keyword.toLowerCase())
-      );
+      // Use the same detection logic as the API
+      const synthType = detectSynthType(device);
+      console.log('🔍 Device validation:', { device, synthType });
+      return synthType !== null;
     });
+    
+    console.log('✅ Valid devices found:', valid);
+    return valid;
   }, [midiDevices]);
 
   const hasValidDevice = useMemo(() => {
     if (isInitializing || !selectedDevice || selectedDevice === NO_DEVICES_MESSAGE) {
+      console.log('❌ No valid device - initializing or no selection:', {
+        isInitializing,
+        selectedDevice,
+        isNoDevicesMessage: selectedDevice === NO_DEVICES_MESSAGE
+      });
       return false;
     }
     
-    const selectedDeviceLower = selectedDevice.toLowerCase();
-    return VALID_DEVICE_KEYWORDS.some(keyword => 
-      selectedDeviceLower.includes(keyword.toLowerCase())
-    );
+    // Use the same detection logic as the API
+    const synthType = detectSynthType(selectedDevice);
+    const isValid = synthType !== null;
+    
+    console.log('🎯 Selected device validation:', {
+      selectedDevice,
+      synthType,
+      isValid
+    });
+    
+    return isValid;
   }, [selectedDevice, isInitializing]);
 
   return {

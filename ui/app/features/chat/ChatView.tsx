@@ -37,16 +37,17 @@ const ChatView: React.FC = () => {
     handleClearApiKey,
   } = useApiKey();
 
-  const { setSelectedDevice, sendMidiMessage } = useMidi();
+  const { setSelectedDevice, sendMidiMessage, midiDevices, selectedDevice: midiSelectedDevice, isInitializing: midiInitializing, error: midiError } = useMidi();
   
   const {
     hasValidDevice,
-    isInitializing,
-    midiDevices,
-    selectedDevice,
     validDevices,
-    error,
   } = useMidiDeviceValidation();
+  
+  // Use the state directly from useMidi to avoid sync issues
+  const selectedDevice = midiSelectedDevice;
+  const isInitializing = midiInitializing;
+  const error = midiError;
 
   const promptMutation = useSynthGenieApi(apiKey);
 
@@ -89,16 +90,13 @@ const ChatView: React.FC = () => {
     
     if (matchingDevice) {
       setSelectedDevice(matchingDevice);
-      console.log('✅ setSelectedDevice called with:', matchingDevice);
+      console.log('✅ Switched to:', matchingDevice);
     } else {
       console.warn('⚠️ No device found for synth type:', synthType);
     }
   }, [selectedDevice, setSelectedDevice, midiDevices]);
 
-  // Add effect to monitor selectedDevice changes
-  React.useEffect(() => {
-    console.log('📱 ChatView selectedDevice state changed to:', selectedDevice);
-  }, [selectedDevice]);
+
 
   // Show restriction screen if no valid device is connected
   if (!hasValidDevice) {

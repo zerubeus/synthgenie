@@ -63,13 +63,25 @@ const ChatView: React.FC = () => {
     selectedDevice,
   });
 
+  // Helper function to handle device change with debugging
+  const handleDeviceChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const newDevice = e.target.value;
+    console.log('🎹 Device switching:', {
+      from: selectedDevice,
+      to: newDevice,
+      hasValidDevice,
+      validDevices,
+    });
+    setSelectedDevice(newDevice);
+  };
+
   // Show restriction screen if no valid device is connected
   if (!hasValidDevice) {
     return (
       <MidiAccessRestriction
         midiDevices={midiDevices}
         selectedDevice={selectedDevice || ''}
-        onDeviceChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedDevice(e.target.value)}
+        onDeviceChange={handleDeviceChange}
         validDevices={validDevices}
         isInitializing={isInitializing}
         error={error}
@@ -82,7 +94,7 @@ const ChatView: React.FC = () => {
     <MidiDeviceSelector
       devices={midiDevices}
       selectedDevice={selectedDevice || ''}
-      onChange={(e: ChangeEvent<HTMLSelectElement>) => setSelectedDevice(e.target.value)}
+      onChange={handleDeviceChange}
       disabled={isLoading}
     />
   );

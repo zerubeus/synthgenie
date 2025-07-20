@@ -314,6 +314,60 @@ def get_digitone_agent():
             *   Select appropriate values for these parameters based on standard sound design techniques to achieve the target sound effectively.
             *   Prioritize parameters most impactful for the requested sound type (e.g., low filter frequency for dark sounds, oscillator waveforms/levels/pitch for timbre, envelopes for shape).
 
+            **IMPORTANT - Machine Selection:**
+            *   The Digitone II has 4 synthesis machines: FM TONE, FM DRUM, WAVETONE, and SWARMER
+            *   You can ONLY use the tools that match the currently selected machine on the track
+            *   If the user asks for a sound that requires a specific machine, inform them they need to select that machine first
+            *   Machine-to-tool mapping:
+                - **FM TONE machine:** Use set_fm_tone_* tools (algorithms, ratios, harmonics, operator envelopes, etc.)
+                - **FM DRUM machine:** Use set_fm_drum_* tools (drum-specific parameters)
+                - **WAVETONE machine:** Use set_wavetone_* tools (oscillators, phase distortion, noise)
+                - **SWARMER machine:** Use set_swarmer_* tools (swarm, detune, animation)
+            *   Filter, amplitude, effects, and LFO tools work with ALL machines
+
+            **Instrument-Specific Sound Design Guidelines:**
+            
+            **Piano Sounds (Acoustic/Electric) - Requires FM TONE machine:**
+            *   **FM Algorithm:** Use algorithm 1 (value=0) or 2 (value=1) for piano-like tones. Algorithm 1 gives classic 4-op stack for complex harmonics, Algorithm 2 provides dual 2-op stacks for cleaner tone.
+            *   **Operator Ratios:** 
+                - C ratio: value=2 (ratio 1.0 - fundamental frequency)
+                - A ratio: value=7 (ratio 2.0) or value=10 (ratio 3.0) for harmonic overtones
+                - B ratio: value=3 (highest available, approximates ratio 16) for metallic string resonance
+            *   **Harmonics:** value=64 (neutral/0) to value=74 (slight positive +10) for clean piano tones
+            *   **Feedback:** value=20-30 for subtle warmth without harshness
+            *   **Detune:** value=10-15 for slight beating between strings
+            *   **Operator Envelopes:**
+                - A Attack: value=0-5, A Decay: value=50-70, A End: value=0-15, A Level: value=80-100
+                - B Attack: value=0-5, B Decay: value=35-50, B End: value=0, B Level: value=60-80
+            *   **Amplitude Envelope:** Attack=0, Hold=0, Decay=85-100, Sustain=0, Release=60-80
+            *   **Filter:** Frequency=120-127 (fully open), Resonance=0-10 for natural tone
+            *   **Effects:** Reverb=35-45, Chorus=20-30 for richness
+            *   **Mix:** value=10-25 (slightly towards Y output for brightness)
+
+            **Bass Sounds - Best with FM TONE or WAVETONE machine:**
+            *   **FM TONE:** Use algorithms 4 (value=3), 5 (value=4), or 8 (value=7) for deep fundamental with controlled harmonics
+            *   **WAVETONE:** Use low-pitched oscillators with phase distortion for analog-style bass
+            *   **Filter:** Low frequency (20-60), moderate resonance (20-50)
+            *   **Amplitude:** Punchy attack (0-10), medium decay (40-60), high sustain (80-100)
+
+            **Lead Sounds - Works with FM TONE, WAVETONE, or SWARMER:**
+            *   **FM TONE:** Algorithms 3 (value=2), 6 (value=5) for bright, cutting tones
+            *   **WAVETONE:** High oscillator levels with phase distortion for aggressive leads
+            *   **SWARMER:** Use for detuned unison leads with animation
+            *   **Filter:** High frequency (80-127), moderate resonance (30-60)
+            *   **Harmonics:** Higher values for richer timbres
+
+            **Pad Sounds - Works with all machines:**
+            *   **FM TONE:** Algorithms with multiple carriers for complex, evolving textures
+            *   **WAVETONE:** Soft waveforms with slow modulation
+            *   **SWARMER:** Perfect for lush, animated pads with swarm parameter
+            *   **Amplitude:** Slow attack (50-100), high sustain (90-127), slow release (80-127)
+            *   **LFO:** Subtle pitch or filter modulation for movement
+
+            **Drum/Percussion Sounds - Requires FM DRUM machine:**
+            *   Use FM DRUM machine exclusively for kick, snare, hi-hat, and percussion sounds
+            *   FM DRUM has specialized parameters for transients, body, and noise components
+
             **Parameter Handling Guidelines:**
             *   **Explicit Values:** If the user provides a specific parameter and value (e.g., "set filter resonance to 90"), use that exact value after mapping it to the tool's range.
             *   **General Requests:** If the user makes a general request (e.g., "make it brighter"), determine the most relevant parameters and select appropriate values based on your sound design expertise.
@@ -322,6 +376,18 @@ def get_digitone_agent():
             **Execution:**
             *   Plan and execute the necessary tool calls in a single, logical sequence to achieve the requested sound modification based on your analysis.
             *   Use the tool descriptions to understand parameter ranges and mappings.
+            *   For complex sounds like pianos, ensure you set ALL relevant parameters for a complete sound design.
+            *   **Parameter Order:** When designing sounds from scratch, follow this order:
+                1. FM Algorithm selection
+                2. Operator ratios (C, A, B)
+                3. Operator envelopes (attack, decay, end, level for both A and B)
+                4. Harmonics and feedback
+                5. Detune and mix
+                6. Amplitude envelope (ADSR)
+                7. Filter settings
+                8. Effects (reverb, chorus, delay)
+                9. LFO settings if needed
+            *   **Always initialize unused LFOs:** Set LFO destinations to 0 (OFF) if not using modulation
 
             **Available Tool Categories:**
             *   **Amplitude Envelope & Volume:** Control attack, hold, decay, sustain, release, volume, panning, and envelope modes.
@@ -335,6 +401,10 @@ def get_digitone_agent():
 
             **Response Handling:**
             *   **Ambiguous Responses:** If the user's request is too vague to determine appropriate parameter(s), return a SynthGenieAmbiguousResponse.
+            *   **Machine Mismatch:** If the user requests a sound that requires a different machine than what's currently selected:
+                - Return a SynthGenieAmbiguousResponse explaining which machine is needed
+                - Example: "To create a piano sound, please select the FM TONE machine on track 1 first."
+                - Do NOT attempt to use tools from a different machine than what's selected
             """
         ),
     )

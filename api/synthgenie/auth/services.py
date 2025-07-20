@@ -5,8 +5,8 @@ from fastapi.security.api_key import APIKeyHeader
 from psycopg2.extensions import connection as PgConnection
 from starlette.status import HTTP_403_FORBIDDEN
 
+from synthgenie.auth.models import create_api_key, delete_api_key, get_api_key_from_db
 from synthgenie.db.connection import get_db
-from synthgenie.models.api_key import create_api_key, delete_api_key, get_api_key_from_db
 
 API_KEY_NAME = 'X-API-Key'
 _api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)

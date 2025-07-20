@@ -8,9 +8,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
+from synthgenie.auth.routes import router as api_keys_router
 from synthgenie.db.connection import initialize_db
-from synthgenie.routes.agent import router as agent_router
-from synthgenie.routes.api_keys import router as api_keys_router
+from synthgenie.synthesizers.digitone.routes import router as digitone_router
+from synthgenie.synthesizers.sub37.routes import router as sub37_router
 
 load_dotenv()
 
@@ -82,5 +83,6 @@ if os.getenv('SKIP_DOMAIN_CHECK') != 'true':
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
 
 # Include routers
-app.include_router(agent_router)
+app.include_router(digitone_router)
+app.include_router(sub37_router)
 app.include_router(api_keys_router)

@@ -4,7 +4,7 @@ AMP Envelope tools for controlling AMP EG parameters on the Moog Sub 37.
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 
 def set_amp_eg_attack_time(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:

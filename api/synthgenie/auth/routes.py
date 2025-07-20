@@ -3,10 +3,10 @@ import os
 import psycopg2
 from fastapi import APIRouter, Depends, HTTPException, Security
 
+from synthgenie.auth.models import get_all_api_key_usage, get_api_key_usage, get_user_api_keys
+from synthgenie.auth.schemas import ApiKeyRequest, ApiKeyResponse, ApiKeyUsage, RevokeRequest
+from synthgenie.auth.services import get_api_key, register_api_key, revoke_api_key
 from synthgenie.db.connection import get_db
-from synthgenie.models.api_key import get_all_api_key_usage, get_api_key_usage, get_user_api_keys
-from synthgenie.schemas.api_key import ApiKeyRequest, ApiKeyResponse, ApiKeyUsage, RevokeRequest
-from synthgenie.services.auth import get_api_key, register_api_key, revoke_api_key
 
 router = APIRouter(prefix='/api-keys', tags=['api-keys'])
 

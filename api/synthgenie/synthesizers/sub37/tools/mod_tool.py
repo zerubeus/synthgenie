@@ -5,7 +5,7 @@ Parameters controlled via NRPN, standard CC, and High-Resolution CC.
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 # --- MOD 1 Controller Amount Tools (NRPN) ---
 

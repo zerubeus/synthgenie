@@ -5,7 +5,7 @@ These are typically controlled via standard MIDI CC messages.
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 
 def set_hold_pedal(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:

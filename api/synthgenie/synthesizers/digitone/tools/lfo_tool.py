@@ -2,7 +2,7 @@ import logging
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 logger = logging.getLogger(__name__)
 

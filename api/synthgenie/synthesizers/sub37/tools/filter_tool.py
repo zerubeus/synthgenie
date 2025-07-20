@@ -5,7 +5,7 @@ Includes parameters controlled via standard CC, high-resolution CC, and NRPN.
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 # --- High-Resolution CC Filter Parameters ---
 

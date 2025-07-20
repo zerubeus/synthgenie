@@ -56,6 +56,16 @@ from synthgenie.synthesizers.digitone.tools.lfo_tool import (
     set_lfo2_trigger_mode,
     set_lfo2_waveform,
 )
+from synthgenie.synthesizers.digitone.tools.swarmer_tool import (
+    set_swarmer_animation,
+    set_swarmer_detune,
+    set_swarmer_main,
+    set_swarmer_main_octave,
+    set_swarmer_mix,
+    set_swarmer_noise_mod,
+    set_swarmer_swarm,
+    set_swarmer_tune,
+)
 from synthgenie.synthesizers.digitone.tools.wavetone_tool import (
     set_wavetone_attack,
     set_wavetone_decay,
@@ -158,6 +168,14 @@ def get_digitone_agent():
             set_wavetone_noise_width,
             set_wavetone_noise_type,
             set_wavetone_noise_character,
+            set_swarmer_tune,
+            set_swarmer_swarm,
+            set_swarmer_detune,
+            set_swarmer_mix,
+            set_swarmer_main_octave,
+            set_swarmer_main,
+            set_swarmer_animation,
+            set_swarmer_noise_mod,
         ],
         output_type=list[SynthGenieResponse | SynthGenieAmbiguousResponse],
         instrument=True,

@@ -7,7 +7,7 @@ from synthgenie.auth.services import get_api_key
 from synthgenie.db.connection import get_db
 from synthgenie.synthesizers.shared.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
 from synthgenie.synthesizers.shared.schemas.user import UserPrompt
-from synthgenie.synthesizers.sub37.agents.agent_workflow import run_sub37_agent_workflow
+from synthgenie.synthesizers.sub37.services import run_sub37_agent_workflow
 
 logger = logging.getLogger(__name__)
 

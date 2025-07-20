@@ -1,13 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { RefObject } from 'react';
 import type { UseMutationResult } from '@tanstack/react-query';
-import type { Message } from '../types';
+import type { RefObject } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { SynthGenieResponse } from '../../api/types';
+import type { Message } from '../types';
 import { getInitialWelcomeMessage } from '../utils/chatUtils';
 import { useAutoScroll } from './useAutoScroll';
 
 interface UseChatMessagesProps {
-  promptMutation: UseMutationResult<SynthGenieResponse[], Error, { prompt: string; deviceName: string }, unknown>;
+  promptMutation: UseMutationResult<
+    SynthGenieResponse[],
+    Error,
+    {
+      prompt: string;
+      deviceName: string;
+    },
+    unknown
+  >;
   sendMidiMessage: (response: SynthGenieResponse) => void;
   apiKey: string | null | undefined;
   selectedDevice: string | null | undefined;
@@ -28,20 +36,44 @@ interface UseChatMessagesReturn {
  * Custom hook to manage chat state, messages, input, loading,
  * and interactions with API mutation and MIDI sending.
  */
+const STORAGE_KEY = 'synthgenie_chat_history';
+
 export const useChatMessages = ({
   promptMutation,
   sendMidiMessage,
   apiKey,
   selectedDevice,
 }: UseChatMessagesProps): UseChatMessagesReturn => {
-  const [messages, setMessages] = useState<Message[]>(() => [
-    { role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    // Try to load messages from localStorage
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading chat history from localStorage:', error);
+    }
+    // Fall back to welcome message
+    return [{ role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) }];
+  });
 
   const [input, setInput] = useState('');
   const isLoading = promptMutation.isPending;
 
   const messagesEndRef = useAutoScroll<HTMLDivElement>([messages]); // Use the hook
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch (error) {
+      console.error('Error saving chat history to localStorage:', error);
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (messages.length === 1 && messages[0].role === 'assistant') {
@@ -59,15 +91,24 @@ export const useChatMessages = ({
 
       // Handle array of responses
       responses.forEach((response, index) => {
-        const { used_tool, midi_channel, value, midi_cc, midi_cc_lsb, nrpn_msb, nrpn_lsb } = response;
-        
+        const { used_tool, midi_channel, value, midi_cc, midi_cc_lsb, nrpn_msb, nrpn_lsb } =
+          response;
+
         // Determine message type for display
         let messageType = '';
-        if (nrpn_msb !== null && nrpn_msb !== undefined && 
-            nrpn_lsb !== null && nrpn_lsb !== undefined) {
+        if (
+          nrpn_msb !== null &&
+          nrpn_msb !== undefined &&
+          nrpn_lsb !== null &&
+          nrpn_lsb !== undefined
+        ) {
           messageType = `NRPN MSB ${nrpn_msb}, LSB ${nrpn_lsb}`;
-        } else if (midi_cc !== null && midi_cc !== undefined &&
-                   midi_cc_lsb !== null && midi_cc_lsb !== undefined) {
+        } else if (
+          midi_cc !== null &&
+          midi_cc !== undefined &&
+          midi_cc_lsb !== null &&
+          midi_cc_lsb !== undefined
+        ) {
           messageType = `High-Res CC ${midi_cc}/${midi_cc_lsb}`;
         } else if (midi_cc !== null && midi_cc !== undefined) {
           messageType = `CC ${midi_cc}`;
@@ -125,7 +166,9 @@ export const useChatMessages = ({
             if ('status' in error) {
               switch (error.status) {
                 case 422:
-                  errorMessage = error.message || 'This prompt is not about sound design. Please try a different request.';
+                  errorMessage =
+                    error.message ||
+                    'This prompt is not about sound design. Please try a different request.';
                   break;
                 case 400:
                   if (error.message.includes('Unsupported synthesizer')) {
@@ -135,7 +178,9 @@ export const useChatMessages = ({
                   }
                   break;
                 default:
-                  errorMessage = error.message || 'There was a problem communicating with the SynthGenie service.';
+                  errorMessage =
+                    error.message ||
+                    'There was a problem communicating with the SynthGenie service.';
                   break;
               }
             } else {
@@ -192,9 +237,31 @@ export const useChatMessages = ({
     }
 
     setMessages((prev) => [...prev, { role: 'user', content: trimmedInput }]);
-    promptMutation.mutate({ prompt: trimmedInput, deviceName: selectedDevice });
+
+    // Format conversation history as text, excluding the welcome message
+    const conversationHistory = messages
+      .filter((msg, index) => {
+        // Skip the first message if it's the assistant's welcome message
+        if (index === 0 && msg.role === 'assistant') {
+          return false;
+        }
+        return true;
+      })
+      .slice(-10) // Get last 10 messages after filtering
+      .map((msg) => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
+      .join('\n');
+
+    // Combine history with current message
+    const promptWithHistory = conversationHistory
+      ? `Chat history:\n${conversationHistory}\n\nCurrent user message: ${trimmedInput}`
+      : trimmedInput;
+
+    promptMutation.mutate({
+      prompt: promptWithHistory,
+      deviceName: selectedDevice,
+    });
     setInput('');
-  }, [input, isLoading, promptMutation, apiKey, selectedDevice, setMessages, setInput]);
+  }, [input, isLoading, promptMutation, apiKey, selectedDevice, messages, setMessages, setInput]);
 
   const clearChat = useCallback(() => {
     setMessages([{ role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) }]);
@@ -202,6 +269,12 @@ export const useChatMessages = ({
       promptMutation.reset();
     }
     setInput('');
+    // Clear localStorage
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Error clearing chat history from localStorage:', error);
+    }
   }, [selectedDevice, setMessages, setInput, promptMutation]);
 
   const copyMessage = useCallback((content: string) => {

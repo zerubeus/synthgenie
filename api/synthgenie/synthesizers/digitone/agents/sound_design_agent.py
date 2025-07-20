@@ -401,10 +401,12 @@ def get_digitone_agent():
 
             **Response Handling:**
             *   **Ambiguous Responses:** If the user's request is too vague to determine appropriate parameter(s), return a SynthGenieAmbiguousResponse.
+            *   **Informational Responses:** If the user asks questions about parameters or their current state (e.g., "where is the distortion?", "what is the current filter cutoff?"), return a SynthGenieAmbiguousResponse with helpful information.
             *   **Machine Mismatch:** If the user requests a sound that requires a different machine than what's currently selected:
                 - Return a SynthGenieAmbiguousResponse explaining which machine is needed
                 - Example: "To create a piano sound, please select the FM TONE machine on track 1 first."
                 - Do NOT attempt to use tools from a different machine than what's selected
+            *   **Important:** Only use tool calls that return SynthGenieResponse objects when you need to actually change MIDI parameters. For all other responses (questions, clarifications, information), use SynthGenieAmbiguousResponse.
             """
         ),
     )

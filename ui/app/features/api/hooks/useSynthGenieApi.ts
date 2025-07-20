@@ -1,9 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
-import { getApiBaseUrl, detectSynthType, getSynthEndpoint } from '../utils/getApiBaseUrl';
 import type { UseMutationResult } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { detectSynthType, getApiBaseUrl, getSynthEndpoint } from '../utils/getApiBaseUrl';
 
-import type { SynthGenieResponse, SynthGenieAmbiguousResponse } from '../types';
-import { isSynthGenieResponse, isSynthGenieAmbiguousResponse } from '../types';
+import type { SynthGenieResponse } from '../types';
+import { isSynthGenieAmbiguousResponse, isSynthGenieResponse } from '../types';
 
 type PromptInput = {
   prompt: string;
@@ -56,7 +56,7 @@ export const useSynthGenieApi = (
 
     if (!response.ok) {
       let error: ApiError;
-      
+
       if (response.status === 401) {
         error = new Error('Invalid API key');
         error.status = 401;
@@ -79,26 +79,26 @@ export const useSynthGenieApi = (
 
     try {
       const data = await response.json();
-      
+
       // Check if response is ambiguous (fallback for non-422 ambiguous responses)
       if (isSynthGenieAmbiguousResponse(data)) {
         const error: ApiError = new Error(data.message);
         error.status = 422;
         throw error;
       }
-      
+
       // Validate that we got an array of SynthGenieResponse objects
       if (!Array.isArray(data)) {
         throw new Error('API response was not an array as expected.');
       }
-      
+
       // Validate each item in the array
       for (const item of data) {
         if (!isSynthGenieResponse(item)) {
           throw new Error('API response contains invalid item format.');
         }
       }
-      
+
       return data as SynthGenieResponse[];
     } catch (jsonError) {
       console.error('Failed to parse API response JSON:', jsonError);

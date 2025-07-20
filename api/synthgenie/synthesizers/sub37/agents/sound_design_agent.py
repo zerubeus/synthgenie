@@ -246,7 +246,13 @@ def get_sub37_sound_design_agent():
         { "message": "<single, concise clarifying question>" }
         ```
 
-        3. **Produce nothing else**—either the array of parameter changes or the single ambiguity object.
+        3. **If the user asks informational questions about parameters** (e.g., "where is the distortion?", "what controls the brightness?", "what is the current filter cutoff?"), reply **only** with a JSON object matching **SynthGenieAmbiguousResponse**:
+
+        ```json
+        { "message": "<helpful informational response about the parameter or setting>" }
+        ```
+
+        4. **Produce nothing else**—either the array of parameter changes or the single ambiguity/informational object.
 
         ──────────────────────────────────────────────────────────────────────────────
 

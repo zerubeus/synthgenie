@@ -449,13 +449,32 @@ async def run_digitone_sound_design_agent(user_prompt: str, api_key: str, conn: 
                         async with processed_node.stream(agent_run.ctx) as handle_stream:
                             async for event in handle_stream:
                                 if isinstance(event, FunctionToolResultEvent):
-                                    # Ensure the result content is the expected type
-                                    if isinstance(event.result.content, SynthGenieResponse):
-                                        logger.debug(f'Collected tool result: {event.result.content}')
-                                        collected_responses.append(event.result.content)
+                                    # Log the actual type and content for debugging
+                                    logger.info(
+                                        f'FunctionToolResultEvent received - type: {type(event.result.content)}, content: {event.result.content}'
+                                    )
+
+                                    # The result.content can be a ToolReturnPart or RetryPromptPart
+                                    # We need to check if it has a 'content' attribute and handle it appropriately
+                                    result_content = event.result.content
+
+                                    # Handle both direct SynthGenieResponse objects and dictionaries
+                                    if isinstance(result_content, SynthGenieResponse):
+                                        logger.debug(f'Collected tool result: {result_content}')
+                                        collected_responses.append(result_content)
+                                    elif isinstance(result_content, dict):
+                                        try:
+                                            # Try to parse the dictionary as a SynthGenieResponse
+                                            response = SynthGenieResponse.model_validate(result_content)
+                                            logger.debug(f'Parsed tool result from dict: {response}')
+                                            collected_responses.append(response)
+                                        except Exception as e:
+                                            logger.warning(
+                                                f'Tool call {event.tool_call_id} failed to parse dict as SynthGenieResponse: {e} - {result_content}'
+                                            )
                                     else:
                                         logger.warning(
-                                            f'Tool call {event.tool_call_id} result content was not SynthGenieResponse: {type(event.result.content)}'
+                                            f'Tool call {event.tool_call_id} result content was not SynthGenieResponse or dict: {type(result_content).__name__} - {result_content}'
                                         )
                         first_tool_call_node_processed = True
                         logger.info(

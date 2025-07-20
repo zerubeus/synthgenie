@@ -1,20 +1,36 @@
-FROM python:3.13-alpine@sha256:18159b2be11db91f84b8f8f655cd860f805dbd9e49a583ddaac8ab39bf4fe1a7
+FROM ghcr.io/astral-sh/uv:python3.10-bookworm-slim
 
-WORKDIR /app
+# Runtime tuning, unbuffered logs, and writable cache path
+ENV UV_COMPILE_BYTECODE=1 \
+  UV_LINK_MODE=copy \
+  UV_HTTP_TIMEOUT=600 \
+  UV_NO_INTERACTION=1 \
+  PYTHONUNBUFFERED=1 \
+  XDG_CACHE_HOME=/home/app/.cache
 
-# Install curl for health checks
-RUN apk add --no-cache curl
+WORKDIR /code
 
-COPY pyproject.toml ./
-COPY README.md ./
+# Non-root user with a real home directory
+RUN adduser --system --uid 1001 --home /home/app app \
+  && mkdir -p /home/app/.cache
 
-RUN pip install --no-cache-dir .
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/home/app/.cache/uv \
+  uv sync --locked --no-install-project --no-editable
+
+# Application source and project install
+COPY . .
+RUN --mount=type=cache,target=/home/app/.cache/uv \
+  uv sync --locked --no-editable
+
+# Activate the virtual environment created by uv sync
+ENV PATH="/code/.venv/bin:$PATH"
+
+USER app
 
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:8000/docs || exit 1
-
-ENV PORT=8000
 
 CMD ["uvicorn", "synthgenie.app:app", "--host", "0.0.0.0", "--port", "8000"]

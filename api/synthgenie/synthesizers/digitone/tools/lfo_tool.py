@@ -445,9 +445,9 @@ def set_lfo2_depth(ctx: RunContext, value: int, midi_channel: int) -> SynthGenie
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Depth value ranging from 0 to 127.
-            - 0 maps to 0
-            - 127 maps to 127
-            Display range: 0-127.
+            - 0 maps to -128
+            - 127 maps to 128
+            Display range: from -128 to +128.
         midi_channel (int): The MIDI channel (track) to set the LFO depth for. 1-16
     """
     return SynthGenieResponse(

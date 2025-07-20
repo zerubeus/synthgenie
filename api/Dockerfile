@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.10-bookworm-slim
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 # Runtime tuning, unbuffered logs, and writable cache path
 ENV UV_COMPILE_BYTECODE=1 \

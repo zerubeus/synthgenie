@@ -23,6 +23,8 @@ COPY . .
 RUN --mount=type=cache,target=/home/app/.cache/uv \
   uv sync --locked --no-editable
 
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Activate the virtual environment created by uv sync
 ENV PATH="/code/.venv/bin:$PATH"
 

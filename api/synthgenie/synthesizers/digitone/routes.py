@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 
 from synthgenie.auth.services import get_api_key
 from synthgenie.db.connection import get_db
-from synthgenie.synthesizers.digitone.agents.agent_workflow import run_digitone_agent_workflow
+from synthgenie.synthesizers.digitone.services import run_digitone_agent_workflow
 from synthgenie.synthesizers.shared.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
 from synthgenie.synthesizers.shared.schemas.user import UserPrompt
 

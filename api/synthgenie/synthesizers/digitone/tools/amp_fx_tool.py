@@ -3,7 +3,6 @@ from pydantic_ai import RunContext
 from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 
-# Amp Functions
 def set_amp_attack(ctx: RunContext, value: int, track: int) -> SynthGenieResponse:
     """
     Set the attack time of the amplitude envelope.
@@ -27,7 +26,7 @@ def set_amp_attack(ctx: RunContext, value: int, track: int) -> SynthGenieRespons
 
 def set_amp_hold(ctx: RunContext, value: int, track: int) -> SynthGenieResponse:
     """
-    Set the hold time of the amplitude envelope.
+    This param is only avalable when set_amp_envelope_mode is AHD, the default is ADSR.
 
     Args:
         ctx (RunContext): The run context containing dependencies.

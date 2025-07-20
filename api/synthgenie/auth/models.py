@@ -1,7 +1,7 @@
 import logging
 import secrets
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 import psycopg2
 from psycopg2.extras import DictCursor, DictRow
@@ -36,7 +36,7 @@ def create_api_key(conn: psycopg2.extensions.connection, user_id: str) -> dict[s
     }
 
 
-def get_api_key_from_db(conn: psycopg2.extensions.connection, key: str) -> Optional[dict[str, Any]]:
+def get_api_key_from_db(conn: psycopg2.extensions.connection, key: str) -> dict[str, Any] | None:
     """
     Get an API key by its value.
 
@@ -121,7 +121,7 @@ def track_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> None:
         conn.rollback()
 
 
-def get_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> Optional[dict[str, Any]]:
+def get_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> dict[str, Any] | None:
     """
     Get usage statistics for an API key.
 

@@ -8,8 +8,7 @@ from pydantic_ai.messages import FunctionToolResultEvent
 from pydantic_ai.usage import UsageLimits
 from pydantic_graph import End
 
-from synthgenie.models.api_key import track_api_key_usage
-from synthgenie.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
+from synthgenie.auth.models import track_api_key_usage
 from synthgenie.synthesizers.digitone.tools.amp_fx_tool import (
     set_amp_attack,
     set_amp_decay,
@@ -82,6 +81,7 @@ from synthgenie.synthesizers.digitone.tools.wavetone_tool import (
     set_wavetone_osc2_waveform,
     set_wavetone_reset_mode,
 )
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
 
 MAX_STEPS = 70  # Slightly more than REQUEST_LIMIT
 

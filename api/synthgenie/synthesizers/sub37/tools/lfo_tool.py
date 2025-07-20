@@ -5,7 +5,7 @@ Parameters controlled via High-Resolution CC, standard CC, and NRPN.
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 # --- LFO 1 Tools ---
 

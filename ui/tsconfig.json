@@ -6,6 +6,7 @@
     ".react-router/types/**/*"
   ],
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
     "lib": [
       "DOM",
       "DOM.Iterable",

@@ -5,7 +5,7 @@ Parameters controlled via standard and high-resolution CC messages.
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 
 def set_bank_select_msb(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:

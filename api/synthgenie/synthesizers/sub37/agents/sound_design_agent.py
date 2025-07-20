@@ -3,8 +3,8 @@ import os
 import psycopg2
 from pydantic_ai import Agent
 
-from synthgenie.models.api_key import track_api_key_usage
-from synthgenie.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
+from synthgenie.auth.models import track_api_key_usage
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieAmbiguousResponse, SynthGenieResponse
 from synthgenie.synthesizers.sub37.tools.amp_tool import (
     set_amp_eg_attack_time,
     set_amp_eg_decay_time,

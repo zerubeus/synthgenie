@@ -5,7 +5,7 @@ Parameters are controlled via High-Resolution CC and NRPN.
 
 from pydantic_ai import RunContext
 
-from synthgenie.schemas.agent import SynthGenieResponse
+from synthgenie.synthesizers.shared.schemas.agent import SynthGenieResponse
 
 
 def set_glide_time(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:

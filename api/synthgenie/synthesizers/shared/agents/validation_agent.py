@@ -91,7 +91,7 @@ async def prompt_validation_agent(
         Remember: Your ONLY responses should be either "True" or "False" with no additional text or explanation.
 
     """
-    validation_agent = Agent('openai:gpt-4o', output_type=bool, system_prompt=system_prompt)
+    validation_agent = Agent('gemini-2.5-pro', output_type=bool, system_prompt=system_prompt)
 
     result = await validation_agent.run(prompt)
     return result.output

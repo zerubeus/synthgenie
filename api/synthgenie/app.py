@@ -63,15 +63,7 @@ if os.getenv('API_ENV') == 'development':
         ]
     )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_methods=['GET', 'POST', 'DELETE', 'PUT'],
-    allow_headers=['X-API-Key', 'Content-Type', 'Authorization'],
-    allow_credentials=True,
-)
-
-# Add TrustedHostMiddleware instead of custom domain verification
+# Add TrustedHostMiddleware FIRST - this validates the host header
 # Skip host validation in development if specified
 if os.getenv('SKIP_DOMAIN_CHECK') != 'true':
     allowed_hosts = [base_url, f'*.{base_url}']
@@ -81,6 +73,16 @@ if os.getenv('SKIP_DOMAIN_CHECK') != 'true':
         allowed_hosts.extend(['localhost', '127.0.0.1'])
 
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
+
+# Add CORS middleware AFTER TrustedHost but BEFORE route processing
+# This ensures CORS headers are added to ALL responses, including errors
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_methods=['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
+    allow_headers=['X-API-Key', 'Content-Type', 'Authorization'],
+    allow_credentials=True,
+)
 
 # Include routers
 app.include_router(digitone_router)

@@ -29,14 +29,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN_FOR_CC }}
 
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@beta
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN_FOR_CC }}
 
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |

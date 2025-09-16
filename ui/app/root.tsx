@@ -9,7 +9,12 @@ import {
   type ErrorResponse
 } from "react-router";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as Sentry from "@sentry/react";
+import { initSentry } from "./lib/sentry";
 import "./styles/global.css";
+
+// Initialize Sentry
+initSentry();
 
 const CURRENT_APP_VERSION = "v1.0.1"; // TODO: Set up a versioning strategy to refresh the cache when the version changes
 
@@ -77,15 +82,25 @@ export function ErrorBoundary({ error }: ErrorBoundaryProps) {
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
 
-  if (isRouteErrorResponse(error)) {
+  // Report error to Sentry
+  if (error instanceof Error) {
+    Sentry.captureException(error);
+    details = error.message;
+    stack = error.stack;
+  } else if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
     details =
       error.status === 404
         ? "The requested page could not be found."
         : error.statusText || details;
-  } else if (error instanceof Error) {
-    details = error.message;
-    stack = error.stack;
+    
+    // Report route errors to Sentry (except 404s)
+    if (error.status !== 404) {
+      Sentry.captureException(new Error(`Route Error ${error.status}: ${details}`));
+    }
+  } else {
+    // Report unknown errors to Sentry
+    Sentry.captureException(new Error(`Unknown error: ${String(error)}`));
   }
 
   return (

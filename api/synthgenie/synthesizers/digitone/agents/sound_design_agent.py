@@ -301,7 +301,6 @@ def get_digitone_agent():
             set_fm_drum_noise_grain,
             set_fm_drum_noise_level,
         ],
-        output_type=list[SynthGenieResponse | SynthGenieAmbiguousResponse],
         instrument=True,
         system_prompt=(
             """

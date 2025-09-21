@@ -28,6 +28,25 @@ def set_lfo1_rate_high_res(ctx: RunContext, value: int, midi_channel: int = 3) -
     )
 
 
+def set_lfo1_rate_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the LFO 1 Rate (NRPN MSB 3, LSB 39).
+    Note: LFO1 Rate is also controllable via High-Resolution CC 3/35.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for LFO 1 Rate (0-16383).
+        midi_channel (int): MIDI channel (default is 3).
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo1_rate_nrpn',
+        midi_channel=midi_channel,
+        value=value,
+        nrpn_msb=3,
+        nrpn_lsb=39,
+    )
+
+
 def set_lfo1_range_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
     Set the LFO 1 Range (NRPN MSB 3, LSB 40).
@@ -142,7 +161,7 @@ def set_lfo1_kb_track_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -
 def set_lfo2_rate_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
     Set the LFO 2 Rate (NRPN MSB 3, LSB 64).
-    Note: LFO2 Rate is also controllable via standard CC 8.
+    Note: LFO2 Rate is also controllable via High-Resolution CC 8/40.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
@@ -273,21 +292,22 @@ def set_lfo2_kb_track_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -
 # but NRPN is generally preferred for these parameters.
 
 
-def set_lfo2_rate_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+def set_lfo2_rate_high_res(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
-    Set the LFO 2 Rate (Standard CC 8).
+    Set the LFO 2 Rate (High-Resolution CC 8/40).
     Alternative to NRPN (3, 64).
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Value for LFO 2 Rate (0-127).
+        value (int): High-resolution value for LFO 2 Rate (0-16383).
         midi_channel (int): MIDI channel (default is 3).
     """
     return SynthGenieResponse(
-        used_tool='set_lfo2_rate_cc',
+        used_tool='set_lfo2_rate_high_res',
         midi_channel=midi_channel,
         value=value,
         midi_cc=8,
+        midi_cc_lsb=40,
     )
 
 
@@ -307,6 +327,46 @@ def set_lfo2_range_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> Syn
         midi_channel=midi_channel,
         value=value,
         midi_cc=78,
+        midi_cc_lsb=None,
+    )
+
+
+def set_lfo1_range_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the LFO 1 Range selection (Standard CC 76).
+    Alternative to NRPN (3, 40).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for range selection (0 = Low, 43 = Med, 85 = Hi).
+                     Use values 0, 43, 85 for specific ranges.
+        midi_channel (int): MIDI channel (default is 3).
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo1_range_cc',
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc=76,
+        midi_cc_lsb=None,
+    )
+
+
+def set_lfo1_kb_reset_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the LFO 1 Keyboard Reset (Standard CC 93).
+    Alternative to NRPN (3, 42).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for keyboard reset (0 = OFF, 64 = ON).
+        midi_channel (int): MIDI channel (default is 3).
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo1_kb_reset_cc',
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc=93,
+        midi_cc_lsb=None,
     )
 
 
@@ -317,7 +377,7 @@ def set_lfo2_kb_reset_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> 
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Value for keyboard reset (0 = OFF, 127 = ON).
+        value (int): Value for keyboard reset (0 = OFF, 64 = ON).
         midi_channel (int): MIDI channel (default is 3).
     """
     return SynthGenieResponse(
@@ -325,201 +385,5 @@ def set_lfo2_kb_reset_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> 
         midi_channel=midi_channel,
         value=value,
         midi_cc=95,
-    )
-
-
-# --- Mod Matrix 1 Tools (Mostly NRPN) ---
-
-
-def set_mod1_pitch_amt_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Pitch Amount (NRPN MSB 3, LSB 61).
-    Note: Also controllable via standard CC 4.
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 Pitch Amount (0-16383). Center=8192.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_pitch_amt_nrpn',
-        midi_channel=midi_channel,
-        value=value,
-        nrpn_msb=3,
-        nrpn_lsb=61,
-    )
-
-
-def set_mod1_filter_amt_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Filter Amount (NRPN MSB 3, LSB 62).
-    Note: Also controllable via standard CC 11.
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 Filter Amount (0-16383). Center=8192.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_filter_amt_nrpn',
-        midi_channel=midi_channel,
-        value=value,
-        nrpn_msb=3,
-        nrpn_lsb=62,
-    )
-
-
-def set_mod1_pgm_amt_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Programmable Amount (NRPN MSB 3, LSB 60).
-    Note: Also controllable via standard CC 20.
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 PGM Amount (0-16383). Center=8192.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_pgm_amt_nrpn',
-        midi_channel=midi_channel,
-        value=value,
-        nrpn_msb=3,
-        nrpn_lsb=60,
-    )
-
-
-def set_mod1_pgm_src_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Programmable Source (NRPN MSB 3, LSB 57).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 PGM Source (0-8). See manual for mapping.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_pgm_src_nrpn',
-        midi_channel=midi_channel,
-        value=value,
-        nrpn_msb=3,
-        nrpn_lsb=57,
-    )
-
-
-def set_mod1_dest_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Destination (excluding Pitch/Filter/PGM) (NRPN MSB 3, LSB 58).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 Destination (0-7):
-            0 = LFO2 Rate
-            1 = VCA Level
-            2 = OSC1 Wave
-            3 = OSC1 + OSC2 Wave
-            4 = OSC2 Wave
-            5 = Noise Level
-            6 = EG Time/PGM (?)
-            7 = Reserved
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_dest_nrpn',
-        midi_channel=midi_channel,
-        value=value,
-        nrpn_msb=3,
-        nrpn_lsb=58,
-    )
-
-
-def set_mod1_pgm_dest_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Programmable Destination (NRPN MSB 3, LSB 59).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 PGM Destination (0-89). See manual for mapping.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_pgm_dest_nrpn',
-        midi_channel=midi_channel,
-        value=value,
-        nrpn_msb=3,
-        nrpn_lsb=59,
-    )
-
-
-def set_mod1_pitch_dest_nrpn(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Pitch Destination (NRPN MSB 3, LSB 63).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 Pitch Destination (0=OSC1, 1=OSC2, 2=BOTH, 3=FREQ?).
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_pitch_dest_nrpn',
-        midi_channel=midi_channel,
-        value=value,
-        nrpn_msb=3,
-        nrpn_lsb=63,
-    )
-
-
-# --- Mod Matrix 1 CC Tools (Duplicates of NRPN) ---
-
-
-def set_mod1_pitch_amt_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Pitch Amount (Standard CC 4).
-    Alternative to NRPN (3, 61).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 Pitch Amount (0-127). Center=64.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_pitch_amt_cc',
-        midi_channel=midi_channel,
-        value=value,
-        midi_cc=4,
-    )
-
-
-def set_mod1_filter_amt_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 Filter Amount (Standard CC 11).
-    Alternative to NRPN (3, 62).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 Filter Amount (0-127). Center=64.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_filter_amt_cc',
-        midi_channel=midi_channel,
-        value=value,
-        midi_cc=11,
-    )
-
-
-def set_mod1_pgm_dest_amt_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the MOD 1 PGM Dest Amount (Standard CC 20).
-    Alternative to NRPN (3, 60).
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for MOD 1 PGM Dest Amount (0-127). Center=64.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_mod1_pgm_dest_amt_cc',
-        midi_channel=midi_channel,
-        value=value,
-        midi_cc=20,
+        midi_cc_lsb=None,
     )

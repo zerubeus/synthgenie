@@ -660,80 +660,40 @@ def set_filter_eg_attack_exp_nrpn(ctx: RunContext, value: int, midi_channel: int
     )
 
 
-# --- Standard CC AMP EG Parameters (Should be moved to amp_tool.py) ---
-
-
-def set_amp_eg_kb_amt(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+def set_filter_slopes_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
-    Set the AMP EG Keyboard Amount (CC 80).
-    [TODO: Move to amp_tool.py]
+    Set the Filter Slopes/Poles (CC 109).
+    Note: Also available as NRPN (3, 118) via set_filter_slope_nrpn.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Value for AMP EG Keyboard Amount (0-127).
-                     Center is 64.
+        value (int): Value for Filter Slopes (0 = -6dB, 32 = -12dB, 64 = -18dB, 96 = -24dB).
         midi_channel (int): MIDI channel (default is 3).
     """
     return SynthGenieResponse(
-        used_tool='set_amp_eg_kb_amt',
+        used_tool='set_filter_slopes_cc',
         midi_channel=midi_channel,
         value=value,
-        midi_cc=80,
+        midi_cc=109,
+        midi_cc_lsb=None,
     )
 
 
-def set_amp_eg_reset(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+def set_filter_eg_multi_trig_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
-    Set the AMP EG Reset (CC 83).
-    Note: Sub37 MIDI Spec says CC 83 is 'EG Reset', affecting both Filter and Amp Env.
-    There is also CC 113 for AMP EG Multi Trig in amp_tool.py.
-    [TODO: Move to amp_tool.py and potentially consolidate/clarify with CC 113]
+    Set the Filter EG Multi Trigger via CC (CC 112).
+    Note: Also available as NRPN (4, 1) via set_filter_eg_multi_trig_nrpn.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Value for AMP EG Reset (0 = OFF, 64 = ON).
+        value (int): Value for Filter EG Multi Trigger (0 = OFF, 64 = ON).
+                     Ensure the value is either 0 or 64.
         midi_channel (int): MIDI channel (default is 3).
     """
     return SynthGenieResponse(
-        used_tool='set_amp_eg_reset',
+        used_tool='set_filter_eg_multi_trig_cc',
         midi_channel=midi_channel,
         value=value,
-        midi_cc=83,
-    )
-
-
-def set_amp_eg_vel_amt(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the AMP EG Velocity Amount (CC 87).
-    [TODO: Move to amp_tool.py]
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for AMP EG Velocity Amount (0-127).
-                     Center is 64.
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_amp_eg_vel_amt',
-        midi_channel=midi_channel,
-        value=value,
-        midi_cc=87,
-    )
-
-
-def set_amp_eg_delay(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
-    """
-    Set the AMP EG Delay (CC 104).
-    [TODO: Move to amp_tool.py]
-
-    Args:
-        ctx (RunContext): The run context containing dependencies.
-        value (int): Value for AMP EG Delay (0-127).
-        midi_channel (int): MIDI channel (default is 3).
-    """
-    return SynthGenieResponse(
-        used_tool='set_amp_eg_delay',
-        midi_channel=midi_channel,
-        value=value,
-        midi_cc=104,
+        midi_cc=112,
+        midi_cc_lsb=None,
     )

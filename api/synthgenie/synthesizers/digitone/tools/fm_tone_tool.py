@@ -11,10 +11,10 @@ logger = logging.getLogger(__name__)
 def set_fm_tone_algorithm(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the FM algorithm that determines how the four operators (C, A, B1, B2) are routed and interact.
-    
+
     The algorithm defines the modulation routing between operators, controlling the FM synthesis structure.
     Each algorithm has two carrier outputs (X and Y) that can be mixed using the MIX parameter.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Algorithm number ranging from 0 to 7 (displayed as 1-8).
@@ -49,11 +49,11 @@ def set_fm_tone_algorithm(ctx: RunContext, value: int, midi_channel: int) -> Syn
 def set_fm_tone_c_ratio(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the frequency ratio for operator C (carrier).
-    
+
     This controls the frequency relationship between operator C and the played note.
     Operator C is limited mostly to integers since it is generally used for carrying the
     base note of the sound.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Ratio value ranging from 0 to 18.
@@ -91,11 +91,11 @@ def set_fm_tone_c_ratio(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_a_ratio(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the frequency ratio for operator A.
-    
+
     This controls the frequency relationship between operator A and the played note.
     Operator A can act as either a carrier or modulator depending on the selected algorithm.
     A has a more extensive number of ratio values to allow for more inharmonic relationships.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Ratio value ranging from 0 to 35.
@@ -150,14 +150,14 @@ def set_fm_tone_a_ratio(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_b_ratio(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the frequency ratio for operators B1 and B2.
-    
+
     This parameter controls both B1 and B2 operators' frequency ratios simultaneously.
     B operators typically act as modulators in most algorithms.
-    
-    The B ratio control works like watch hands: as you turn the encoder, B2 increases 
-    until it reaches the max (16), then it starts over from 0.25 and B1 increases to 
+
+    The B ratio control works like watch hands: as you turn the encoder, B2 increases
+    until it reaches the max (16), then it starts over from 0.25 and B1 increases to
     the next value. This revolving behavior continues until both operators reach maximum.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Ratio value ranging from 0 to 3.
@@ -165,9 +165,9 @@ def set_fm_tone_b_ratio(ctx: RunContext, value: int, midi_channel: int) -> Synth
             The actual B1/B2 combinations are much more extensive on the device.
             - 0 = B1: 0.25, B2: 0.25 (minimum)
             - 1 = B1: ~5.33, B2: ~5.33 (intermediate)
-            - 2 = B1: ~10.67, B2: ~10.67 (intermediate)  
+            - 2 = B1: ~10.67, B2: ~10.67 (intermediate)
             - 3 = B1: 16, B2: 16 (maximum)
-            Note: On the actual device, B2 cycles through all values (0.25-16) 
+            Note: On the actual device, B2 cycles through all values (0.25-16)
             before B1 increments, creating many more combinations.
             Display range: [0.25-16, 0.25-16].
             Default is [1.00, 1.00].
@@ -184,10 +184,10 @@ def set_fm_tone_b_ratio(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_harmonics(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the harmonics parameter that adds additional harmonic content to the FM synthesis.
-    
+
     This parameter enhances the harmonic complexity of the sound by introducing
     additional frequency components.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Harmonics value ranging from 37 to 90.
@@ -210,10 +210,10 @@ def set_fm_tone_harmonics(ctx: RunContext, value: int, midi_channel: int) -> Syn
 def set_fm_tone_detune(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the detune amount for the FM operators.
-    
+
     This creates slight pitch variations between operators, adding richness and
     movement to the sound.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Detune value ranging from 0 to 127.
@@ -232,10 +232,10 @@ def set_fm_tone_detune(ctx: RunContext, value: int, midi_channel: int) -> SynthG
 def set_fm_tone_feedback(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the feedback amount for the FM synthesis.
-    
+
     Feedback routes an operator's output back to its own input, creating more
     complex and often noisier timbres. Higher values produce more aggressive sounds.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Feedback value ranging from 0 to 127.
@@ -254,10 +254,10 @@ def set_fm_tone_feedback(ctx: RunContext, value: int, midi_channel: int) -> Synt
 def set_fm_tone_mix(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the mix balance between operators in the FM synthesis.
-    
+
     This controls the relative levels of different operators in the final output,
     affecting the timbral balance of the sound.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Mix value ranging from 0 to 127.
@@ -281,9 +281,9 @@ def set_fm_tone_mix(ctx: RunContext, value: int, midi_channel: int) -> SynthGeni
 def set_fm_tone_a_attack(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the attack time for operator A's envelope.
-    
+
     Controls how quickly operator A reaches its maximum level after a note is triggered.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Attack time value ranging from 0 to 127.
@@ -302,9 +302,9 @@ def set_fm_tone_a_attack(ctx: RunContext, value: int, midi_channel: int) -> Synt
 def set_fm_tone_a_decay(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the decay time for operator A's envelope.
-    
+
     Controls how quickly operator A falls from its maximum level to the end level.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Decay time value ranging from 0 to 127.
@@ -323,9 +323,9 @@ def set_fm_tone_a_decay(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_a_end(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the end level for operator A's envelope.
-    
+
     Determines the level that operator A sustains at after the decay phase.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): End level value ranging from 0 to 127.
@@ -344,10 +344,10 @@ def set_fm_tone_a_end(ctx: RunContext, value: int, midi_channel: int) -> SynthGe
 def set_fm_tone_a_level(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the overall level for operator A.
-    
+
     Controls the output amplitude of operator A, affecting its contribution to the
     overall sound whether as carrier or modulator.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Level value ranging from 0 to 127.
@@ -366,9 +366,9 @@ def set_fm_tone_a_level(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_b_attack(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the attack time for operator B's envelope.
-    
+
     Controls how quickly operator B (both B1 and B2) reaches maximum level after a note is triggered.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Attack time value ranging from 0 to 127.
@@ -387,9 +387,9 @@ def set_fm_tone_b_attack(ctx: RunContext, value: int, midi_channel: int) -> Synt
 def set_fm_tone_b_decay(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the decay time for operator B's envelope.
-    
+
     Controls how quickly operator B (both B1 and B2) falls from maximum level to the end level.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Decay time value ranging from 0 to 127.
@@ -408,9 +408,9 @@ def set_fm_tone_b_decay(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_b_end(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the end level for operator B's envelope.
-    
+
     Determines the level that operator B (both B1 and B2) sustains at after the decay phase.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): End level value ranging from 0 to 127.
@@ -429,10 +429,10 @@ def set_fm_tone_b_end(ctx: RunContext, value: int, midi_channel: int) -> SynthGe
 def set_fm_tone_b_level(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the overall level for operator B.
-    
+
     Controls the output amplitude of operator B (both B1 and B2), affecting their
     modulation depth when acting as modulators.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Level value ranging from 0 to 127.
@@ -452,9 +452,9 @@ def set_fm_tone_b_level(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_a_delay(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the delay time before operator A's envelope starts.
-    
+
     Introduces a time delay between note trigger and when operator A's envelope begins.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Delay time value ranging from 0 to 127.
@@ -473,9 +473,9 @@ def set_fm_tone_a_delay(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_a_trigger(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the trigger mode for operator A's envelope.
-    
+
     Determines whether operator A's envelope is triggered by note events.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Trigger mode value (0 or 1).
@@ -496,9 +496,9 @@ def set_fm_tone_a_trigger(ctx: RunContext, value: int, midi_channel: int) -> Syn
 def set_fm_tone_a_reset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the reset mode for operator A's envelope.
-    
+
     Determines whether operator A's envelope resets to the beginning when retriggered.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Reset mode value (0 or 1).
@@ -519,10 +519,10 @@ def set_fm_tone_a_reset(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_phase_reset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the phase reset mode for the FM operators.
-    
+
     Controls which operators have their phase reset when a note is triggered.
     This affects the consistency of the attack transient.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Phase reset mode ranging from 0 to 4.
@@ -546,9 +546,9 @@ def set_fm_tone_phase_reset(ctx: RunContext, value: int, midi_channel: int) -> S
 def set_fm_tone_b_delay(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the delay time before operator B's envelope starts.
-    
+
     Introduces a time delay between note trigger and when operator B's envelope begins.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Delay time value ranging from 0 to 127.
@@ -567,9 +567,9 @@ def set_fm_tone_b_delay(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_b_trigger(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the trigger mode for operator B's envelope.
-    
+
     Determines whether operator B's envelope is triggered by note events.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Trigger mode value (0 or 1).
@@ -590,9 +590,9 @@ def set_fm_tone_b_trigger(ctx: RunContext, value: int, midi_channel: int) -> Syn
 def set_fm_tone_b_reset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the reset mode for operator B's envelope.
-    
+
     Determines whether operator B's envelope resets to the beginning when retriggered.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Reset mode value (0 or 1).
@@ -614,10 +614,10 @@ def set_fm_tone_b_reset(ctx: RunContext, value: int, midi_channel: int) -> Synth
 def set_fm_tone_c_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the ratio offset for operator C.
-    
+
     Fine-tunes the frequency ratio of operator C, allowing for subtle detuning
     and inharmonic effects.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Ratio offset value ranging from 0 to 127.
@@ -640,10 +640,10 @@ def set_fm_tone_c_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -
 def set_fm_tone_a_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the ratio offset for operator A.
-    
+
     Fine-tunes the frequency ratio of operator A, allowing for subtle detuning
     and inharmonic effects.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Ratio offset value ranging from 0 to 127.
@@ -666,10 +666,10 @@ def set_fm_tone_a_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -
 def set_fm_tone_b1_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the ratio offset for operator B1.
-    
+
     Fine-tunes the frequency ratio of operator B1, allowing for subtle detuning
     and inharmonic effects.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Ratio offset value ranging from 0 to 127.
@@ -692,10 +692,10 @@ def set_fm_tone_b1_ratio_offset(ctx: RunContext, value: int, midi_channel: int) 
 def set_fm_tone_b2_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the ratio offset for operator B2.
-    
+
     Fine-tunes the frequency ratio of operator B2, allowing for subtle detuning
     and inharmonic effects.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Ratio offset value ranging from 0 to 127.
@@ -718,10 +718,10 @@ def set_fm_tone_b2_ratio_offset(ctx: RunContext, value: int, midi_channel: int) 
 def set_fm_tone_a_key_track(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the key tracking amount for operator A.
-    
+
     Controls how much operator A's envelope speed changes with the played note pitch.
     Higher values make envelopes faster for higher notes.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Key tracking value ranging from 0 to 127.
@@ -740,10 +740,10 @@ def set_fm_tone_a_key_track(ctx: RunContext, value: int, midi_channel: int) -> S
 def set_fm_tone_b1_key_track(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the key tracking amount for operator B1.
-    
+
     Controls how much operator B1's envelope speed changes with the played note pitch.
     Higher values make envelopes faster for higher notes.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Key tracking value ranging from 0 to 127.
@@ -762,10 +762,10 @@ def set_fm_tone_b1_key_track(ctx: RunContext, value: int, midi_channel: int) -> 
 def set_fm_tone_b2_key_track(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
     Set the key tracking amount for operator B2.
-    
+
     Controls how much operator B2's envelope speed changes with the played note pitch.
     Higher values make envelopes faster for higher notes.
-    
+
     Args:
         ctx (RunContext): The run context containing dependencies.
         value (int): Key tracking value ranging from 0 to 127.

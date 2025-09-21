@@ -100,7 +100,7 @@ def track_api_key_usage(conn: psycopg2.extensions.connection, key: str) -> None:
         # First check if API key exists in api_keys table
         cursor.execute('SELECT key FROM api_keys WHERE key = %s', (key,))  # type: ignore
         api_key_exists = cursor.fetchone()
-        
+
         if not api_key_exists:
             # API key doesn't exist, skip tracking
             logger.warning(f'Attempted to track usage for non-existent API key: {key}')

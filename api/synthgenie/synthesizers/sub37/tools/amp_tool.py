@@ -45,10 +45,9 @@ def set_amp_eg_decay_time(ctx: RunContext, value: int, midi_channel: int = 3) ->
     )
 
 
-def set_amp_eg_sustain_time(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+def set_amp_eg_sustain_level(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
     Set the AMP EG Sustain Level. This is a high-resolution parameter.
-    Note: Despite the name 'Sustain Time', MIDI CC 30/62 controls Sustain Level on the Sub37.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
@@ -57,7 +56,7 @@ def set_amp_eg_sustain_time(ctx: RunContext, value: int, midi_channel: int = 3) 
         midi_channel (int): MIDI channel (default is 3 if not specified).
     """
     return SynthGenieResponse(
-        used_tool='set_amp_eg_sustain_level',  # Renamed tool for clarity
+        used_tool='set_amp_eg_sustain_level',
         midi_cc=30,
         midi_channel=midi_channel,
         value=value,
@@ -115,6 +114,79 @@ def set_amp_eg_multi_trig(ctx: RunContext, value: int, midi_channel: int = 3) ->
     return SynthGenieResponse(
         used_tool='set_amp_eg_multi_trig',
         midi_cc=113,
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc_lsb=None,  # Standard CC
+    )
+
+
+def set_amp_eg_kb_amt(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the AMP EG Keyboard Amount.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for AMP EG Keyboard Amount (0-127).
+        midi_channel (int): MIDI channel (default is 3 if not specified).
+    """
+    return SynthGenieResponse(
+        used_tool='set_amp_eg_kb_amt',
+        midi_cc=80,
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc_lsb=None,  # Standard CC
+    )
+
+
+def set_amp_eg_reset(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the AMP EG Reset.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for AMP EG Reset (0 = OFF, 64 = ON).
+                     Ensure the value is either 0 or 64.
+        midi_channel (int): MIDI channel (default is 3 if not specified).
+    """
+    return SynthGenieResponse(
+        used_tool='set_amp_eg_reset',
+        midi_cc=83,
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc_lsb=None,  # Standard CC
+    )
+
+
+def set_amp_eg_vel_amt(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the AMP EG Velocity Amount.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for AMP EG Velocity Amount (0-127).
+        midi_channel (int): MIDI channel (default is 3 if not specified).
+    """
+    return SynthGenieResponse(
+        used_tool='set_amp_eg_vel_amt',
+        midi_cc=87,
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc_lsb=None,  # Standard CC
+    )
+
+
+def set_amp_eg_delay(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the AMP EG Delay.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for AMP EG Delay (0-127).
+        midi_channel (int): MIDI channel (default is 3 if not specified).
+    """
+    return SynthGenieResponse(
+        used_tool='set_amp_eg_delay',
+        midi_cc=104,
         midi_channel=midi_channel,
         value=value,
         midi_cc_lsb=None,  # Standard CC

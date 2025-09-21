@@ -1,6 +1,6 @@
 """
 ARP tools for controlling arpeggiator parameters on the Moog Sub 37.
-These parameters are controlled via NRPN messages.
+Includes both NRPN and CC-based control functions.
 """
 
 from pydantic_ai import RunContext
@@ -136,7 +136,8 @@ def set_arp_pattern(ctx: RunContext, value: int, midi_channel: int = 3) -> Synth
 
 def set_arp_run(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
-    Set the ARP Run (NRPN MSB 3, LSB 26).
+    Set the ARP Run via NRPN (NRPN MSB 3, LSB 26).
+    Note: Also available as CC 73 via set_arp_on_off_cc.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
@@ -154,7 +155,8 @@ def set_arp_run(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGeni
 
 def set_arp_latch(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
     """
-    Set the ARP Latch (NRPN MSB 3, LSB 27).
+    Set the ARP Latch via NRPN (NRPN MSB 3, LSB 27).
+    Note: Also available as CC 69 via set_arpeggiator_latch_cc.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
@@ -222,4 +224,44 @@ def set_arp_step1_reset(ctx: RunContext, value: int, midi_channel: int = 3) -> S
         value=value,
         nrpn_msb=3,
         nrpn_lsb=32,
+    )
+
+
+def set_arpeggiator_latch_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the Arpeggiator Latch via CC (CC 69).
+    Note: Also available as NRPN (3, 27) via set_arp_latch.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for Arpeggiator Latch (0 = OFF, 64 = ON).
+                     Ensure the value is either 0 or 64.
+        midi_channel (int): MIDI channel (default is 3).
+    """
+    return SynthGenieResponse(
+        used_tool='set_arpeggiator_latch_cc',
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc=69,
+        midi_cc_lsb=None,
+    )
+
+
+def set_arp_on_off_cc(ctx: RunContext, value: int, midi_channel: int = 3) -> SynthGenieResponse:
+    """
+    Set the Arpeggiator On/Off via CC (CC 73).
+    Note: Also available as NRPN (3, 26) via set_arp_run.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Value for Arpeggiator (0 = OFF, 64 = ON).
+                     Ensure the value is either 0 or 64.
+        midi_channel (int): MIDI channel (default is 3).
+    """
+    return SynthGenieResponse(
+        used_tool='set_arp_on_off_cc',
+        midi_channel=midi_channel,
+        value=value,
+        midi_cc=73,
+        midi_cc_lsb=None,
     )

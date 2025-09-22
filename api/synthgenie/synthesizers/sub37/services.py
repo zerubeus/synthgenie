@@ -22,4 +22,4 @@ async def run_sub37_agent_workflow(user_prompt: str, api_key: str, conn: psycopg
         raise HTTPException(status_code=422, detail='This prompt is not about sound design.')
 
     # Run the sound design agent
-    return await run_sub37_sound_design_agent(user_prompt, api_key, conn)
+    return await run_sub37_sound_design_agent(user_prompt, conn, api_key)

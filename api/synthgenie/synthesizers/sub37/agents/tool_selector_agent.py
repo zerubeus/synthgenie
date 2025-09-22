@@ -127,19 +127,43 @@ def get_tool_selector_agent():
         - Sound type: Bass (needs foundation)
         - Technique: Self-oscillation (needs filter with high resonance)
         - Characteristics: Deep (sub oscillator), resonant (filter resonance)
-        - Selected: ["oscillator", "filter", "amplifier"]
+        - Response:
+        ```json
+        {
+          "selected_toolsets": ["oscillator", "filter", "amplifier"],
+          "enhanced_prompt": null,
+          "reasoning": "Bass sound requires oscillator for foundation, filter for resonance and self-oscillation, amplifier for envelope shaping",
+          "confidence": 0.9
+        }
+        ```
 
         **"Create an atmospheric pad with evolving movement"**
         - Sound type: Pad (sustained, harmonic)
         - Technique: Evolving movement (needs modulation)
         - Characteristics: Atmospheric (likely filtering, effects)
-        - Selected: ["oscillator", "filter", "amplifier", "modulation"]
+        - Response:
+        ```json
+        {
+          "selected_toolsets": ["oscillator", "filter", "amplifier", "modulation"],
+          "enhanced_prompt": null,
+          "reasoning": "Pad needs oscillator for harmonic content, filter for tonal shaping, amplifier for sustained envelope, modulation for evolving movement",
+          "confidence": 0.85
+        }
+        ```
 
         **"Make an aggressive lead sound with drive"**
         - Sound type: Lead (melodic, prominent)
         - Technique: Drive (filter distortion)
         - Characteristics: Aggressive (filter drive, envelope)
-        - Selected: ["oscillator", "filter", "amplifier"]
+        - Response:
+        ```json
+        {
+          "selected_toolsets": ["oscillator", "filter", "amplifier"],
+          "enhanced_prompt": null,
+          "reasoning": "Lead sound needs oscillator for source, filter for drive and aggression, amplifier for attack characteristics",
+          "confidence": 0.88
+        }
+        ```
 
         Always prioritize the **minimum** necessary toolsets while ensuring the sound can be achieved.
         """,

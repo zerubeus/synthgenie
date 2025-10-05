@@ -456,3 +456,199 @@ def set_lfo2_depth(ctx: RunContext, value: int, midi_channel: int) -> SynthGenie
         midi_channel=midi_channel,
         value=value,
     )
+
+
+# LFO3 Functions (NRPN only - no CC support)
+def set_lfo3_speed(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the speed of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Speed value ranging from 0 to 127.
+            - 0 maps to 0
+            - 127 maps to 127
+            Display range: 0-127.
+            Default is 48.
+        midi_channel (int): The MIDI channel (track) to set the LFO speed for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_speed',
+        nrpn_msb=1,
+        nrpn_lsb=58,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_lfo3_multiplier(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the multiplier of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Multiplier value ranging from 0 to 11.
+            - 0 maps to 1
+            - 11 maps to 2000
+            Display range: 1-2000.
+            Default is 2.
+        midi_channel (int): The MIDI channel (track) to set the LFO multiplier for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_multiplier',
+        nrpn_msb=1,
+        nrpn_lsb=59,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_lfo3_fade(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the fade in/out of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Fade value ranging from 0 to 127.
+            - 0 maps to -64
+            - 64 maps to 0
+            - 127 maps to 63
+            Display range: -64 to 63.
+            Default is 0.
+        midi_channel (int): The MIDI channel (track) to set the LFO fade for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_fade',
+        nrpn_msb=1,
+        nrpn_lsb=60,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_lfo3_destination(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the destination of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Destination value ranging from 0 to 99.
+            See LFO2 destination documentation for full list of destinations.
+            LFO3 can modulate LFO1, LFO2, and all synthesis parameters.
+        midi_channel (int): The MIDI channel (track) to set the LFO destination for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_destination',
+        nrpn_msb=1,
+        nrpn_lsb=61,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_lfo3_waveform(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the waveform of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Waveform value ranging from 0 to 6.
+            - 0 = "tri"
+            - 1 = "sine"
+            - 2 = "sqr"
+            - 3 = "saw"
+            - 4 = "expo"
+            - 5 = "ramp"
+            - 6 = "rand"
+            Default is "sine" (1).
+        midi_channel (int): The MIDI channel (track) to set the LFO waveform for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_waveform',
+        nrpn_msb=1,
+        nrpn_lsb=62,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_lfo3_start_phase(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the start phase of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Start phase value ranging from 0 to 127.
+            - 0 maps to 0
+            - 127 maps to 127
+            Display range: 0-127.
+        midi_channel (int): The MIDI channel (track) to set the LFO start phase for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_start_phase',
+        nrpn_msb=1,
+        nrpn_lsb=70,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_lfo3_trigger_mode(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the trigger mode of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Trigger mode value ranging from 0 to 4.
+            - 0 = "free"
+            - 1 = "trig"
+            - 2 = "hold"
+            - 3 = "one"
+            - 4 = "half"
+            Default is "free" (0).
+        midi_channel (int): The MIDI channel (track) to set the LFO trigger mode for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_trigger_mode',
+        nrpn_msb=1,
+        nrpn_lsb=71,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_lfo3_depth(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the depth of LFO3.
+
+    Note: LFO3 uses NRPN messages only (no MIDI CC support).
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Depth value ranging from 0 to 127.
+            - 0 maps to 0
+            - 127 maps to 127
+            Display range: 0-127.
+        midi_channel (int): The MIDI channel (track) to set the LFO depth for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_lfo3_depth',
+        nrpn_msb=1,
+        nrpn_lsb=72,
+        midi_channel=midi_channel,
+        value=value,
+    )

@@ -32,7 +32,7 @@ export const getInitialWelcomeMessage = (selectedDevice?: string | null): string
   if (synthType === 'sub37') {
     deviceSpecificInfo = `Currently supporting <strong>${getSynthDisplayName('sub37')}</strong> synthesizers with advanced MIDI control.\nSupports standard CC, high-resolution CC (14-bit), and NRPN messages for precise parameter control.`;
   } else if (synthType === 'digitone') {
-    deviceSpecificInfo = `Currently supporting <strong>${getSynthDisplayName('digitone')}</strong> FM synthesizers.\nSupports standard MIDI CC messages for real-time parameter control.`;
+    deviceSpecificInfo = `Currently supporting <strong>${getSynthDisplayName('digitone')}</strong> FM synthesizers.\nSupports standard MIDI CC messages for real-time parameter control.\n\n<strong>Important:</strong> Before prompting, make sure to:\n• Select the track (1-8) on your Digitone\n• Choose the machine type for that track\n\n<strong>Available Machines:</strong>\n• FM DRUM\n• FM TONE\n• Wavetone\n• Swarmer\n\n<strong>Example Prompts:</strong>\n• "Design a fat bassline using Wavetone machine on track 1"\n• "Create aggressive kick using FM DRUM on track 2"\n• "Make evolving pad using Swarmer on track 3"\n• "Design plucky lead using FM TONE on track 4"`;
   } else {
     deviceSpecificInfo = `Supporting <strong>${getSynthDisplayName('sub37')}</strong> and <strong>${getSynthDisplayName('digitone')}</strong> synthesizers.\nConnect a supported device via USB to get started.`;
   }

@@ -178,3 +178,104 @@ def set_multi_mode_filter_envelope_depth(ctx: RunContext, value: int, midi_chann
         midi_channel=midi_channel,
         value=value,
     )
+
+
+def set_multi_mode_filter_envelope_delay(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the envelope delay time before the filter envelope starts.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Delay time value ranging from 0 to 127.
+            - 0 maps to 0
+            - 127 maps to 127
+            Display range: 0-127.
+            Default is 0.
+        midi_channel (int): The MIDI channel (track) to set the envelope delay for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_multi_mode_filter_envelope_delay',
+        midi_cc=19,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_multi_mode_filter_envelope_reset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the filter envelope reset mode.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Envelope reset mode value (0 or 1).
+            - 0 = Off
+            - 1 = On
+            Display range: Off/On.
+            Default is On (1).
+        midi_channel (int): The MIDI channel (track) to set the envelope reset for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_multi_mode_filter_envelope_reset',
+        midi_cc=25,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_multi_mode_filter_key_tracking(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the key tracking amount for the filter.
+
+    Controls how much the filter frequency follows the played note pitch.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Key tracking value ranging from 0 to 127.
+            Display range: 0-127.
+            Default is 0.
+        midi_channel (int): The MIDI channel (track) to set the key tracking for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_multi_mode_filter_key_tracking',
+        midi_cc=26,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_multi_mode_filter_base(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the base frequency for the filter.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Base frequency value ranging from 0 to 127.
+            Display range: 0-127.
+            Default is 0.
+        midi_channel (int): The MIDI channel (track) to set the base frequency for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_multi_mode_filter_base',
+        midi_cc=27,
+        midi_channel=midi_channel,
+        value=value,
+    )
+
+
+def set_multi_mode_filter_width(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
+    """
+    Set the filter width parameter.
+
+    Args:
+        ctx (RunContext): The run context containing dependencies.
+        value (int): Width value ranging from 0 to 127.
+            Display range: 0-127.
+            Default is 0.
+        midi_channel (int): The MIDI channel (track) to set the width for. 1-16
+    """
+    return SynthGenieResponse(
+        used_tool='set_multi_mode_filter_width',
+        midi_cc=28,
+        midi_channel=midi_channel,
+        value=value,
+    )

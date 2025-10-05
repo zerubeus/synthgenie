@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { detectSynthType } from '../api/utils/getApiBaseUrl';
 import type { SynthType } from '../api/types';
@@ -15,7 +15,6 @@ import { ChatHeader } from './components/ChatHeader';
 import { MessageList } from './components/MessageList';
 import { ChatInputArea } from './components/ChatInputArea';
 import { MidiAccessRestriction } from './components/MidiAccessRestriction';
-import { MidiDeviceSelector } from '../midi/components/MidiDeviceSelector';
 import { SynthSelector } from '../midi/components/SynthSelector';
 import { ApiKeyManager } from '../api/components/ApiKeyManager';
 
@@ -23,10 +22,17 @@ import { ApiKeyManager } from '../api/components/ApiKeyManager';
  * The main view component for the SynthGenie Chat application.
  * It integrates MIDI device handling, API key management, API communication,
  * and the chat message display and input logic.
- * 
+ *
  * Access is restricted to users with valid MIDI devices (containing "moog" or "digitone").
  */
 const ChatView: React.FC = () => {
+  // Track if component is mounted on client to prevent hydration errors
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const {
     apiKey,
     showApiKeyInput,
@@ -97,6 +103,18 @@ const ChatView: React.FC = () => {
   }, [selectedDevice, setSelectedDevice, midiDevices]);
 
 
+
+  // Show loading state during SSR/hydration to prevent mismatch
+  if (!isMounted) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading SynthGenie...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Show restriction screen if no valid device is connected
   if (!hasValidDevice) {

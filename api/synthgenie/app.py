@@ -18,6 +18,7 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 logfire.configure(token=os.getenv('LOGFIRE_TOKEN'))
+logfire.instrument_pydantic_ai()
 
 # Initialize database
 initialize_db()

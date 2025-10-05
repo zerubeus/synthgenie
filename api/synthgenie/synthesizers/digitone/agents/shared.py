@@ -40,7 +40,7 @@ class MachineRoutingDecision(BaseModel):
 
 
 def validate_synth_response(
-    ctx: RunContext[DigitoneAgentDeps], result: list[SynthGenieResponse | SynthGenieAmbiguousResponse]
+    _ctx: RunContext[DigitoneAgentDeps], result: list[SynthGenieResponse | SynthGenieAmbiguousResponse]
 ) -> list[SynthGenieResponse | SynthGenieAmbiguousResponse]:
     """
     Validate agent output for all Digitone agents.
@@ -65,9 +65,7 @@ def validate_synth_response(
             if response.midi_cc_lsb is not None or response.nrpn_msb is not None:
                 # High-resolution (14-bit) parameter
                 if not 0 <= response.value <= MIDI_14BIT_MAX:
-                    raise ModelRetry(
-                        f'High-resolution value must be between 0-{MIDI_14BIT_MAX}, got {response.value}'
-                    )
+                    raise ModelRetry(f'High-resolution value must be between 0-{MIDI_14BIT_MAX}, got {response.value}')
             else:
                 # Standard 7-bit parameter
                 if not 0 <= response.value <= MIDI_7BIT_MAX:

@@ -3,7 +3,7 @@
 import logging
 import os
 
-from pydantic_ai import Agent
+from pydantic_ai import Agent, RunContext
 
 from synthgenie.synthesizers.digitone.agents.shared import (
     COMMON_SOUND_DESIGN_PRINCIPLES,
@@ -227,8 +227,34 @@ FM Drum is a specialized FM synthesizer designed for percussion and drum synthes
 
 **Sound Design Recipes:**
 
-**Kick Drum (808-style)**:
-- Tune: 20-35 (low pitch)
+**IMPORTANT - Recipe Selection:**
+When the user requests a kick drum, analyze their description to choose the right recipe:
+- Keywords "tight", "punchy", "techno", "short", "controlled", "crisp", "click" → Use Techno/Modern recipe
+- Keywords "808", "boomy", "long", "deep sub", "vintage" → Use 808-style Classic recipe
+- Specific frequency mentioned (e.g., "50 Hz", "60 Hz") → Use Techno/Modern, adjust Tune accordingly
+- Default to Techno/Modern for any modern electronic music context
+
+**CRITICAL PARAMETERS FOR TECHNO KICKS:**
+1. **END LEVELS (End1, End2)** - MUST be set! These sustain operator levels are crucial for body.
+   - End1: 90-100 (sustains low-end harmonic content)
+   - End2: 105-115 (sustains upper harmonic)
+   - Without these, the kick will be thin and weak!
+
+2. **TRANSIENT LEVEL** - Counterintuitively LOW for smooth techno kicks!
+   - "tight click" or "crisp" does NOT mean high transient parameter
+   - Transient: 3-8 (very low for smooth, not clicky)
+   - Attack definition comes from pitch sweep + body envelope, not transient
+
+3. **BODY DECAY** - Longer than you'd expect (70-85 for punchy kick)
+
+4. **OPERATOR RATIOS** - Harmonic ratios work best:
+   - Ratio1 around 60-75 (4.5-5.0 ratio)
+   - Ratio2 around 120-127 (9-10 ratio)
+
+5. **C PHASE START** - MUST be set for fuller sound (70-80)
+
+**Kick Drum (808-style Classic)**:
+- Tune: 20-35 (very low pitch, sub bass)
 - Sweep Time: 40-70 (medium pitch drop)
 - Sweep Depth: 80-127 (deep pitch sweep)
 - Ratio1: Low value (sub-harmonic)
@@ -240,6 +266,32 @@ FM Drum is a specialized FM synthesizer designed for percussion and drum synthes
 - Noise: Minimal (0-20) or off
 - Filter: Lowpass, Low frequency (20-40)
 - Amp: Attack 0, Decay 80-100, Sustain 0
+
+**Kick Drum (Techno/Modern - Tight & Punchy)**:
+- Tune: 38-48 (50-60Hz fundamental, C1-E1 range)
+- Sweep Time: 35-45 (quick pitch drop for punch)
+- Sweep Depth: 30-40 (subtle sweep, keeps it tight)
+- Algorithm: 0-1 (simple routing for clean kick)
+- C Phase Start: 70-80 (phase offset for fuller sound)
+- Ratio1 (Operator A): 60-75 (around 4.5-5.0, harmonic ratio)
+- Decay1 (Op A): 55-65 (medium decay for low-end sustain)
+- End1 (Op A): 90-100 (high sustain level, 74.7 range)
+- Mod1 (Op A): 0 (minimal or no modulation for clean tone)
+- Ratio2 (Operator B): 120-127 (around 9-10, upper harmonic)
+- Decay2 (Op B): 0 (instant decay, transient only)
+- End2 (Op B): 105-115 (sustain level around 86.9)
+- Mod2 (Op B): 0 (no modulation)
+- Body Hold: 40-50 (around 34.89, short hold)
+- Body Decay: 70-85 (longer than expected, around 76.97 for fat kick)
+- Body Level: 115-127 (loud body)
+- Transient: 3-8 (VERY LOW! Smooth attack, not clicky - around 5.96)
+- Transient Level: 100-110 (moderate level)
+- Noise Level: 25-35 (some noise for texture, around 29)
+- Noise Decay: 75-85 (long noise tail, around 77.06)
+- Filter: Lowpass, frequency 45-55 (around 51.38, controls boom)
+- Filter Resonance: 25-35 (around 29, adds character)
+- Amp: Attack 0, Decay 55-65 (around 60), Sustain 0, Release 15-25
+- Overdrive: 30-40 (light analog warmth, around 35)
 
 **Snare Drum**:
 - Tune: 50-70 (mid-high pitch)
@@ -327,21 +379,25 @@ FM Drum is a specialized FM synthesizer designed for percussion and drum synthes
 **Parameter Order for Drum Sounds:**
 1. Tune (base pitch)
 2. Sweep Time & Depth (pitch envelope)
-3. Algorithm & Operator waves
-4. Ratios & Operator decays/levels
-5. Body envelope (hold, decay, level)
-6. Noise parameters (level, base, width, decay, grain)
-7. Transient (amount & level)
-8. Feedback & Fold (for aggression)
-9. Filter (shape the frequency content)
+3. Algorithm & C Phase Start
+4. Operator A: Ratio1, Decay1, **End1** (sustain level), Mod1
+5. Operator B: Ratio2, Decay2, **End2** (sustain level), Mod2
+6. Body envelope (hold, decay, level)
+7. Transient (amount & level) - remember: LOW for smooth kicks!
+8. Noise parameters (level, decay for texture)
+9. Filter (frequency, resonance)
 10. Amplitude envelope
-11. Effects (compression via overdrive, reverb for space)
+11. Effects (overdrive for warmth)
+
+**ALWAYS set End1 and End2 for kick drums!** These are not optional.
 
 **Common Mistakes:**
+- ❌ **NOT SETTING END1 and END2** - This makes kicks thin and weak!
+- ❌ **HIGH TRANSIENT VALUES** for smooth techno kicks - Use 3-8, not 60+!
 - ❌ Not using pitch sweep for kicks/toms
 - ❌ Forgetting noise component for snares/hats
-- ❌ Neglecting transient control for attack character
 - ❌ Using same decay times for body and noise
+- ❌ Not setting C Phase Start for fuller sound
 - ❌ Not experimenting with fold for metallic sounds
 
 **Advanced Techniques:**
@@ -355,7 +411,7 @@ FM Drum is a specialized FM synthesizer designed for percussion and drum synthes
 
     @agent.output_validator
     def validate_fm_drum_response(  # type: ignore[misc]
-        ctx, result: list[SynthGenieResponse | SynthGenieAmbiguousResponse]
+        ctx: RunContext[DigitoneAgentDeps], result: list[SynthGenieResponse | SynthGenieAmbiguousResponse]
     ) -> list[SynthGenieResponse | SynthGenieAmbiguousResponse]:
         return validate_synth_response(ctx, result)
 

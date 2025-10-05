@@ -61,11 +61,11 @@ async def run_digitone_agent_workflow(
     except HTTPException:
         # Re-raise HTTPExceptions from route_to_machine (e.g., input validation)
         raise
-    except ValidationError as e:
+    except ValidationError:
         raise HTTPException(status_code=422, detail='Invalid routing decision')
     except TimeoutError:
         raise HTTPException(status_code=503, detail='Agent timeout - please try again')
-    except Exception as e:
+    except Exception:
         logger.exception('Unexpected routing error')
         raise HTTPException(status_code=500, detail='Internal routing error')
 
@@ -111,6 +111,6 @@ async def run_digitone_agent_workflow(
     except TimeoutError:
         raise HTTPException(status_code=503, detail='Agent timeout - please try again')
 
-    except Exception as e:
+    except Exception:
         logger.exception(f'Error in {routing_decision.machine} agent')
         raise HTTPException(status_code=500, detail='Sound design agent failed')

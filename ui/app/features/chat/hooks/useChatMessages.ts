@@ -35,45 +35,23 @@ interface UseChatMessagesReturn {
 /**
  * Custom hook to manage chat state, messages, input, loading,
  * and interactions with API mutation and MIDI sending.
+ *
+ * Note: Each prompt is treated independently with no history sent to backend.
  */
-const STORAGE_KEY = 'synthgenie_chat_history';
-
 export const useChatMessages = ({
   promptMutation,
   sendMidiMessage,
   apiKey,
   selectedDevice,
 }: UseChatMessagesProps): UseChatMessagesReturn => {
-  const [messages, setMessages] = useState<Message[]>(() => {
-    // Try to load messages from localStorage
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      }
-    } catch (error) {
-      console.error('Error loading chat history from localStorage:', error);
-    }
-    // Fall back to welcome message
-    return [{ role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) }];
-  });
+  const [messages, setMessages] = useState<Message[]>([
+    { role: 'assistant', content: getInitialWelcomeMessage(selectedDevice) }
+  ]);
 
   const [input, setInput] = useState('');
   const isLoading = promptMutation.isPending;
 
   const messagesEndRef = useAutoScroll<HTMLDivElement>([messages]); // Use the hook
-
-  // Save messages to localStorage whenever they change
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-    } catch (error) {
-      console.error('Error saving chat history to localStorage:', error);
-    }
-  }, [messages]);
 
   useEffect(() => {
     if (messages.length === 1 && messages[0].role === 'assistant') {
@@ -238,26 +216,9 @@ export const useChatMessages = ({
 
     setMessages((prev) => [...prev, { role: 'user', content: trimmedInput }]);
 
-    // Format conversation history as text, excluding the welcome message
-    const conversationHistory = messages
-      .filter((msg, index) => {
-        // Skip the first message if it's the assistant's welcome message
-        if (index === 0 && msg.role === 'assistant') {
-          return false;
-        }
-        return true;
-      })
-      .slice(-10) // Get last 10 messages after filtering
-      .map((msg) => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
-      .join('\n');
-
-    // Combine history with current message
-    const promptWithHistory = conversationHistory
-      ? `Chat history:\n${conversationHistory}\n\nCurrent user message: ${trimmedInput}`
-      : trimmedInput;
-
+    // Send only the current prompt without any history
     promptMutation.mutate({
-      prompt: promptWithHistory,
+      prompt: trimmedInput,
       deviceName: selectedDevice,
     });
     setInput('');
@@ -269,12 +230,6 @@ export const useChatMessages = ({
       promptMutation.reset();
     }
     setInput('');
-    // Clear localStorage
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (error) {
-      console.error('Error clearing chat history from localStorage:', error);
-    }
   }, [selectedDevice, setMessages, setInput, promptMutation]);
 
   const copyMessage = useCallback((content: string) => {

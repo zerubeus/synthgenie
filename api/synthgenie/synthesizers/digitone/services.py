@@ -58,9 +58,16 @@ async def run_digitone_agent_workflow(
             f'Routed to {routing_decision.machine} on track {routing_decision.track}: {routing_decision.reasoning}'
         )
 
+    except HTTPException:
+        # Re-raise HTTPExceptions from route_to_machine (e.g., input validation)
+        raise
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail='Invalid routing decision')
+    except TimeoutError:
+        raise HTTPException(status_code=503, detail='Agent timeout - please try again')
     except Exception as e:
-        logger.error(f'Routing failed: {e}')
-        raise HTTPException(status_code=500, detail=f'Failed to route request: {str(e)}')
+        logger.exception('Unexpected routing error')
+        raise HTTPException(status_code=500, detail='Internal routing error')
 
     # Step 3: Get the appropriate machine agent
     machine_agents = {
@@ -99,11 +106,11 @@ async def run_digitone_agent_workflow(
 
     except ValidationError as e:
         logger.error(f'Validation error in {routing_decision.machine} agent: {e}')
-        raise HTTPException(status_code=422, detail=f'Agent produced invalid response: {str(e)}')
+        raise HTTPException(status_code=422, detail='Agent produced invalid response')
+
+    except TimeoutError:
+        raise HTTPException(status_code=503, detail='Agent timeout - please try again')
 
     except Exception as e:
-        logger.exception(f'Error in {routing_decision.machine} agent: {e}')
-        raise HTTPException(
-            status_code=500,
-            detail=f'Sound design agent failed: {str(e)}',
-        )
+        logger.exception(f'Error in {routing_decision.machine} agent')
+        raise HTTPException(status_code=500, detail='Sound design agent failed')

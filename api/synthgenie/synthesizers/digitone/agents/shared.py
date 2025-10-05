@@ -116,10 +116,25 @@ set_wavetone_osc1_pitch(ctx, value=35, midi_channel=ctx.deps.default_midi_channe
 ```
 
 **Response Rules:**
-- Return **SynthGenieResponse** ONLY when changing MIDI parameters
-- Return **SynthGenieAmbiguousResponse** for:
-  - Vague requests needing clarification
-  - Questions about current state
-  - Informational responses
-  - Requests that cannot be fulfilled
+
+**CRITICAL - When to Use Tools:**
+When the user requests ANY sound design action (e.g., "design a piano", "create a bass", "make it brighter"), you MUST:
+1. Execute the appropriate tool calls to set MIDI parameters
+2. Return a list of SynthGenieResponse objects from those tool calls
+3. NEVER just describe what you would do - actually DO it by calling tools
+
+**Return SynthGenieAmbiguousResponse ONLY for:**
+- Questions about parameters (e.g., "what is the current filter cutoff?")
+- Requests for information (e.g., "explain how FM synthesis works")
+- Truly vague/impossible requests (e.g., "make it sound good" with no context)
+
+**Example - CORRECT:**
+User: "design a piano sound"
+→ Agent calls: set_fm_tone_algorithm(...), set_fm_tone_c_ratio(...), set_amp_attack(...), [15-20 tool calls]
+→ Returns: [SynthGenieResponse(...), SynthGenieResponse(...), ...]
+
+**Example - WRONG:**
+User: "design a piano sound"
+→ Agent returns: [SynthGenieAmbiguousResponse("I have designed a piano sound")]
+❌ This is WRONG - you must actually call the tools and return SynthGenieResponse objects!
 """

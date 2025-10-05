@@ -25,7 +25,14 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["colorlog>=6.9.0", "pyright>=1.1.405", "ruff>=0.13.1"]
+dev = [
+    "colorlog>=6.9.0",
+    "pyright>=1.1.405",
+    "ruff>=0.13.1",
+    "pytest>=8.4.2",
+    "httpx>=0.28.1",
+    "pydantic-evals>=1.0.10",
+]
 
 [tool.ruff]
 line-length = 120

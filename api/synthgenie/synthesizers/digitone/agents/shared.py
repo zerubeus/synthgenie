@@ -12,6 +12,12 @@ from synthgenie.synthesizers.shared.schemas.agent import SynthGenieAmbiguousResp
 
 logger = logging.getLogger(__name__)
 
+# MIDI Constants
+MIDI_7BIT_MAX = 127
+MIDI_14BIT_MAX = 16383
+MIDI_CHANNEL_MIN = 1
+MIDI_CHANNEL_MAX = 16
+
 
 @dataclass
 class DigitoneAgentDeps:
@@ -20,7 +26,8 @@ class DigitoneAgentDeps:
     default_midi_channel: int = 1
     api_key: str | None = None
     conn: psycopg2.extensions.connection | None = None
-    max_requests: int = 64
+    max_requests: int = 16
+    request_timeout: int = 30
 
 
 class MachineRoutingDecision(BaseModel):
@@ -49,18 +56,22 @@ def validate_synth_response(
     for response in result:
         if isinstance(response, SynthGenieResponse):
             # Validate MIDI channel
-            if not 1 <= response.midi_channel <= 16:
-                raise ModelRetry(f'MIDI channel must be between 1-16, got {response.midi_channel}')
+            if not MIDI_CHANNEL_MIN <= response.midi_channel <= MIDI_CHANNEL_MAX:
+                raise ModelRetry(
+                    f'MIDI channel must be between {MIDI_CHANNEL_MIN}-{MIDI_CHANNEL_MAX}, got {response.midi_channel}'
+                )
 
             # Validate value based on message type
             if response.midi_cc_lsb is not None or response.nrpn_msb is not None:
                 # High-resolution (14-bit) parameter
-                if not 0 <= response.value <= 16383:
-                    raise ModelRetry(f'High-resolution value must be between 0-16383, got {response.value}')
+                if not 0 <= response.value <= MIDI_14BIT_MAX:
+                    raise ModelRetry(
+                        f'High-resolution value must be between 0-{MIDI_14BIT_MAX}, got {response.value}'
+                    )
             else:
                 # Standard 7-bit parameter
-                if not 0 <= response.value <= 127:
-                    raise ModelRetry(f'Standard value must be between 0-127, got {response.value}')
+                if not 0 <= response.value <= MIDI_7BIT_MAX:
+                    raise ModelRetry(f'Standard value must be between 0-{MIDI_7BIT_MAX}, got {response.value}')
 
     return result
 

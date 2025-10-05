@@ -3,11 +3,16 @@
 import logging
 import os
 
+from fastapi import HTTPException
 from pydantic_ai import Agent
 
 from synthgenie.synthesizers.digitone.agents.shared import DigitoneAgentDeps, MachineRoutingDecision
 
 logger = logging.getLogger(__name__)
+
+# Input validation constants
+VALID_MACHINES = {'fm_tone', 'fm_drum', 'wavetone', 'swarmer'}
+MAX_PROMPT_LENGTH = 500
 
 
 def get_router_agent() -> Agent[DigitoneAgentDeps, MachineRoutingDecision]:
@@ -83,7 +88,14 @@ async def route_to_machine(user_prompt: str, deps: DigitoneAgentDeps) -> Machine
 
     Returns:
         MachineRoutingDecision with machine, track, and reasoning
+
+    Raises:
+        HTTPException: If prompt exceeds maximum length
     """
+    # Input validation
+    if len(user_prompt) > MAX_PROMPT_LENGTH:
+        raise HTTPException(status_code=400, detail=f'Prompt too long (max {MAX_PROMPT_LENGTH} characters)')
+
     agent = get_router_agent()
     logger.info(f'Routing prompt: {user_prompt[:100]}...')
 

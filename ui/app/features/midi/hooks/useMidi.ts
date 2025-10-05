@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { MIDIAccess, MIDIOutput } from '../types'; // Import types from the feature's type definition
 import type { SynthGenieResponse } from '../../api/types';
+import { detectSynthType } from '../../api/utils/getApiBaseUrl';
 
 // --- Constants ---
 const NO_DEVICES_MESSAGE = 'No MIDI devices detected';
@@ -84,14 +85,27 @@ export const useMidi = (): UseMidiReturn => {
 
     if (detectedDevices.length > 0) {
       setMidiDevices(detectedDevices);
-      // If no device is selected OR the previously selected device disappeared, select the first one
+
+      // Filter devices to only include supported synths (Digitone or Sub37)
+      const validDevices = detectedDevices.filter(device => detectSynthType(device) !== null);
+
+      // If no device is selected OR the previously selected device disappeared, select the first VALID one
       setSelectedDevice((currentSelected) => {
-        if (!currentSelected || !detectedDevices.includes(currentSelected)) {
-          console.log('🎛️ Auto-selecting first device:', detectedDevices[0]);
-          return detectedDevices[0]; // Default to the first available device
+        // Keep current selection if it's still valid and supported
+        if (currentSelected && detectedDevices.includes(currentSelected) && detectSynthType(currentSelected) !== null) {
+          console.log('🎛️ Keeping current selection:', currentSelected);
+          return currentSelected;
         }
-        console.log('🎛️ Keeping current selection:', currentSelected);
-        return currentSelected; // Keep current selection if still valid
+
+        // Otherwise, select the first valid device (if any)
+        if (validDevices.length > 0) {
+          console.log('🎛️ Auto-selecting first valid device:', validDevices[0]);
+          return validDevices[0];
+        }
+
+        // No valid devices found, clear selection
+        console.log('🎛️ No valid devices found, clearing selection');
+        return '';
       });
     } else {
       setMidiDevices([NO_DEVICES_MESSAGE]);

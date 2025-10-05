@@ -42,6 +42,9 @@ app = FastAPI(
     version='1.0.0',
 )
 
+# Instrument FastAPI with Logfire
+logfire.instrument_fastapi(app)
+
 # Get base URL from environment
 base_url = os.getenv('BASE_URL', 'synthgenie.com')
 

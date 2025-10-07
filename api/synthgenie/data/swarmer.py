@@ -2,8 +2,8 @@ SWARMER_PARAMS = {
     'page_1': {
         'TUNE': {
             'cc_msb': 40,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 73,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 73,
             'max_midi': 127,
             'min_midi': 0,
             'max_val': 60,
@@ -12,8 +12,8 @@ SWARMER_PARAMS = {
         },
         'SWRM': {
             'cc_msb': 41,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 74,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 74,
             'max_midi': 127,
             'min_midi': 0,
             'max_val': 120,
@@ -22,8 +22,8 @@ SWARMER_PARAMS = {
         },
         'DET': {
             'cc_msb': 42,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 75,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 75,
             'max_midi': 127,
             'min_midi': 0,
             'max_val': 127,
@@ -32,8 +32,8 @@ SWARMER_PARAMS = {
         },
         'MIX': {
             'cc_msb': 43,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 76,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 76,
             'max_midi': 127,
             'min_midi': 0,
             'max_val': 127,
@@ -42,8 +42,8 @@ SWARMER_PARAMS = {
         },
         'M.OCT': {
             'cc_msb': 44,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 77,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 77,
             'max_midi': 2,
             'min_midi': 0,
             'max_val': 2,
@@ -52,8 +52,8 @@ SWARMER_PARAMS = {
         },
         'MAIN': {
             'cc_msb': 45,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 78,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 78,
             'max_midi': 120,
             'min_midi': 0,
             'max_val': 120,
@@ -62,8 +62,8 @@ SWARMER_PARAMS = {
         },
         'ANIM': {
             'cc_msb': 46,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 79,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 79,
             'max_midi': 127,
             'min_midi': 0,
             'max_val': 127,
@@ -72,8 +72,8 @@ SWARMER_PARAMS = {
         },
         'N.MOD': {
             'cc_msb': 47,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 80,
+            'nrpn_msb': 1,
+            'nrpn_lsb': 80,
             'max_midi': 127,
             'min_midi': 0,
             'max_val': 127,

@@ -25,6 +25,8 @@ def set_swarmer_tune(ctx: RunContext, value: int, midi_channel: int) -> SynthGen
     return SynthGenieResponse(
         used_tool='set_swarmer_tune',
         midi_cc=40,
+        nrpn_msb=1,
+        nrpn_lsb=73,
         midi_channel=midi_channel,
         value=value,
     )
@@ -46,6 +48,8 @@ def set_swarmer_swarm(ctx: RunContext, value: int, midi_channel: int) -> SynthGe
     return SynthGenieResponse(
         used_tool='set_swarmer_swarm',
         midi_cc=41,
+        nrpn_msb=1,
+        nrpn_lsb=74,
         midi_channel=midi_channel,
         value=value,
     )
@@ -65,6 +69,8 @@ def set_swarmer_detune(ctx: RunContext, value: int, midi_channel: int) -> SynthG
     return SynthGenieResponse(
         used_tool='set_swarmer_detune',
         midi_cc=42,
+        nrpn_msb=1,
+        nrpn_lsb=75,
         midi_channel=midi_channel,
         value=value,
     )
@@ -84,6 +90,8 @@ def set_swarmer_mix(ctx: RunContext, value: int, midi_channel: int) -> SynthGeni
     return SynthGenieResponse(
         used_tool='set_swarmer_mix',
         midi_cc=43,
+        nrpn_msb=1,
+        nrpn_lsb=76,
         midi_channel=midi_channel,
         value=value,
     )
@@ -106,6 +114,8 @@ def set_swarmer_main_octave(ctx: RunContext, value: int, midi_channel: int) -> S
     return SynthGenieResponse(
         used_tool='set_swarmer_main_octave',
         midi_cc=44,
+        nrpn_msb=1,
+        nrpn_lsb=77,
         midi_channel=midi_channel,
         value=value,
     )
@@ -125,6 +135,8 @@ def set_swarmer_main(ctx: RunContext, value: int, midi_channel: int) -> SynthGen
     return SynthGenieResponse(
         used_tool='set_swarmer_main',
         midi_cc=45,
+        nrpn_msb=1,
+        nrpn_lsb=78,
         midi_channel=midi_channel,
         value=value,
     )
@@ -144,6 +156,8 @@ def set_swarmer_animation(ctx: RunContext, value: int, midi_channel: int) -> Syn
     return SynthGenieResponse(
         used_tool='set_swarmer_animation',
         midi_cc=46,
+        nrpn_msb=1,
+        nrpn_lsb=79,
         midi_channel=midi_channel,
         value=value,
     )
@@ -163,6 +177,8 @@ def set_swarmer_noise_mod(ctx: RunContext, value: int, midi_channel: int) -> Syn
     return SynthGenieResponse(
         used_tool='set_swarmer_noise_mod',
         midi_cc=47,
+        nrpn_msb=1,
+        nrpn_lsb=80,
         midi_channel=midi_channel,
         value=value,
     )

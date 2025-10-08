@@ -1,0 +1,13 @@
+{
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+  },
+  "python.defaultInterpreterPath": "api/.venv/bin/python",
+  "flake8.enabled": false,
+  "evenBetterToml.schema.enabled": false
+}

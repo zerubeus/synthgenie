@@ -301,18 +301,23 @@ export const useMidi = (): UseMidiReturn => {
         // 2. NRPN LSB (CC 98)
         // 3. Data Entry MSB (CC 6)
         // 4. Data Entry LSB (CC 38)
+        // 5. NULL NRPN (CC 101=127, CC 100=127) to reset parameter
         const nrpnMsbMessage = [statusByte, 99, nrpnMsbValue];
         const nrpnLsbMessage = [statusByte, 98, nrpnLsbValue];
         const dataMsbMessage = [statusByte, 6, valueMsb];
         const dataLsbMessage = [statusByte, 38, valueLsb];
+        const nullRpnMsbMessage = [statusByte, 101, 127];
+        const nullRpnLsbMessage = [statusByte, 100, 127];
 
         output.send(nrpnMsbMessage);
         output.send(nrpnLsbMessage);
         output.send(dataMsbMessage);
         output.send(dataLsbMessage);
+        output.send(nullRpnMsbMessage);
+        output.send(nullRpnLsbMessage);
 
         console.log(
-          `NRPN Sent to "${selectedDevice}": Ch ${midiChannel}, NRPN MSB ${nrpnMsbValue}, NRPN LSB ${nrpnLsbValue}, Val ${nrpnValue} (msb=${valueMsb}, lsb=${valueLsb})`
+          `NRPN Sent to "${selectedDevice}": Ch ${midiChannel}, NRPN MSB ${nrpnMsbValue}, NRPN LSB ${nrpnLsbValue}, Val ${nrpnValue} (msb=${valueMsb}, lsb=${valueLsb}) + NULL`
         );
       } catch (sendError) {
         console.error(

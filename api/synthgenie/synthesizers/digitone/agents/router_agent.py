@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 # Input validation constants
 VALID_MACHINES = {'fm_tone', 'fm_drum', 'wavetone', 'swarmer'}
-MAX_PROMPT_LENGTH = 500
+MAX_PROMPT_LENGTH = 2000
 
 
 def get_router_agent() -> Agent[DigitoneAgentDeps, MachineRoutingDecision]:

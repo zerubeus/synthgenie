@@ -71,8 +71,15 @@ export const useSynthGenieApi = (
           error.status = 422;
         }
       } else {
-        error = new Error(`Network response was not ok (Status: ${response.status})`);
-        error.status = response.status;
+        // Try to extract error detail from response body for all other errors
+        try {
+          const errorData = await response.json();
+          error = new Error(errorData.detail || `Request failed (Status: ${response.status})`);
+          error.status = response.status;
+        } catch {
+          error = new Error(`Request failed (Status: ${response.status})`);
+          error.status = response.status;
+        }
       }
       throw error;
     }

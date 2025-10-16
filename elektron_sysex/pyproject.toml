@@ -1,0 +1,97 @@
+[project]
+name = "elektron-sysex"
+version = "0.1.0"
+description = "MIDI SysEx reverse engineering tool for Elektron Digitone II"
+readme = "README.md"
+requires-python = ">=3.12"
+
+license = { text = "CC BY-NC 4.0" }
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: Other/Proprietary License",
+    "Programming Language :: Python :: 3.12",
+]
+
+authors = [{ name = "zerubeus", email = "zerubeus@gmail.com" }]
+
+dependencies = [
+    "python-rtmidi>=1.5.8",
+    "mido>=1.3.2",
+    "rich>=13.9.4",
+    "click>=8.1.8",
+    "pydantic>=2.10.3",
+    "msgpack>=1.1.0",
+    "pandas>=2.2.3",
+    "hexdump>=3.3.0",
+    "hidapi>=0.14.0.post4",
+]
+
+[dependency-groups]
+dev = [
+    "colorlog>=6.9.0",
+    "pyright>=1.1.405",
+    "ruff>=0.13.1",
+    "pytest>=8.4.2",
+    "httpx>=0.28.1",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+include = ["**/*.py"]
+
+[tool.ruff.lint]
+extend-select = [
+    "Q",      # Enforces consistent use of quotes (flake8-quotes)
+    "RUF100", # Checks for unused imports (ruff)
+    "RUF018", # Checks for assignments in assert statements, which might not execute in optimized runtimes (ruff) - https://docs.astral.sh/ruff/rules/assignment-in-assert/
+    "C90",    # Checks cyclomatic complexity to ensure code isn't too complex (mccabe)
+    "UP",     # Suggests upgrades to newer Python syntax or features (pyupgrade)
+    "I",      # Enforces sorting and organization of import statements (isort)
+    "D",      # Enforces conventions for docstrings (pydocstyle)
+    "TID251", # Bans certain types of relative imports for consistent import style (flake8-tidy-imports)
+]
+flake8-quotes = { inline-quotes = "single", multiline-quotes = "double" }
+mccabe = { max-complexity = 100 } # Check McCabe complexity
+ignore = [
+    "D100", # ignore missing docstring in module
+    "D102", # ignore missing docstring in public method
+    "D104", # ignore missing docstring in public package
+    "D105", # ignore missing docstring in magic methods
+    "D107", # ignore missing docstring in __init__ methods
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["elektron_sysex"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.TypedDict".msg = "Use typing_extensions.TypedDict instead."
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint.per-file-ignores]
+"**/*.py" = ["D", "TID251"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+reportMissingTypeStubs = false
+reportUnnecessaryIsInstance = false
+reportUnnecessaryTypeIgnoreComment = true
+reportMissingModuleSource = false
+venvPath = "."
+venv = ".venv"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["synthgenie"]

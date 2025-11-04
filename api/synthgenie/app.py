@@ -17,11 +17,25 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-logfire.configure(token=os.getenv('LOGFIRE_TOKEN'))
-logfire.instrument_pydantic_ai()
+# Only configure Logfire if token is provided (for production/staging)
+if os.getenv('LOGFIRE_TOKEN'):
+    logfire.configure(token=os.getenv('LOGFIRE_TOKEN'))
+    logfire.instrument_pydantic_ai()
+    logger.info('Logfire instrumentation enabled')
+else:
+    logger.info('Logfire disabled - no LOGFIRE_TOKEN found')
 
-# Initialize database
-initialize_db()
+# Initialize database (optional in development if database is unavailable)
+try:
+    initialize_db()
+    logger.info('Database initialized successfully')
+except Exception as e:
+    if os.getenv('ENVIRONMENT') == 'development':
+        logger.warning(f'Database initialization failed in development mode: {e}')
+        logger.warning('Continuing without database - some features may not work')
+    else:
+        logger.error('Database initialization failed in production mode')
+        raise
 
 # Ensure API keys are configured
 if not os.getenv('ADMIN_API_KEY'):

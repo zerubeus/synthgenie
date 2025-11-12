@@ -62,12 +62,22 @@ const MidiTestPage: React.FC = () => {
   const handleSendMapped = () => {
     if (!currentParam || !selectedDevice) return;
 
-    sendMidiCC(midiChannel, currentParam.cc_msb, selectedMappedValue);
-
     const displayValue = currentMapping?.values.find(v => v.midi === selectedMappedValue)?.display || selectedMappedValue;
-    setLastSent(
-      `Sent MAPPED: ${selectedParamSet}.${selectedParam} | CC=${currentParam.cc_msb} | MIDI Value=${selectedMappedValue} | Display="${displayValue}" | Channel=${midiChannel}`
-    );
+
+    // Check if parameter has NRPN values - if so, send NRPN instead of CC
+    if (currentParam.nrpn_msb !== undefined && currentParam.nrpn_lsb !== undefined) {
+      const nrpnMsb = typeof currentParam.nrpn_msb === 'number' ? currentParam.nrpn_msb : parseInt(currentParam.nrpn_msb);
+      const nrpnLsb = typeof currentParam.nrpn_lsb === 'number' ? currentParam.nrpn_lsb : parseInt(currentParam.nrpn_lsb);
+      sendNRPN(midiChannel, nrpnMsb, nrpnLsb, selectedMappedValue);
+      setLastSent(
+        `Sent MAPPED (NRPN): ${selectedParamSet}.${selectedParam} | NRPN ${nrpnMsb}:${nrpnLsb} | MIDI Value=${selectedMappedValue} | Display="${displayValue}" | Channel=${midiChannel}`
+      );
+    } else {
+      sendMidiCC(midiChannel, currentParam.cc_msb, selectedMappedValue);
+      setLastSent(
+        `Sent MAPPED (CC): ${selectedParamSet}.${selectedParam} | CC=${currentParam.cc_msb} | MIDI Value=${selectedMappedValue} | Display="${displayValue}" | Channel=${midiChannel}`
+      );
+    }
   };
 
   const handleSendFree = () => {

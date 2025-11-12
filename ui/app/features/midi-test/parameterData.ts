@@ -23,7 +23,7 @@ export const DIGITONE_PARAMS: Record<string, ParamSet> = {
     'ALGO': { cc_msb: 40, nrpn_lsb: 1, nrpn_msb: 73, max_midi: 7, min_val: 1, max_val: 8, default: 1 },
     'C': { cc_msb: 41, nrpn_lsb: 1, nrpn_msb: 74, max_midi: 18, min_val: 0.25, max_val: 16, default: 1.00 },
     'A': { cc_msb: 42, nrpn_lsb: 1, nrpn_msb: 75, max_midi: 35, min_val: 0.25, max_val: 16, default: 1.00 },
-    'B': { cc_msb: 43, nrpn_lsb: 1, nrpn_msb: 76, max_midi: 3, default: 1.00 },
+    'B': { cc_msb: 43, nrpn_lsb: 76, nrpn_msb: 1, max_midi: 360, default: 1.00 },
     'HARM': { cc_msb: 44, nrpn_lsb: 1, nrpn_msb: 77, max_midi: 37, min_midi: 90, min_val: -26, max_val: 26, default: 0.00 },
     'DTUN': { cc_msb: 45, nrpn_lsb: 1, nrpn_msb: 78, default: 0 },
     'FDBK': { cc_msb: 46, nrpn_lsb: 1, nrpn_msb: 79, default: 0 },

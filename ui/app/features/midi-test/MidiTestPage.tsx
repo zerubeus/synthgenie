@@ -64,8 +64,10 @@ const MidiTestPage: React.FC = () => {
 
     const displayValue = currentMapping?.values.find(v => v.midi === selectedMappedValue)?.display || selectedMappedValue;
 
-    // Check if parameter has NRPN values - if so, send NRPN instead of CC
-    if (currentParam.nrpn_msb !== undefined && currentParam.nrpn_lsb !== undefined) {
+    // Only use NRPN if parameter has more than 127 values (CC can only handle 0-127)
+    const needsNRPN = currentParam.max_midi !== undefined && currentParam.max_midi > 127;
+
+    if (needsNRPN && currentParam.nrpn_msb !== undefined && currentParam.nrpn_lsb !== undefined) {
       const nrpnMsb = typeof currentParam.nrpn_msb === 'number' ? currentParam.nrpn_msb : parseInt(currentParam.nrpn_msb);
       const nrpnLsb = typeof currentParam.nrpn_lsb === 'number' ? currentParam.nrpn_lsb : parseInt(currentParam.nrpn_lsb);
       sendNRPN(midiChannel, nrpnMsb, nrpnLsb, selectedMappedValue);

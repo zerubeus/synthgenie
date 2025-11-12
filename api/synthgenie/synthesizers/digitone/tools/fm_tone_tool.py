@@ -154,28 +154,32 @@ def set_fm_tone_b_ratio(ctx: RunContext, value: int, midi_channel: int) -> Synth
     This parameter controls both B1 and B2 operators' frequency ratios simultaneously.
     B operators typically act as modulators in most algorithms.
 
-    The B ratio control works like watch hands: as you turn the encoder, B2 increases
-    until it reaches the max (16), then it starts over from 0.25 and B1 increases to
+    The B ratio control works like watch hands: as you turn the encoder, B1 increases
+    until it reaches the max (16), then it starts over from 0.25 and B2 increases to
     the next value. This revolving behavior continues until both operators reach maximum.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Ratio value ranging from 0 to 3.
-            Due to the limited MIDI range, this parameter uses coarse stepping.
-            The actual B1/B2 combinations are much more extensive on the device.
+        value (int): Ratio value ranging from 0 to 360.
+            This parameter uses NRPN (1:76) to access all 361 possible B1/B2 combinations.
+            Each operator can be: 0.25, 0.50, 0.75, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+            (19 values each, creating 19×19=361 total combinations)
+
+            Pattern: B1 cycles through all values, then B2 increments:
             - 0 = B1: 0.25, B2: 0.25 (minimum)
-            - 1 = B1: ~5.33, B2: ~5.33 (intermediate)
-            - 2 = B1: ~10.67, B2: ~10.67 (intermediate)
-            - 3 = B1: 16, B2: 16 (maximum)
-            Note: On the actual device, B2 cycles through all values (0.25-16)
-            before B1 increments, creating many more combinations.
+            - 1 = B1: 0.50, B2: 0.25
+            - 18 = B1: 16, B2: 0.25
+            - 19 = B1: 0.25, B2: 0.50
+            - 360 = B1: 16, B2: 16 (maximum)
+
             Display range: [0.25-16, 0.25-16].
             Default is [1.00, 1.00].
         midi_channel (int): The MIDI channel (track) to set the B ratio for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_tone_b_ratio',
-        midi_cc=43,
+        nrpn_msb=1,
+        nrpn_lsb=76,
         midi_channel=midi_channel,
         value=value,
     )

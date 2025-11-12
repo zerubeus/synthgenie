@@ -32,9 +32,9 @@ FM_TONE_PARAMS = {
         },
         'B': {
             'cc_msb': 43,
-            'nrpn_lsb': '1',
-            'nrpn_msb': 76,
-            'max_midi': 3,
+            'nrpn_lsb': 76,
+            'nrpn_msb': 1,
+            'max_midi': 360,
             'min_midi': 0,
             'max_val': [16, 16],
             'min_val': [0.25, 0.25],

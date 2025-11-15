@@ -190,22 +190,26 @@ def set_fm_tone_harmonics(ctx: RunContext, value: int, midi_channel: int) -> Syn
     Set the harmonics parameter that adds additional harmonic content to the FM synthesis.
 
     This parameter enhances the harmonic complexity of the sound by introducing
-    additional frequency components.
+    additional frequency components. Negative values affect operator C, positive values
+    affect operators A and B1.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Harmonics value ranging from 37 to 90.
-            Maps to display values from -26 to +26.
-            - 37 = -26
-            - 64 = 0
-            - 90 = +26
-            Display range: -26 to +26.
-            Default is 0.
+        value (int): Harmonics value ranging from 4596 to 11530.
+            This parameter uses NRPN (1:77) for full 14-bit resolution with 0.01 precision.
+            Maps to display values from -26.00 to +26.00.
+            Formula: display = ((value - 4596) / 6934) * 52.0 - 26.0
+            - 4596 = -26.00
+            - 8063 = 0.00 (approximately)
+            - 11530 = +26.00
+            Display range: -26.00 to +26.00 with 0.01 steps.
+            Default is 0.00 (MIDI ~8063).
         midi_channel (int): The MIDI channel (track) to set the harmonics for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_tone_harmonics',
-        midi_cc=44,
+        nrpn_msb=1,
+        nrpn_lsb=77,
         midi_channel=midi_channel,
         value=value,
     )
@@ -215,19 +219,26 @@ def set_fm_tone_detune(ctx: RunContext, value: int, midi_channel: int) -> SynthG
     """
     Set the detune amount for the FM operators.
 
-    This creates slight pitch variations between operators, adding richness and
-    movement to the sound.
+    This creates slight pitch variations between operators A and B2, adding richness and
+    movement to the sound. Uses fine-grained NRPN control for decimal precision.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Detune value ranging from 0 to 127.
-            Display range: 0-127.
-            Default is 0.
+        value (int): Detune value ranging from 0 to 12700.
+            This parameter uses NRPN (1:78) for full 14-bit resolution with 0.01 precision.
+            Maps to display values from 0.00 to 127.00.
+            Formula: display = value / 100.0
+            - 0 = 0.00
+            - 6350 = 63.50
+            - 12700 = 127.00
+            Display range: 0.00 to 127.00 with 0.01 steps.
+            Default is 0.00 (MIDI 0).
         midi_channel (int): The MIDI channel (track) to set the detune for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_tone_detune',
-        midi_cc=45,
+        nrpn_msb=1,
+        nrpn_lsb=78,
         midi_channel=midi_channel,
         value=value,
     )
@@ -620,24 +631,34 @@ def set_fm_tone_c_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -
     Set the ratio offset for operator C.
 
     Fine-tunes the frequency ratio of operator C, allowing for subtle detuning
-    and inharmonic effects.
+    and inharmonic effects. Uses fine-grained NRPN control for 0.01 precision.
+
+    IMPORTANT: The Digitone firmware has a bug where it applies the formula: received_value * 1000 / 8192
+    We must multiply by 8.192 (8192/1000) to compensate.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Ratio offset value ranging from 0 to 127.
-            Maps to offset values from -1.00 to +0.999.
-            - 0 = -1.00
-            - 64 = 0.00
-            - 127 = +0.999
-            Display range: -1.00 to +0.999.
-            Default is 0.00.
+        value (int): Ratio offset value ranging from 0 to 1999.
+            This parameter uses NRPN (1:97) for fine resolution with 0.001 precision.
+            Maps to offset values from -1.000 to +0.999.
+            Formula: display = (value - 1000) / 1000.0
+            - 0 = -1.000
+            - 1000 = 0.000
+            - 1999 = +0.999
+            Display range: -1.000 to +0.999 with 0.001 steps.
+            Default is 0.000 (MIDI 1000).
         midi_channel (int): The MIDI channel (track) to set the ratio offset for. 1-16
     """
+    # Multiply by 8192/1000 to compensate for Digitone's formula: received * 1000 / 8192
+    # Clamp to 14-bit NRPN max (16383)
+    scaled_value = min(16383, int(value * 8192 / 1000))
+
     return SynthGenieResponse(
         used_tool='set_fm_tone_c_ratio_offset',
-        midi_cc=70,
+        nrpn_msb=1,
+        nrpn_lsb=97,
         midi_channel=midi_channel,
-        value=value,
+        value=scaled_value,
     )
 
 
@@ -646,24 +667,34 @@ def set_fm_tone_a_ratio_offset(ctx: RunContext, value: int, midi_channel: int) -
     Set the ratio offset for operator A.
 
     Fine-tunes the frequency ratio of operator A, allowing for subtle detuning
-    and inharmonic effects.
+    and inharmonic effects. Uses fine-grained NRPN control for 0.01 precision.
+
+    IMPORTANT: The Digitone firmware has a bug where it applies the formula: received_value * 1000 / 8192
+    We must multiply by 8.192 (8192/1000) to compensate.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Ratio offset value ranging from 0 to 127.
-            Maps to offset values from -1.00 to +0.999.
-            - 0 = -1.00
-            - 64 = 0.00
-            - 127 = +0.999
-            Display range: -1.00 to +0.999.
-            Default is 0.00.
+        value (int): Ratio offset value ranging from 0 to 1999.
+            This parameter uses NRPN (1:98) for fine resolution with 0.001 precision.
+            Maps to offset values from -1.000 to +0.999.
+            Formula: display = (value - 1000) / 1000.0
+            - 0 = -1.000
+            - 1000 = 0.000
+            - 1999 = +0.999
+            Display range: -1.000 to +0.999 with 0.001 steps.
+            Default is 0.000 (MIDI 1000).
         midi_channel (int): The MIDI channel (track) to set the ratio offset for. 1-16
     """
+    # Multiply by 8192/1000 to compensate for Digitone's formula: received * 1000 / 8192
+    # Clamp to 14-bit NRPN max (16383)
+    scaled_value = min(16383, int(value * 8192 / 1000))
+
     return SynthGenieResponse(
         used_tool='set_fm_tone_a_ratio_offset',
-        midi_cc=71,
+        nrpn_msb=1,
+        nrpn_lsb=98,
         midi_channel=midi_channel,
-        value=value,
+        value=scaled_value,
     )
 
 
@@ -672,24 +703,34 @@ def set_fm_tone_b1_ratio_offset(ctx: RunContext, value: int, midi_channel: int) 
     Set the ratio offset for operator B1.
 
     Fine-tunes the frequency ratio of operator B1, allowing for subtle detuning
-    and inharmonic effects.
+    and inharmonic effects. Uses fine-grained NRPN control for 0.01 precision.
+
+    IMPORTANT: The Digitone firmware has a bug where it applies the formula: received_value * 1000 / 8192
+    We must multiply by 8.192 (8192/1000) to compensate.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Ratio offset value ranging from 0 to 127.
-            Maps to offset values from -1.00 to +0.999.
-            - 0 = -1.00
-            - 64 = 0.00
-            - 127 = +0.999
-            Display range: -1.00 to +0.999.
-            Default is 0.00.
+        value (int): Ratio offset value ranging from 0 to 1999.
+            This parameter uses NRPN (1:99) for fine resolution with 0.001 precision.
+            Maps to offset values from -1.000 to +0.999.
+            Formula: display = (value - 1000) / 1000.0
+            - 0 = -1.000
+            - 1000 = 0.000
+            - 1999 = +0.999
+            Display range: -1.000 to +0.999 with 0.001 steps.
+            Default is 0.000 (MIDI 1000).
         midi_channel (int): The MIDI channel (track) to set the ratio offset for. 1-16
     """
+    # Multiply by 8192/1000 to compensate for Digitone's formula: received * 1000 / 8192
+    # Clamp to 14-bit NRPN max (16383)
+    scaled_value = min(16383, int(value * 8192 / 1000))
+
     return SynthGenieResponse(
         used_tool='set_fm_tone_b1_ratio_offset',
-        midi_cc=72,
+        nrpn_msb=1,
+        nrpn_lsb=99,
         midi_channel=midi_channel,
-        value=value,
+        value=scaled_value,
     )
 
 
@@ -698,24 +739,34 @@ def set_fm_tone_b2_ratio_offset(ctx: RunContext, value: int, midi_channel: int) 
     Set the ratio offset for operator B2.
 
     Fine-tunes the frequency ratio of operator B2, allowing for subtle detuning
-    and inharmonic effects.
+    and inharmonic effects. Uses fine-grained NRPN control for 0.01 precision.
+
+    IMPORTANT: The Digitone firmware has a bug where it applies the formula: received_value * 1000 / 8192
+    We must multiply by 8.192 (8192/1000) to compensate.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Ratio offset value ranging from 0 to 127.
-            Maps to offset values from -1.00 to +0.999.
-            - 0 = -1.00
-            - 64 = 0.00
-            - 127 = +0.999
-            Display range: -1.00 to +0.999.
-            Default is 0.00.
+        value (int): Ratio offset value ranging from 0 to 1999.
+            This parameter uses NRPN (1:100) for fine resolution with 0.001 precision.
+            Maps to offset values from -1.000 to +0.999.
+            Formula: display = (value - 1000) / 1000.0
+            - 0 = -1.000
+            - 1000 = 0.000
+            - 1999 = +0.999
+            Display range: -1.000 to +0.999 with 0.001 steps.
+            Default is 0.000 (MIDI 1000).
         midi_channel (int): The MIDI channel (track) to set the ratio offset for. 1-16
     """
+    # Multiply by 8192/1000 to compensate for Digitone's formula: received * 1000 / 8192
+    # Clamp to 14-bit NRPN max (16383)
+    scaled_value = min(16383, int(value * 8192 / 1000))
+
     return SynthGenieResponse(
         used_tool='set_fm_tone_b2_ratio_offset',
-        midi_cc=73,
+        nrpn_msb=1,
+        nrpn_lsb=100,
         midi_channel=midi_channel,
-        value=value,
+        value=scaled_value,
     )
 
 

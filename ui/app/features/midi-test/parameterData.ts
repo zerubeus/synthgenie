@@ -11,6 +11,7 @@ export interface ParamConfig {
   max_midi?: number;
   default?: number | string;
   options?: string[];
+  needsScaling?: boolean; // For parameters where Digitone expects scaled values (ratio offset: 0-1999 UI but 0-255 MIDI)
 }
 
 export interface ParamSet {
@@ -24,10 +25,10 @@ export const DIGITONE_PARAMS: Record<string, ParamSet> = {
     'C': { cc_msb: 41, nrpn_lsb: 1, nrpn_msb: 74, max_midi: 18, min_val: 0.25, max_val: 16, default: 1.00 },
     'A': { cc_msb: 42, nrpn_lsb: 1, nrpn_msb: 75, max_midi: 35, min_val: 0.25, max_val: 16, default: 1.00 },
     'B': { cc_msb: 43, nrpn_lsb: 76, nrpn_msb: 1, max_midi: 360, default: 1.00 },
-    'HARM': { cc_msb: 44, nrpn_lsb: 1, nrpn_msb: 77, min_midi: 37, max_midi: 90, min_val: -26, max_val: 26, default: 0.00 },
-    'DTUN': { cc_msb: 45, nrpn_lsb: 1, nrpn_msb: 78, default: 0 },
-    'FDBK': { cc_msb: 46, nrpn_lsb: 1, nrpn_msb: 79, default: 0 },
-    'MIX': { cc_msb: 47, nrpn_lsb: 1, nrpn_msb: 80, min_val: -63, max_val: 63, default: -63 },
+    'HARM': { cc_msb: 44, nrpn_lsb: 77, nrpn_msb: 1, min_midi: 4596, max_midi: 11530, min_val: -26.00, max_val: 26.00, default: 0.00 },
+    'DTUN': { cc_msb: 45, nrpn_lsb: 78, nrpn_msb: 1, min_midi: 0, max_midi: 12700, min_val: 0.00, max_val: 127.00, default: 0.00 },
+    'FDBK': { cc_msb: 46, nrpn_lsb: 1, nrpn_msb: 79, max_midi: 127, default: 0 },
+    'MIX': { cc_msb: 47, nrpn_lsb: 1, nrpn_msb: 80, max_midi: 127, min_val: -63, max_val: 63, default: -63 },
   },
   'FM_TONE_Page2_A': {
     'A.ATK': { cc_msb: 48, nrpn_lsb: 1, nrpn_msb: 81, default: 0 },
@@ -36,10 +37,10 @@ export const DIGITONE_PARAMS: Record<string, ParamSet> = {
     'A.LEV': { cc_msb: 51, nrpn_lsb: 1, nrpn_msb: 84, default: 0 },
   },
   'FM_TONE_Page2_B': {
-    'B.ATK': { cc_msb: 48, nrpn_lsb: 1, nrpn_msb: 81, default: 0 },
-    'B.DEC': { cc_msb: 49, nrpn_lsb: 1, nrpn_msb: 82, default: 32 },
-    'B.END': { cc_msb: 50, nrpn_lsb: 1, nrpn_msb: 83, default: 127 },
-    'B.LEV': { cc_msb: 51, nrpn_lsb: 1, nrpn_msb: 84, default: 0 },
+    'B.ATK': { cc_msb: 52, nrpn_lsb: 1, nrpn_msb: 85, default: 0 },
+    'B.DEC': { cc_msb: 53, nrpn_lsb: 1, nrpn_msb: 86, default: 32 },
+    'B.END': { cc_msb: 54, nrpn_lsb: 1, nrpn_msb: 87, default: 127 },
+    'B.LEV': { cc_msb: 55, nrpn_lsb: 1, nrpn_msb: 88, default: 0 },
   },
   'FM_TONE_Page3': {
     'ADEL': { cc_msb: 56, nrpn_lsb: 1, nrpn_msb: 89, default: 0 },
@@ -51,10 +52,10 @@ export const DIGITONE_PARAMS: Record<string, ParamSet> = {
     'BRST': { cc_msb: 62, nrpn_lsb: 1, nrpn_msb: 95, max_midi: 1, default: 1 },
   },
   'FM_TONE_Page4_Ratio': {
-    'C.RATIO': { cc_msb: 70, nrpn_lsb: 1, nrpn_msb: 97, min_val: -1.00, max_val: 0.999, default: 0.00 },
-    'A.RATIO': { cc_msb: 71, nrpn_lsb: 1, nrpn_msb: 98, min_val: -1.00, max_val: 0.999, default: 0.00 },
-    'B1.RATIO': { cc_msb: 72, nrpn_lsb: 1, nrpn_msb: 99, min_val: -1.00, max_val: 0.999, default: 0.00 },
-    'B2.RATIO': { cc_msb: 73, nrpn_lsb: 1, nrpn_msb: 100, min_val: -1.00, max_val: 0.999, default: 0.00 },
+    'C.RATIO': { cc_msb: 70, nrpn_lsb: 97, nrpn_msb: 1, min_midi: 0, max_midi: 1999, min_val: -1.000, max_val: 0.999, default: 0.000, needsScaling: true },
+    'A.RATIO': { cc_msb: 71, nrpn_lsb: 98, nrpn_msb: 1, min_midi: 0, max_midi: 1999, min_val: -1.000, max_val: 0.999, default: 0.000, needsScaling: true },
+    'B1.RATIO': { cc_msb: 72, nrpn_lsb: 99, nrpn_msb: 1, min_midi: 0, max_midi: 1999, min_val: -1.000, max_val: 0.999, default: 0.000, needsScaling: true },
+    'B2.RATIO': { cc_msb: 73, nrpn_lsb: 100, nrpn_msb: 1, min_midi: 0, max_midi: 1999, min_val: -1.000, max_val: 0.999, default: 0.000, needsScaling: true },
   },
   'FM_TONE_Page4_KeyTrack': {
     'A.KTRK': { cc_msb: 75, nrpn_lsb: 1, nrpn_msb: 102, default: 0 },
@@ -101,7 +102,7 @@ export const DIGITONE_PARAMS: Record<string, ParamSet> = {
     'ALGO': { cc_msb: 43, nrpn_lsb: 1, nrpn_msb: 76, max_midi: 6, min_val: 1, max_val: 7, default: 1 },
     'OP.C': { cc_msb: 44, nrpn_lsb: 1, nrpn_msb: 77 },
     'OP.AB': { cc_msb: 45, nrpn_lsb: 1, nrpn_msb: 78 },
-    'FDBK': { cc_msb: 46, nrpn_lsb: 1, nrpn_msb: 79 },
+    'FDBK': { cc_msb: 46, nrpn_lsb: 1, nrpn_msb: 79, max_midi: 127 },
     'FOLD': { cc_msb: 47, nrpn_lsb: 1, nrpn_msb: 80 },
   },
   'FM_DRUM_Page2': {

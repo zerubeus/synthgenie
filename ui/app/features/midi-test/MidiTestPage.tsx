@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import { useMidi } from '../midi/hooks/useMidi';
 import { SynthSelector } from '../midi/components/SynthSelector';
@@ -6,18 +6,7 @@ import { detectSynthType } from '../api/utils/getApiBaseUrl';
 import type { SynthType } from '../api/types';
 import { DIGITONE_PARAMS } from './parameterData';
 import type { ParamConfig } from './parameterData';
-import valueMappings from './valueMappings.json';
-
-interface ValueMapping {
-  midi: number;
-  display: string;
-}
-
-interface ParamMapping {
-  cc: number;
-  function: string;
-  values: ValueMapping[];
-}
+import { generateValueMappings, midiToDisplay, getValueCount, getMinMidiValue, getMaxMidiValue, scaleForDigitone } from './valueMapping';
 
 const MidiTestPage: React.FC = () => {
   const {
@@ -42,13 +31,73 @@ const MidiTestPage: React.FC = () => {
   const [midiChannel, setMidiChannel] = useState<number>(1);
   const [lastSent, setLastSent] = useState<string>('');
 
+  // Ref for slider element to inspect actual DOM attributes
+  const sliderRef = useRef<HTMLInputElement>(null);
+
   const currentParams = DIGITONE_PARAMS[selectedParamSet];
   const currentParam = currentParams[selectedParam] as ParamConfig;
 
-  // Find value mapping for current parameter
-  const currentMapping = Object.entries(valueMappings as Record<string, ParamMapping>).find(
-    ([key, mapping]) => mapping.cc === currentParam?.cc_msb
-  )?.[1];
+  // Generate value mappings dynamically for current parameter
+  const currentMapping = currentParam ? generateValueMappings(currentParam) : [];
+  const valueCount = currentParam ? getValueCount(currentParam) : 0;
+
+  // Debug logging for ratio offset parameters
+  if (selectedParam?.includes('RATIO') && currentParam) {
+    console.log(`[DEBUG] ${selectedParam} - Full Parameter:`, {
+      cc_msb: currentParam.cc_msb,
+      nrpn_msb: currentParam.nrpn_msb,
+      nrpn_lsb: currentParam.nrpn_lsb,
+      min_midi: currentParam.min_midi,
+      max_midi: currentParam.max_midi,
+      min_val: currentParam.min_val,
+      max_val: currentParam.max_val,
+      calculated_min: getMinMidiValue(currentParam),
+      calculated_max: getMaxMidiValue(currentParam),
+      value_count: valueCount,
+      mapping_length: currentMapping.length,
+    });
+  }
+
+  // Reset selectedMappedValue when parameter changes to ensure it's within valid range
+  useEffect(() => {
+    if (currentParam) {
+      const minMidi = getMinMidiValue(currentParam);
+      const maxMidi = getMaxMidiValue(currentParam);
+
+      // Clamp selectedMappedValue to the current parameter's range
+      setSelectedMappedValue((prevValue) => {
+        if (prevValue < minMidi) return minMidi;
+        if (prevValue > maxMidi) return maxMidi;
+        return prevValue;
+      });
+    }
+  }, [selectedParam, selectedParamSet, currentParam]);
+
+  // Debug: Inspect slider DOM element attributes for RATIO parameters
+  useEffect(() => {
+    if (selectedParam?.includes('RATIO') && sliderRef.current && currentParam) {
+      const minMidi = getMinMidiValue(currentParam);
+      const maxMidi = getMaxMidiValue(currentParam);
+
+      console.log('[DOM INSPECTION] Slider element attributes:', {
+        parameter: selectedParam,
+        'ref.min': sliderRef.current.min,
+        'ref.max': sliderRef.current.max,
+        'ref.value': sliderRef.current.value,
+        'ref.step': sliderRef.current.step,
+        'ref.offsetWidth': sliderRef.current.offsetWidth,
+        'ref.clientWidth': sliderRef.current.clientWidth,
+        'ref.scrollWidth': sliderRef.current.scrollWidth,
+        'ref.valueAsNumber': sliderRef.current.valueAsNumber,
+        'calculated_minMidi': minMidi,
+        'calculated_maxMidi': maxMidi,
+        'param.min_midi': currentParam.min_midi,
+        'param.max_midi': currentParam.max_midi,
+        'typeof_min': typeof minMidi,
+        'typeof_max': typeof maxMidi,
+      });
+    }
+  }, [selectedParam, currentParam, selectedMappedValue]);
 
   const handleSynthChange = (synthType: SynthType) => {
     const matchingDevice = midiDevices.find(
@@ -62,7 +111,7 @@ const MidiTestPage: React.FC = () => {
   const handleSendMapped = () => {
     if (!currentParam || !selectedDevice) return;
 
-    const displayValue = currentMapping?.values.find(v => v.midi === selectedMappedValue)?.display || selectedMappedValue;
+    const displayValue = currentMapping.find(v => v.midi === selectedMappedValue)?.display || selectedMappedValue;
 
     // Only use NRPN if parameter has more than 127 values (CC can only handle 0-127)
     const needsNRPN = currentParam.max_midi !== undefined && currentParam.max_midi > 127;
@@ -70,9 +119,10 @@ const MidiTestPage: React.FC = () => {
     if (needsNRPN && currentParam.nrpn_msb !== undefined && currentParam.nrpn_lsb !== undefined) {
       const nrpnMsb = typeof currentParam.nrpn_msb === 'number' ? currentParam.nrpn_msb : parseInt(currentParam.nrpn_msb);
       const nrpnLsb = typeof currentParam.nrpn_lsb === 'number' ? currentParam.nrpn_lsb : parseInt(currentParam.nrpn_lsb);
-      sendNRPN(midiChannel, nrpnMsb, nrpnLsb, selectedMappedValue);
+      const scaledValue = scaleForDigitone(selectedMappedValue, currentParam);
+      sendNRPN(midiChannel, nrpnMsb, nrpnLsb, scaledValue);
       setLastSent(
-        `Sent MAPPED (NRPN): ${selectedParamSet}.${selectedParam} | NRPN ${nrpnMsb}:${nrpnLsb} | MIDI Value=${selectedMappedValue} | Display="${displayValue}" | Channel=${midiChannel}`
+        `Sent MAPPED (NRPN): ${selectedParamSet}.${selectedParam} | NRPN ${nrpnMsb}:${nrpnLsb} | UI Value=${selectedMappedValue} | Scaled=${scaledValue} | Display="${displayValue}" | Channel=${midiChannel}`
       );
     } else {
       sendMidiCC(midiChannel, currentParam.cc_msb, selectedMappedValue);
@@ -236,35 +286,117 @@ const MidiTestPage: React.FC = () => {
           )}
 
           {/* Mapped Values Section */}
-          {currentMapping && currentMapping.values.length > 0 && (
+          {currentMapping && currentMapping.length > 0 && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold text-green-400 mb-3">
-                Mapped Values (from tool definition)
+                Mapped Values (calculated)
               </h3>
               <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">
-                    Select Expected Value
-                  </label>
-                  <select
-                    value={selectedMappedValue}
-                    onChange={(e) => setSelectedMappedValue(Number(e.target.value))}
-                    className="w-full bg-gray-700 border border-green-500 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                {valueCount <= 100 ? (
+                  /* Dropdown for parameters with <= 100 values */
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">
+                      Select Expected Value
+                    </label>
+                    <select
+                      value={selectedMappedValue}
+                      onChange={(e) => setSelectedMappedValue(Number(e.target.value))}
+                      className="w-full bg-gray-700 border border-green-500 text-gray-100 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      {currentMapping.map((v) => (
+                        <option key={v.midi} value={v.midi}>
+                          MIDI {v.midi} = {v.display}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  /* Slider for parameters with > 100 values - sends values automatically */
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-2">
+                      Select MIDI Value (Slider)
+                    </label>
+                    <div className="space-y-3">
+                      <input
+                        key={`${selectedParamSet}-${selectedParam}-slider`}
+                        ref={sliderRef}
+                        type="range"
+                        min={Number(getMinMidiValue(currentParam))}
+                        max={Number(getMaxMidiValue(currentParam))}
+                        step={1}
+                        value={selectedMappedValue}
+                        onInput={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          const newValue = Number(target.value);
+                          setSelectedMappedValue(newValue);
+
+                          // Enhanced debug for RATIO parameters
+                          if (selectedParam?.includes('RATIO')) {
+                            console.log('[SLIDER onInput]', {
+                              parameter: selectedParam,
+                              newValue,
+                              'target.value': target.value,
+                              'target.valueAsNumber': target.valueAsNumber,
+                              display: midiToDisplay(newValue, currentParam),
+                              minMidi: getMinMidiValue(currentParam),
+                              maxMidi: getMaxMidiValue(currentParam),
+                              'target.min': target.min,
+                              'target.max': target.max,
+                              'target.offsetWidth': target.offsetWidth,
+                              'typeof target.max': typeof target.max,
+                            });
+                          }
+
+                          // All sliders send values automatically
+                          if (currentParam && selectedDevice) {
+                            const displayValue = midiToDisplay(newValue, currentParam);
+
+                            // Determine if we need NRPN (for parameters with >127 values) or regular CC
+                            const needsNRPN = currentParam.max_midi !== undefined && currentParam.max_midi > 127;
+
+                            if (needsNRPN && currentParam.nrpn_msb !== undefined && currentParam.nrpn_lsb !== undefined) {
+                              const nrpnMsb = typeof currentParam.nrpn_msb === 'number' ? currentParam.nrpn_msb : parseInt(currentParam.nrpn_msb);
+                              const nrpnLsb = typeof currentParam.nrpn_lsb === 'number' ? currentParam.nrpn_lsb : parseInt(currentParam.nrpn_lsb);
+                              const scaledValue = scaleForDigitone(newValue, currentParam);
+                              sendNRPN(midiChannel, nrpnMsb, nrpnLsb, scaledValue);
+                              setLastSent(
+                                `Sent DIRECT (NRPN): ${selectedParamSet}.${selectedParam} | NRPN ${nrpnMsb}:${nrpnLsb} | UI Value=${newValue} | Scaled=${scaledValue} | Display="${displayValue}" | Channel=${midiChannel}`
+                              );
+                            } else {
+                              sendMidiCC(midiChannel, currentParam.cc_msb, newValue);
+                              setLastSent(
+                                `Sent DIRECT (CC): ${selectedParamSet}.${selectedParam} | CC=${currentParam.cc_msb} | MIDI Value=${newValue} | Display="${displayValue}" | Channel=${midiChannel}`
+                              );
+                            }
+                          }
+                        }}
+                        className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-green-500"
+                        style={{ width: '100%', minWidth: '100%' }}
+                      />
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">
+                          Min: {midiToDisplay(getMinMidiValue(currentParam), currentParam)}
+                        </span>
+                        <span className="text-green-400 font-semibold">
+                          MIDI {selectedMappedValue} = {midiToDisplay(selectedMappedValue, currentParam)}
+                        </span>
+                        <span className="text-gray-400">
+                          Max: {midiToDisplay(getMaxMidiValue(currentParam), currentParam)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {/* Only show Send button for dropdowns (<=100 values), not for sliders */}
+                {valueCount <= 100 && (
+                  <button
+                    onClick={handleSendMapped}
+                    disabled={!selectedDevice}
+                    className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
                   >
-                    {currentMapping.values.map((v) => (
-                      <option key={v.midi} value={v.midi}>
-                        MIDI {v.midi} = {v.display}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  onClick={handleSendMapped}
-                  disabled={!selectedDevice}
-                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-                >
-                  Send Mapped Value
-                </button>
+                    Send Mapped Value
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -324,8 +456,30 @@ const MidiTestPage: React.FC = () => {
                     const numValue = Math.floor(parseFloat(freeValue) || 0);
                     const nrpnMsb = typeof currentParam.nrpn_msb === 'number' ? currentParam.nrpn_msb : 1;
                     const nrpnLsb = typeof currentParam.nrpn_lsb === 'number' ? currentParam.nrpn_lsb : (typeof currentParam.nrpn_lsb === 'string' ? parseInt(currentParam.nrpn_lsb) : 76);
-                    sendNRPN(midiChannel, nrpnMsb, nrpnLsb, numValue);
-                    setLastSent(`Sent NRPN: ${selectedParamSet}.${selectedParam} | NRPN MSB=${nrpnMsb} LSB=${nrpnLsb} | Value=${numValue} | Channel=${midiChannel}`);
+
+                    // Enhanced logging for RATIO parameters
+                    if (selectedParam?.includes('RATIO')) {
+                      const valueMsb = (numValue >> 7) & 0x7F;
+                      const valueLsb = numValue & 0x7F;
+                      const displayValue = midiToDisplay(numValue, currentParam);
+
+                      console.log('[FREE VALUE NRPN]', {
+                        parameter: selectedParam,
+                        freeValueInput: freeValue,
+                        numValue,
+                        nrpnMsb,
+                        nrpnLsb,
+                        valueMsb,
+                        valueLsb,
+                        displayValue,
+                        formula: `(${numValue} - 1000) / 1000 = ${displayValue}`,
+                        'Expected on Digitone': displayValue,
+                      });
+                    }
+
+                    const scaledValue = scaleForDigitone(numValue, currentParam);
+                    sendNRPN(midiChannel, nrpnMsb, nrpnLsb, scaledValue);
+                    setLastSent(`Sent NRPN: ${selectedParamSet}.${selectedParam} | NRPN MSB=${nrpnMsb} LSB=${nrpnLsb} | UI Value=${numValue} | Scaled=${scaledValue} | Display="${midiToDisplay(numValue, currentParam)}" | Channel=${midiChannel}`);
                   }}
                   disabled={!selectedDevice}
                   className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-2 px-3 rounded-lg transition-colors text-xs"

@@ -27,7 +27,7 @@ const MidiTestPage: React.FC = () => {
     Object.keys(DIGITONE_PARAMS[Object.keys(DIGITONE_PARAMS)[0]])[0]
   );
   const [selectedMappedValue, setSelectedMappedValue] = useState<number>(0);
-  const [freeValue, setFreeValue] = useState<string>('64');
+  const [freeValue, setFreeValue] = useState<string>('');
   const [midiChannel, setMidiChannel] = useState<number>(1);
   const [lastSent, setLastSent] = useState<string>('');
 

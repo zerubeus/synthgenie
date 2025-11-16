@@ -12,20 +12,25 @@ def set_wavetone_osc1_pitch(ctx: RunContext, value: int, midi_channel: int) -> S
     """
     Set the pitch of oscillator one.
 
+    This parameter uses NRPN (1:73) for full 14-bit resolution with fine-grained control.
+
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): MIDI pitch value ranging from 0 to 127.
-            - 0 maps to -5
-            - 64 maps to 0
-            - 127 maps to +5
-            Values in between are linearly mapped.
-            Display range: -5 to +5.
-            Default is 0.
+        value (int): MIDI pitch value ranging from 0 to 16383.
+            This parameter uses NRPN (1:73) for full 14-bit resolution.
+            Maps to display values from -5.00 to +5.00 semitones.
+            Formula: display = ((value / 16383) * 10.0) - 5.0
+            - 0 = -5.00
+            - 8191 = 0.00 (approximately)
+            - 16383 = +5.00
+            Display range: -5.00 to +5.00 semitones with fine precision.
+            Default is 0.00 (MIDI ~8191).
         midi_channel (int): The MIDI channel (track) to set the pitch for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_wavetone_osc1_pitch',
-        midi_cc=40,
+        nrpn_msb=1,
+        nrpn_lsb=73,
         midi_channel=midi_channel,
         value=value,
     )
@@ -101,22 +106,27 @@ def set_wavetone_osc1_level(ctx: RunContext, value: int, midi_channel: int) -> S
 
 def set_wavetone_osc1_offset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
-    Set the offset of oscillator one.
+    Set the offset of oscillator one (linear frequency offset in Hz).
+
+    This parameter uses NRPN (1:81) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Offset value ranging from 0 to 127.
-            - 0 maps to -10
-            - 64 maps to 0
-            - 127 maps to +10
-            Values in between are linearly mapped.
-            Display range: -10 to +10.
-            Default is 0.
+        value (int): Offset value ranging from 0 to 16383.
+            This parameter uses NRPN (1:81) for full 14-bit resolution.
+            Maps to display values from -10.00 to +10.00 Hz.
+            Formula: display = ((value / 16383) * 20.0) - 10.0
+            - 0 = -10.00 Hz
+            - 8191 = 0.00 Hz (approximately)
+            - 16383 = +10.00 Hz
+            Display range: -10.00 to +10.00 Hz with fine precision.
+            Default is 0.00 (MIDI ~8191).
         midi_channel (int): The MIDI channel (track) to set the offset for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_wavetone_osc1_offset',
-        midi_cc=48,
+        nrpn_msb=1,
+        nrpn_lsb=81,
         midi_channel=midi_channel,
         value=value,
     )
@@ -148,20 +158,25 @@ def set_wavetone_osc2_pitch(ctx: RunContext, value: int, midi_channel: int) -> S
     """
     Set the pitch of oscillator two.
 
+    This parameter uses NRPN (1:77) for full 14-bit resolution with fine-grained control.
+
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): MIDI pitch value ranging from 0 to 127.
-            - 0 maps to -5
-            - 64 maps to 0
-            - 127 maps to +5
-            Values in between are linearly mapped.
-            Display range: -5 to +5.
-            Default is 0.
+        value (int): MIDI pitch value ranging from 0 to 16383.
+            This parameter uses NRPN (1:77) for full 14-bit resolution.
+            Maps to display values from -5.00 to +5.00 semitones.
+            Formula: display = ((value / 16383) * 10.0) - 5.0
+            - 0 = -5.00
+            - 8191 = 0.00 (approximately)
+            - 16383 = +5.00
+            Display range: -5.00 to +5.00 semitones with fine precision.
+            Default is 0.00 (MIDI ~8191).
         midi_channel (int): The MIDI channel (track) to set the pitch for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_wavetone_osc2_pitch',
-        midi_cc=44,
+        nrpn_msb=1,
+        nrpn_lsb=77,
         midi_channel=midi_channel,
         value=value,
     )
@@ -237,22 +252,27 @@ def set_wavetone_osc2_level(ctx: RunContext, value: int, midi_channel: int) -> S
 
 def set_wavetone_osc2_offset(ctx: RunContext, value: int, midi_channel: int) -> SynthGenieResponse:
     """
-    Set the offset of oscillator two.
+    Set the offset of oscillator two (linear frequency offset in Hz).
+
+    This parameter uses NRPN (1:85) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Offset value ranging from 0 to 127.
-            - 0 maps to -10
-            - 64 maps to 0
-            - 127 maps to +10
-            Values in between are linearly mapped.
-            Display range: -10 to +10.
-            Default is 0.
+        value (int): Offset value ranging from 0 to 16383.
+            This parameter uses NRPN (1:85) for full 14-bit resolution.
+            Maps to display values from -10.00 to +10.00 Hz.
+            Formula: display = ((value / 16383) * 20.0) - 10.0
+            - 0 = -10.00 Hz
+            - 8191 = 0.00 Hz (approximately)
+            - 16383 = +10.00 Hz
+            Display range: -10.00 to +10.00 Hz with fine precision.
+            Default is 0.00 (MIDI ~8191).
         midi_channel (int): The MIDI channel (track) to set the offset for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_wavetone_osc2_offset',
-        midi_cc=52,
+        nrpn_msb=1,
+        nrpn_lsb=85,
         midi_channel=midi_channel,
         value=value,
     )

@@ -4,7 +4,7 @@ SWARMER_PARAMS = {
             'cc_msb': 40,
             'nrpn_msb': 1,
             'nrpn_lsb': 73,
-            'max_midi': 127,
+            'max_midi': 16383,
             'min_midi': 0,
             'max_val': 60,
             'min_val': -60,

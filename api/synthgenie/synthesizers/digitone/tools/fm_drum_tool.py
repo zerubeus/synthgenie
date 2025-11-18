@@ -246,19 +246,26 @@ def set_fm_drum_ratio1(ctx: RunContext, value: int, midi_channel: int) -> SynthG
     Controls the frequency relationship between operator A and the fundamental pitch.
     In drum synthesis, non-integer ratios create inharmonic content essential for
     metallic and noise-like drum sounds.
+    This parameter uses NRPN (1:81) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Ratio value ranging from 0 to 127.
-            Maps to ratios from 0.001 to 31.75.
+        value (int): MIDI ratio value ranging from 0 to 16383.
+            This parameter uses NRPN (1:81) for full 14-bit resolution.
+            Maps to display values from 0.001 to 31.75.
+            Formula: display = ((value / 16383) * 31.749) + 0.001
+            - 0 = 0.001 (lowest ratio)
+            - 8191 = ~15.875 (approximately)
+            - 16383 = 31.75 (highest ratio)
             Low values create sub-harmonics, high values create bright overtones.
-            Display range: 0.001-31.75.
-            Default is 0.500.
+            Display range: 0.001-31.75 with fine precision.
+            Default is 0.500 (MIDI ~257).
         midi_channel (int): The MIDI channel (track) to set the ratio for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_ratio1',
-        midi_cc=48,
+        nrpn_msb=1,
+        nrpn_lsb=81,
         midi_channel=midi_channel,
         value=value,
     )
@@ -270,19 +277,25 @@ def set_fm_drum_decay1(ctx: RunContext, value: int, midi_channel: int) -> SynthG
 
     Controls how quickly operator A's modulation fades out. Shorter decays create
     snappy, percussive modulation, while longer decays sustain the harmonic content.
+    This parameter uses NRPN (1:82) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Decay time value ranging from 0 to 127.
-            0 = instant decay
-            127 = longest decay
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI decay time value ranging from 0 to 16383.
+            This parameter uses NRPN (1:82) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = instant decay
+            - 8191 = ~63 (approximately)
+            - 16383 = longest decay (127)
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the decay for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_decay1',
-        midi_cc=49,
+        nrpn_msb=1,
+        nrpn_lsb=82,
         midi_channel=midi_channel,
         value=value,
     )
@@ -294,19 +307,25 @@ def set_fm_drum_end1(ctx: RunContext, value: int, midi_channel: int) -> SynthGen
 
     Determines the level that operator A sustains at after the decay phase.
     This allows for sustained harmonic content in the drum sound.
+    This parameter uses NRPN (1:83) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): End level value ranging from 0 to 127.
-            0 = silent at end
-            127 = full level at end
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI end level value ranging from 0 to 16383.
+            This parameter uses NRPN (1:83) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = silent at end
+            - 8191 = ~63 (approximately)
+            - 16383 = full level at end (127)
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the end level for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_end1',
-        midi_cc=50,
+        nrpn_msb=1,
+        nrpn_lsb=83,
         midi_channel=midi_channel,
         value=value,
     )
@@ -342,18 +361,25 @@ def set_fm_drum_ratio2(ctx: RunContext, value: int, midi_channel: int) -> SynthG
 
     Controls the frequency relationship between operator B and the fundamental pitch.
     Works in conjunction with operator A to create complex modulation patterns.
+    This parameter uses NRPN (1:85) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Ratio value ranging from 0 to 127.
-            Maps to ratios from 0.001 to 31.75.
-            Display range: 0.001-31.75.
-            Default is 0.500.
+        value (int): MIDI ratio value ranging from 0 to 16383.
+            This parameter uses NRPN (1:85) for full 14-bit resolution.
+            Maps to display values from 0.001 to 31.75.
+            Formula: display = ((value / 16383) * 31.749) + 0.001
+            - 0 = 0.001 (lowest ratio)
+            - 8191 = ~15.875 (approximately)
+            - 16383 = 31.75 (highest ratio)
+            Display range: 0.001-31.75 with fine precision.
+            Default is 0.500 (MIDI ~257).
         midi_channel (int): The MIDI channel (track) to set the ratio for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_ratio2',
-        midi_cc=52,
+        nrpn_msb=1,
+        nrpn_lsb=85,
         midi_channel=midi_channel,
         value=value,
     )
@@ -365,19 +391,25 @@ def set_fm_drum_decay2(ctx: RunContext, value: int, midi_channel: int) -> SynthG
 
     Controls how quickly operator B's modulation fades out. Can be set differently
     from operator A to create evolving timbral changes.
+    This parameter uses NRPN (1:86) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Decay time value ranging from 0 to 127.
-            0 = instant decay
-            127 = longest decay
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI decay time value ranging from 0 to 16383.
+            This parameter uses NRPN (1:86) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = instant decay
+            - 8191 = ~63 (approximately)
+            - 16383 = longest decay (127)
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the decay for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_decay2',
-        midi_cc=53,
+        nrpn_msb=1,
+        nrpn_lsb=86,
         midi_channel=midi_channel,
         value=value,
     )
@@ -388,19 +420,25 @@ def set_fm_drum_end2(ctx: RunContext, value: int, midi_channel: int) -> SynthGen
     Set the end level for operator B's envelope.
 
     Determines the level that operator B sustains at after the decay phase.
+    This parameter uses NRPN (1:87) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): End level value ranging from 0 to 127.
-            0 = silent at end
-            127 = full level at end
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI end level value ranging from 0 to 16383.
+            This parameter uses NRPN (1:87) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = silent at end
+            - 8191 = ~63 (approximately)
+            - 16383 = full level at end (127)
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the end level for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_end2',
-        midi_cc=54,
+        nrpn_msb=1,
+        nrpn_lsb=87,
         midi_channel=midi_channel,
         value=value,
     )
@@ -436,19 +474,25 @@ def set_fm_drum_body_hold(ctx: RunContext, value: int, midi_channel: int) -> Syn
 
     Creates a sustained initial impact before the drum begins to decay. Useful for
     creating punchy attacks and controlling the drum's envelope shape.
+    This parameter uses NRPN (1:89) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Hold time value ranging from 0 to 127.
-            0 = no hold (immediate decay)
-            127 = longest hold
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI hold time value ranging from 0 to 16383.
+            This parameter uses NRPN (1:89) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = no hold (immediate decay)
+            - 8191 = ~63 (approximately)
+            - 16383 = longest hold (127)
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the body hold for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_body_hold',
-        midi_cc=56,
+        nrpn_msb=1,
+        nrpn_lsb=89,
         midi_channel=midi_channel,
         value=value,
     )
@@ -459,21 +503,27 @@ def set_fm_drum_body_decay(ctx: RunContext, value: int, midi_channel: int) -> Sy
     Set the decay time for the body part of the drum sound.
 
     Controls how long the main FM-generated portion of the drum takes to fade out.
-    The last value (127) is infinite decay, creating a sustained drone.
+    The last value (127/16383) is infinite decay, creating a sustained drone.
+    This parameter uses NRPN (1:90) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Decay time value ranging from 0 to 127.
-            0 = instant decay
-            126 = very long decay
-            127 = infinite (no decay)
-            Display range: 0-127 (last value is ∞).
-            Default varies by preset.
+        value (int): MIDI decay time value ranging from 0 to 16383.
+            This parameter uses NRPN (1:90) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = instant decay
+            - 8191 = ~63 (approximately)
+            - 16382 = very long decay (~126)
+            - 16383 = infinite (no decay, ∞)
+            Display range: 0-127 with fine precision (last value is ∞).
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the body decay for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_body_decay',
-        midi_cc=57,
+        nrpn_msb=1,
+        nrpn_lsb=90,
         midi_channel=midi_channel,
         value=value,
     )
@@ -583,19 +633,25 @@ def set_fm_drum_noise_hold(ctx: RunContext, value: int, midi_channel: int) -> Sy
 
     Controls how long the noise component sustains at full level before decaying.
     Important for shaping the character of snares, hi-hats, and other noisy drums.
+    This parameter uses NRPN (1:97) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Hold time value ranging from 0 to 127.
-            0 = no hold (immediate decay)
-            127 = longest hold
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI hold time value ranging from 0 to 16383.
+            This parameter uses NRPN (1:97) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = no hold (immediate decay)
+            - 8191 = ~63 (approximately)
+            - 16383 = longest hold (127)
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the noise hold for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_noise_hold',
-        midi_cc=70,
+        nrpn_msb=1,
+        nrpn_lsb=97,
         midi_channel=midi_channel,
         value=value,
     )
@@ -605,22 +661,28 @@ def set_fm_drum_noise_decay(ctx: RunContext, value: int, midi_channel: int) -> S
     """
     Set the decay time for the noise part of the sound.
 
-    Controls how long the noise component takes to fade out. The last value (127)
+    Controls how long the noise component takes to fade out. The last value (127/16383)
     is infinite decay, creating a sustained noise layer.
+    This parameter uses NRPN (1:98) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Decay time value ranging from 0 to 127.
-            0 = instant decay
-            126 = very long decay
-            127 = infinite (no decay)
-            Display range: 0-127 (last value is ∞).
-            Default varies by preset.
+        value (int): MIDI decay time value ranging from 0 to 16383.
+            This parameter uses NRPN (1:98) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = instant decay
+            - 8191 = ~63 (approximately)
+            - 16382 = very long decay (~126)
+            - 16383 = infinite (no decay, ∞)
+            Display range: 0-127 with fine precision (last value is ∞).
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the noise decay for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_noise_decay',
-        midi_cc=71,
+        nrpn_msb=1,
+        nrpn_lsb=98,
         midi_channel=midi_channel,
         value=value,
     )
@@ -632,19 +694,26 @@ def set_fm_drum_transient(ctx: RunContext, value: int, midi_channel: int) -> Syn
 
     Transients are short attack samples that add punch and realism to drum sounds.
     Different transient types are optimized for different drum types (kick, snare, etc.).
+    This parameter uses NRPN (1:99) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Transient selection value ranging from 0 to 124.
+        value (int): MIDI transient selection value ranging from 0 to 16383.
+            This parameter uses NRPN (1:99) for full 14-bit resolution.
+            Maps to display values from 0 to 124.
+            Formula: display = (value / 16383) * 124.0
+            - 0 = transient 0 (typically kick-oriented)
+            - 8191 = ~62 (approximately)
+            - 16383 = transient 124 (typically snare/hat-like)
             Different values select different pre-recorded transient samples.
-            Lower values tend to be kick-oriented, higher values more snare/hat-like.
-            Display range: 0-124.
-            Default varies by preset.
+            Display range: 0-124 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the transient for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_transient',
-        midi_cc=72,
+        nrpn_msb=1,
+        nrpn_lsb=99,
         midi_channel=midi_channel,
         value=value,
     )

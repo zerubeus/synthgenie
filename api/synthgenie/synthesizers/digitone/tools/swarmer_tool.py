@@ -11,20 +11,24 @@ def set_swarmer_tune(ctx: RunContext, value: int, midi_channel: int) -> SynthGen
     """
     Set the master tuning of the Swarmer synthesizer.
 
+    This parameter uses NRPN (1:73) for full 14-bit resolution with fine-grained control.
+
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): MIDI tuning value ranging from 0 to 127.
-            - 0 maps to -60
-            - 64 maps to 0
-            - 127 maps to +60
-            Values in between are linearly mapped.
-            Display range: -60 to +60.
-            Default is 0.
+        value (int): MIDI tuning value ranging from 0 to 16383.
+            This parameter uses NRPN (1:73) for full 14-bit resolution.
+            Maps to display values from -60 to +60 semitones.
+            Formula: display = ((value / 16383) * 120.0) - 60.0
+            - 0 = -60 semitones
+            - 8191 = ~0 semitones (approximately)
+            - 16383 = +60 semitones
+            Values in between are linearly mapped with fine precision.
+            Display range: -60 to +60 semitones.
+            Default is 0 (MIDI ~8191).
         midi_channel (int): The MIDI channel (track) to set the tuning for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_swarmer_tune',
-        midi_cc=40,
         nrpn_msb=1,
         nrpn_lsb=73,
         midi_channel=midi_channel,

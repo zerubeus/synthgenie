@@ -96,18 +96,25 @@ def set_multi_mode_filter_frequency(ctx: RunContext, value: int, midi_channel: i
     """
     Set the cutoff frequency of the multi-mode filter.
 
+    This parameter uses NRPN (1:20) for full 14-bit resolution with fine-grained control.
+
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Cutoff frequency value ranging from 0 to 127.
-            - 0 maps to 0
-            - 127 maps to 127
-            Display range: 0-127.
-            Default is 127.
+        value (int): MIDI cutoff frequency value ranging from 0 to 16383.
+            This parameter uses NRPN (1:20) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = lowest cutoff frequency (0)
+            - 8191 = ~63 (approximately)
+            - 16383 = highest cutoff frequency (127)
+            Display range: 0-127 with fine precision.
+            Default is 127 (MIDI 16383).
         midi_channel (int): The MIDI channel (track) to set the filter frequency for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_multi_mode_filter_frequency',
-        midi_cc=16,
+        nrpn_msb=1,
+        nrpn_lsb=20,
         midi_channel=midi_channel,
         value=value,
     )

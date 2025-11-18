@@ -152,7 +152,7 @@ export const DIGITONE_PARAMS: Record<string, ParamSet> = {
     'DEC': { cc_msb: 21, nrpn_lsb: 1, nrpn_msb: 17, default: 64 },
     'SUS': { cc_msb: 22, nrpn_lsb: 1, nrpn_msb: 18 },
     'REL': { cc_msb: 23, nrpn_lsb: 1, nrpn_msb: 19, default: 64 },
-    'FREQ': { cc_msb: 16, nrpn_lsb: 1, nrpn_msb: 20, default: 127 },
+    'FREQ': { cc_msb: 16, nrpn_msb: 1, nrpn_lsb: 20, min_midi: 0, max_midi: 16383, min_val: 0, max_val: 127, default: 127 },
     'RESO': { cc_msb: 17, nrpn_lsb: 1, nrpn_msb: 21 },
     'TYPE': { cc_msb: 18, nrpn_lsb: 1, nrpn_msb: 22 },
     'ENV.Depth': { cc_msb: 24, nrpn_lsb: 1, nrpn_msb: 26, min_val: -64, max_val: 64 },

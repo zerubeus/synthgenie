@@ -13,21 +13,25 @@ def set_fm_drum_tune(ctx: RunContext, value: int, midi_channel: int) -> SynthGen
     Set the pitch tuning of the FM drum oscillator.
 
     This parameter controls the fundamental pitch of the drum sound.
+    Uses NRPN (1:73) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Tuning value ranging from 0 to 127.
-            Maps to pitch offset from -60 to +60 semitones.
+        value (int): MIDI pitch value ranging from 0 to 16383.
+            This parameter uses NRPN (1:73) for full 14-bit resolution.
+            Maps to display values from -60 to +60 semitones.
+            Formula: display = ((value / 16383) * 120.0) - 60.0
             - 0 = -60 semitones
-            - 64 = 0 semitones (center)
-            - 127 = +60 semitones
-            Display range: -60 to +60.
-            Default is 0.
+            - 8191 = 0 semitones (approximately)
+            - 16383 = +60 semitones
+            Display range: -60 to +60 semitones with fine precision.
+            Default is 0 (MIDI ~8191).
         midi_channel (int): The MIDI channel (track) to set the tuning for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_tune',
-        midi_cc=40,
+        nrpn_msb=1,
+        nrpn_lsb=73,
         midi_channel=midi_channel,
         value=value,
     )
@@ -39,19 +43,25 @@ def set_fm_drum_sweep_time(ctx: RunContext, value: int, midi_channel: int) -> Sy
 
     Controls how quickly the pitch sweep occurs. Lower values result in shorter,
     snappier sweeps ideal for kick drums, while higher values create longer pitch bends.
+    Uses NRPN (1:74) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Sweep time value ranging from 0 to 127.
-            Lower values = shorter sweep time.
-            Higher values = longer sweep time.
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI sweep time value ranging from 0 to 16383.
+            This parameter uses NRPN (1:74) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = 0 (shortest sweep time)
+            - 8191 = ~63 (approximately)
+            - 16383 = 127 (longest sweep time)
+            Display range: 0 to 127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the sweep time for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_sweep_time',
-        midi_cc=41,
+        nrpn_msb=1,
+        nrpn_lsb=74,
         midi_channel=midi_channel,
         value=value,
     )
@@ -115,19 +125,27 @@ def set_fm_drum_op_c_wave(ctx: RunContext, value: int, midi_channel: int) -> Syn
     Set the waveform for operator C in the FM drum engine.
 
     Operator C typically acts as the carrier, defining the fundamental character of the drum sound.
+    This parameter uses NRPN (1:77) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Waveform selection value ranging from 0 to 127.
+        value (int): MIDI waveform value ranging from 0 to 16383.
+            This parameter uses NRPN (1:77) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = waveform 0
+            - 8191 = ~63 (approximately)
+            - 16383 = waveform 127
             Different ranges select different waveforms optimized for drum synthesis.
             Common selections include sine, triangle, square, and various harmonic combinations.
-            Display range: 0-127.
-            Default varies by preset.
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the operator C waveform for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_op_c_wave',
-        midi_cc=44,
+        nrpn_msb=1,
+        nrpn_lsb=77,
         midi_channel=midi_channel,
         value=value,
     )
@@ -139,18 +157,26 @@ def set_fm_drum_op_ab_wave(ctx: RunContext, value: int, midi_channel: int) -> Sy
 
     Operators A and B typically act as modulators, shaping the harmonic content and texture
     of the drum sound. This parameter controls both operators simultaneously.
+    This parameter uses NRPN (1:78) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Waveform selection value ranging from 0 to 127.
+        value (int): MIDI waveform value ranging from 0 to 16383.
+            This parameter uses NRPN (1:78) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = waveform 0
+            - 8191 = ~63 (approximately)
+            - 16383 = waveform 127
             Different ranges select different waveforms optimized for modulation.
-            Display range: 0-127.
-            Default varies by preset.
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the operator A/B waveform for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_op_ab_wave',
-        midi_cc=45,
+        nrpn_msb=1,
+        nrpn_lsb=78,
         midi_channel=midi_channel,
         value=value,
     )
@@ -188,19 +214,25 @@ def set_fm_drum_fold(ctx: RunContext, value: int, midi_channel: int) -> SynthGen
     Wavefolding increases the complexity of the wave and creates a more overtone-rich sound.
     This affects only the body (FM) part of the sound, not the noise or transient components.
     Great for adding harmonic richness and aggression to drums.
+    This parameter uses NRPN (1:80) for full 14-bit resolution with fine-grained control.
 
     Args:
         ctx (RunContext): The run context containing dependencies.
-        value (int): Wavefolding amount ranging from 0 to 127.
-            0 = no wavefolding (clean)
-            127 = maximum wavefolding (complex harmonics)
-            Display range: 0-127.
-            Default varies by preset.
+        value (int): MIDI wavefolding value ranging from 0 to 16383.
+            This parameter uses NRPN (1:80) for full 14-bit resolution.
+            Maps to display values from 0 to 127.
+            Formula: display = (value / 16383) * 127.0
+            - 0 = no wavefolding (clean)
+            - 8191 = ~63 (approximately)
+            - 16383 = maximum wavefolding (complex harmonics)
+            Display range: 0-127 with fine precision.
+            Default is 0.
         midi_channel (int): The MIDI channel (track) to set the wavefolding for. 1-16
     """
     return SynthGenieResponse(
         used_tool='set_fm_drum_fold',
-        midi_cc=47,
+        nrpn_msb=1,
+        nrpn_lsb=80,
         midi_channel=midi_channel,
         value=value,
     )

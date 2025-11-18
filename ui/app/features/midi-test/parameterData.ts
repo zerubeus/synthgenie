@@ -96,14 +96,14 @@ export const DIGITONE_PARAMS: Record<string, ParamSet> = {
 
   // ========== FM DRUM ==========
   'FM_DRUM_Page1': {
-    'TUNE': { cc_msb: 40, nrpn_lsb: 1, nrpn_msb: 73, min_val: -60, max_val: 60, default: 0 },
-    'STIM': { cc_msb: 41, nrpn_lsb: 1, nrpn_msb: 74 },
+    'TUNE': { cc_msb: 40, nrpn_msb: 1, nrpn_lsb: 73, min_midi: 0, max_midi: 16383, min_val: -60, max_val: 60, default: 0 },
+    'STIM': { cc_msb: 41, nrpn_msb: 1, nrpn_lsb: 74, min_midi: 0, max_midi: 16383, min_val: 0, max_val: 127, default: 0 },
     'SDEP': { cc_msb: 42, nrpn_lsb: 1, nrpn_msb: 75 },
     'ALGO': { cc_msb: 43, nrpn_lsb: 1, nrpn_msb: 76, max_midi: 6, min_val: 1, max_val: 7, default: 1 },
-    'OP.C': { cc_msb: 44, nrpn_lsb: 1, nrpn_msb: 77 },
-    'OP.AB': { cc_msb: 45, nrpn_lsb: 1, nrpn_msb: 78 },
+    'OP.C': { cc_msb: 44, nrpn_msb: 1, nrpn_lsb: 77, min_midi: 0, max_midi: 16383, min_val: 0, max_val: 127, default: 0 },
+    'OP.AB': { cc_msb: 45, nrpn_msb: 1, nrpn_lsb: 78, min_midi: 0, max_midi: 16383, min_val: 0, max_val: 127, default: 0 },
     'FDBK': { cc_msb: 46, nrpn_lsb: 1, nrpn_msb: 79, max_midi: 127 },
-    'FOLD': { cc_msb: 47, nrpn_lsb: 1, nrpn_msb: 80 },
+    'FOLD': { cc_msb: 47, nrpn_msb: 1, nrpn_lsb: 80, min_midi: 0, max_midi: 16383, min_val: 0, max_val: 127, default: 0 },
   },
   'FM_DRUM_Page2': {
     'RATIO1': { cc_msb: 48, nrpn_lsb: 1, nrpn_msb: 81, min_val: 0.001, max_val: 31.75, default: 0.500 },

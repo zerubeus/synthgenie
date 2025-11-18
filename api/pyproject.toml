@@ -18,7 +18,7 @@ authors = [{ name = "zerubeus", email = "zerubeus@gmail.com" }]
 
 dependencies = [
     "fastapi>=0.116.1",
-    "pydantic-ai[logfire]>=1.0.9",
+    "pydantic-ai[logfire]>=1.19.0",
     "python-dotenv>=1.1.0",
     "sentry-sdk[fastapi]>=2.25.0",
     "psycopg2-binary>=2.9.10",

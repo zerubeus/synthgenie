@@ -13,8 +13,9 @@ class SynthGenieResponse(BaseModel):
     model_config = {
         'json_schema_extra': {
             # These examples illustrate different ways the MIDI control fields can be used.
-            # In the generated JSON for these examples, fields with a value of `None`
-            # (e.g., `midi_cc_lsb` in a standard CC message) will typically be omitted.
+            # In the generated JSON responses, fields with a value of `None`
+            # (e.g., `midi_cc_lsb` in a standard CC message) are omitted via
+            # FastAPI's `response_model_exclude_none=True` configuration.
             # The full list of all possible fields (including optional ones) can always be
             # found in the schema definition in the OpenAPI documentation.
             'examples': [

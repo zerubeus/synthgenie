@@ -14,7 +14,11 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix='/agent/sub37', tags=['synthgenie'])
 
 
-@router.post('/prompt', response_model=list[SynthGenieResponse | SynthGenieAmbiguousResponse])
+@router.post(
+    '/prompt',
+    response_model=list[SynthGenieResponse | SynthGenieAmbiguousResponse],
+    response_model_exclude_none=True,
+)
 async def process_sub37_prompt(
     user_prompt: UserPrompt,
     api_key: str = Depends(get_api_key),

@@ -313,13 +313,32 @@ FM Tone is a 4-operator FM synthesizer inspired by classic FM synths like the Ya
 - Delayed operator triggers for evolving attacks
 - Feedback + high harmonics = noisy/aggressive textures
 - Mix parameter automates between two different timbres (X vs Y outputs)
+
+**CRITICAL - Final Response Construction:**
+When constructing your final output list of SynthGenieResponse objects, you MUST include ALL fields from each tool's return value:
+- used_tool (always present)
+- midi_channel (always present)
+- value (always present)
+- midi_cc (if the tool returned it - DO NOT omit this!)
+- midi_cc_lsb (if the tool returned it - DO NOT omit this!)
+- nrpn_msb (if the tool returned it - DO NOT omit this!)
+- nrpn_lsb (if the tool returned it - DO NOT omit this!)
+
+For example, if set_fm_tone_algorithm returned:
+SynthGenieResponse(used_tool='set_fm_tone_algorithm', midi_cc=40, midi_channel=1, value=0)
+
+Your final output MUST include:
+{{"used_tool": "set_fm_tone_algorithm", "midi_cc": 40, "midi_channel": 1, "value": 0}}
+
+DO NOT omit the midi_cc, nrpn_msb, nrpn_lsb, or midi_cc_lsb fields if they were present in the tool results!
 """,
     )
 
-    @agent.output_validator  # type: ignore[misc]
-    def validate_fm_tone_response(
-        ctx, result: list[SynthGenieResponse | SynthGenieAmbiguousResponse]
+    @agent.output_validator
+    def validate_fm_tone_response(  # type: ignore
+        ctx,  # type: ignore
+        result: list[SynthGenieResponse | SynthGenieAmbiguousResponse],
     ) -> list[SynthGenieResponse | SynthGenieAmbiguousResponse]:
-        return validate_synth_response(ctx, result)
+        return validate_synth_response(ctx, result)  # type: ignore
 
     return agent

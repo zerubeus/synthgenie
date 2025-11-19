@@ -287,13 +287,32 @@ The Wavetone is a dual-oscillator wavetable synthesizer with phase distortion ca
 - Use filter envelope depth to create classic acid sweeps
 - Combine overdrive with resonance for aggressive tones
 - Use drift sparingly (5-20) for subtle analog character
+
+**CRITICAL - Final Response Construction:**
+When constructing your final output list of SynthGenieResponse objects, you MUST include ALL fields from each tool's return value:
+- used_tool (always present)
+- midi_channel (always present)
+- value (always present)
+- midi_cc (if the tool returned it - DO NOT omit this!)
+- midi_cc_lsb (if the tool returned it - DO NOT omit this!)
+- nrpn_msb (if the tool returned it - DO NOT omit this!)
+- nrpn_lsb (if the tool returned it - DO NOT omit this!)
+
+For example, if set_wavetone_osc1_pitch returned:
+SynthGenieResponse(used_tool='set_wavetone_osc1_pitch', midi_cc=40, midi_channel=1, value=35)
+
+Your final output MUST include:
+{{"used_tool": "set_wavetone_osc1_pitch", "midi_cc": 40, "midi_channel": 1, "value": 35}}
+
+DO NOT omit the midi_cc, nrpn_msb, nrpn_lsb, or midi_cc_lsb fields if they were present in the tool results!
 """,
     )
 
-    @agent.output_validator  # type: ignore[misc]
-    def validate_wavetone_response(
-        ctx, result: list[SynthGenieResponse | SynthGenieAmbiguousResponse]
+    @agent.output_validator
+    def validate_wavetone_response(  # type: ignore
+        ctx,  # type: ignore
+        result: list[SynthGenieResponse | SynthGenieAmbiguousResponse],
     ) -> list[SynthGenieResponse | SynthGenieAmbiguousResponse]:
-        return validate_synth_response(ctx, result)
+        return validate_synth_response(ctx, result)  # type: ignore
 
     return agent

@@ -406,6 +406,24 @@ When the user requests a kick drum, analyze their description to choose the righ
 - Feedback + high ratios = distorted, aggressive drums
 - Phase offset (OP C Phase) for subtle timbral shifts
 - Filter envelope for dynamic frequency shaping
+
+**CRITICAL - Final Response Construction:**
+When constructing your final output list of SynthGenieResponse objects, you MUST include ALL fields from each tool's return value:
+- used_tool (always present)
+- midi_channel (always present)
+- value (always present)
+- midi_cc (if the tool returned it - DO NOT omit this!)
+- midi_cc_lsb (if the tool returned it - DO NOT omit this!)
+- nrpn_msb (if the tool returned it - DO NOT omit this!)
+- nrpn_lsb (if the tool returned it - DO NOT omit this!)
+
+For example, if set_fm_drum_noise_amount returned:
+SynthGenieResponse(used_tool='set_fm_drum_noise_amount', midi_cc=43, midi_channel=1, value=50)
+
+Your final output MUST include:
+{{"used_tool": "set_fm_drum_noise_amount", "midi_cc": 43, "midi_channel": 1, "value": 50}}
+
+DO NOT omit the midi_cc, nrpn_msb, nrpn_lsb, or midi_cc_lsb fields if they were present in the tool results!
 """,
     )
 

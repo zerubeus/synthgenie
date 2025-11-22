@@ -41,10 +41,10 @@ export function DriveExplorer({ drive, selectedPath, onSelectPath }: DriveExplor
       <div key={JSON.stringify(entry.path)}>
         {/* Entry Row */}
         <div
-          className={`flex items-center gap-2 py-1 px-2 cursor-pointer hover:bg-gray-100 ${
-            isSelected ? 'bg-blue-100' : ''
+          className={`flex items-center gap-3 py-2 px-3 cursor-pointer border-b border-gray-900 hover:bg-gray-900 transition-colors ${
+            isSelected ? 'bg-orange-950 border-orange-900' : ''
           }`}
-          style={{ paddingLeft: `${depth * 20 + 8}px` }}
+          style={{ paddingLeft: `${depth * 20 + 12}px` }}
           onClick={() => {
             if (isDir) {
               toggleExpanded(entry.path);
@@ -54,32 +54,32 @@ export function DriveExplorer({ drive, selectedPath, onSelectPath }: DriveExplor
         >
           {/* Expand/Collapse Icon */}
           {isDir && (
-            <span className="text-gray-500 w-4 flex-shrink-0">
+            <span className="text-orange-500 w-3 flex-shrink-0 text-xs font-bold">
               {expanded ? '▼' : '▶'}
             </span>
           )}
-          {!isDir && <span className="w-4 flex-shrink-0" />}
+          {!isDir && <span className="w-3 flex-shrink-0" />}
 
           {/* Icon */}
-          <span className="text-lg flex-shrink-0">
-            {isDir ? '📁' : '🎵'}
+          <span className="text-xs flex-shrink-0 text-gray-500 font-bold uppercase tracking-wider">
+            {isDir ? '[DIR]' : '[WAV]'}
           </span>
 
           {/* Name */}
-          <span className="text-sm text-gray-900 flex-1 truncate">
+          <span className="text-sm text-gray-200 flex-1 truncate font-mono uppercase tracking-wide">
             {entry.name}
           </span>
 
           {/* Size */}
           {!isDir && (
-            <span className="text-xs text-gray-500 flex-shrink-0">
+            <span className="text-xs text-gray-500 flex-shrink-0 font-mono">
               {formatSize(entry.itemSize)}
             </span>
           )}
 
           {/* Locked indicator */}
           {entry.locked && (
-            <span className="text-sm flex-shrink-0">🔒</span>
+            <span className="text-xs flex-shrink-0 text-orange-500 font-bold uppercase tracking-wider">[LCK]</span>
           )}
         </div>
 
@@ -88,10 +88,10 @@ export function DriveExplorer({ drive, selectedPath, onSelectPath }: DriveExplor
           <div>
             {entry.item.entries.length === 0 ? (
               <div
-                className="text-xs text-gray-400 italic py-1"
+                className="text-xs text-gray-600 italic py-2 uppercase tracking-wide"
                 style={{ paddingLeft: `${(depth + 1) * 20 + 28}px` }}
               >
-                (empty)
+                [Empty]
               </div>
             ) : (
               entry.item.entries.map((child) => renderEntry(child, depth + 1))
@@ -103,14 +103,14 @@ export function DriveExplorer({ drive, selectedPath, onSelectPath }: DriveExplor
   };
 
   return (
-    <div className="border border-gray-200 rounded overflow-auto max-h-[600px]">
+    <div className="border border-gray-800 rounded overflow-auto max-h-[600px] bg-black digitakt-scrollbar">
       {drive.root.item.kind === 'directory' && drive.root.item.entries.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
-          <p>No files found.</p>
-          <p className="text-sm mt-2">Click "Scan +Drive" to load files from your Digitakt.</p>
+          <p className="uppercase tracking-wide text-sm">No Files Found</p>
+          <p className="text-xs mt-2 text-gray-600 uppercase tracking-wider">Click "Scan +Drive" to Load Files</p>
         </div>
       ) : (
-        <div className="p-2">
+        <div className="p-0">
           {drive.root.item.kind === 'directory' &&
             drive.root.item.entries.map((entry) => renderEntry(entry, 0))}
         </div>

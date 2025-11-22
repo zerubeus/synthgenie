@@ -3,6 +3,7 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
 }
 
 html,
@@ -12,4 +13,29 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+}
+
+/* Custom scrollbar for Digitakt-themed components */
+.digitakt-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(249, 115, 22) rgb(17, 24, 39);
+}
+
+.digitakt-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.digitakt-scrollbar::-webkit-scrollbar-track {
+  background: rgb(17, 24, 39);
+  border-radius: 4px;
+}
+
+.digitakt-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(249, 115, 22);
+  border-radius: 4px;
+  border: 2px solid rgb(17, 24, 39);
+}
+
+.digitakt-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(234, 88, 12);
 }

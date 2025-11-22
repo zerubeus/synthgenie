@@ -95,18 +95,19 @@ export default function DigitaktPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-950 p-6 font-mono">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Digitakt +Drive Manager</h1>
+        <div className="bg-black border border-gray-800 rounded-lg shadow-lg p-6 mb-6">
+          <h1 className="text-3xl font-bold text-white mb-1 tracking-wider uppercase">Digitakt II</h1>
+          <p className="text-orange-500 text-sm mb-4 tracking-wide uppercase">+Drive Manager</p>
 
           {/* Connection Status */}
           <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${sysex.isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-sm text-gray-700">
-                {sysex.isConnected ? `Connected: ${sysex.selectedDevice}` : 'Not connected'}
+            <div className="flex items-center gap-2 bg-gray-900 px-3 py-2 rounded border border-gray-700">
+              <div className={`w-2 h-2 rounded-full ${sysex.isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+              <span className="text-xs text-gray-300 uppercase tracking-wide">
+                {sysex.isConnected ? `Connected: ${sysex.selectedDevice}` : 'Not Connected'}
               </span>
             </div>
 
@@ -114,7 +115,7 @@ export default function DigitaktPage() {
               <select
                 value={sysex.selectedDevice || ''}
                 onChange={(e) => sysex.selectDevice(e.target.value)}
-                className="text-sm border border-gray-300 rounded px-2 py-1"
+                className="text-xs bg-gray-900 border border-gray-700 text-gray-300 rounded px-3 py-2 focus:outline-none focus:border-orange-500 uppercase tracking-wide"
               >
                 {sysex.devices.map((device) => (
                   <option key={device} value={device}>
@@ -127,8 +128,8 @@ export default function DigitaktPage() {
 
           {/* Error Display */}
           {(sysex.error || drive.error) && (
-            <div className="bg-red-50 border border-red-200 rounded p-3 mb-4">
-              <p className="text-sm text-red-700">{sysex.error || drive.error}</p>
+            <div className="bg-red-950 border border-red-800 rounded p-3 mb-4">
+              <p className="text-sm text-red-300 uppercase tracking-wide">{sysex.error || drive.error}</p>
             </div>
           )}
 
@@ -137,7 +138,7 @@ export default function DigitaktPage() {
             <button
               onClick={handleScanDrive}
               disabled={!sysex.isConnected || drive.isScanning}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-orange-600 text-white rounded border border-orange-700 hover:bg-orange-700 disabled:opacity-30 disabled:cursor-not-allowed uppercase text-sm tracking-wider font-semibold transition-colors"
             >
               {drive.isScanning ? 'Scanning...' : 'Scan +Drive'}
             </button>
@@ -145,7 +146,7 @@ export default function DigitaktPage() {
             <button
               onClick={handleCreateFolder}
               disabled={!sysex.isConnected}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-gray-800 text-gray-300 rounded border border-gray-700 hover:bg-gray-700 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed uppercase text-sm tracking-wider transition-colors"
             >
               New Folder
             </button>
@@ -153,7 +154,7 @@ export default function DigitaktPage() {
             <button
               onClick={handleRename}
               disabled={!selectedPath}
-              className="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-gray-800 text-gray-300 rounded border border-gray-700 hover:bg-gray-700 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed uppercase text-sm tracking-wider transition-colors"
             >
               Rename
             </button>
@@ -161,7 +162,7 @@ export default function DigitaktPage() {
             <button
               onClick={handleMoveToTrash}
               disabled={!selectedPath}
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-gray-800 text-gray-300 rounded border border-gray-700 hover:bg-red-900 hover:text-red-300 hover:border-red-800 disabled:opacity-30 disabled:cursor-not-allowed uppercase text-sm tracking-wider transition-colors"
             >
               Move to Trash
             </button>
@@ -169,7 +170,7 @@ export default function DigitaktPage() {
             <button
               onClick={handleEmptyTrash}
               disabled={!sysex.isConnected}
-              className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-gray-800 text-gray-300 rounded border border-gray-700 hover:bg-red-900 hover:text-red-300 hover:border-red-800 disabled:opacity-30 disabled:cursor-not-allowed uppercase text-sm tracking-wider transition-colors"
             >
               Empty Trash
             </button>
@@ -177,13 +178,13 @@ export default function DigitaktPage() {
         </div>
 
         {/* Drive Explorer */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">File Browser</h2>
+        <div className="bg-black border border-gray-800 rounded-lg shadow-lg p-6">
+          <h2 className="text-xl font-semibold text-white mb-4 uppercase tracking-wider">File Browser</h2>
 
           {drive.isScanning && (
             <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
-              <p className="mt-4 text-gray-600">Scanning +Drive... {drive.scanProgress}%</p>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500" />
+              <p className="mt-4 text-gray-400 uppercase tracking-wide">Scanning +Drive... {drive.scanProgress}%</p>
             </div>
           )}
 

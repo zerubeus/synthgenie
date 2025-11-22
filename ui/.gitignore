@@ -27,3 +27,4 @@ dist-ssr
 .react-router
 .vercel
 build
+test/

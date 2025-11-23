@@ -531,7 +531,7 @@ The drive scanner uses a breadth-first approach with a queue to traverse the dir
 
 ```mermaid
 graph TB
-    A[Start: Queue = ['/']] --> B[Pop path from queue]
+    A["Start: Queue = ['/']"] --> B[Pop path from queue]
     B --> C[Send DirListRequest]
     C --> D[Receive DirListResponse]
     D --> E[Parse entries]

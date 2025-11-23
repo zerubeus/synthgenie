@@ -1,6 +1,5 @@
 /**
  * SysEx message types for Digitakt +Drive communication
- * Ported from elk-herd/src/SysEx/Message.elm
  */
 
 export type Fd = number; // File descriptor
@@ -64,7 +63,7 @@ export type ElkMessage =
   | { type: 'TimeOut' };
 
 /**
- * Message ID constants (matching elk-herd API IDs)
+ * Message ID constants
  */
 export const MessageId = {
   // Device info
@@ -130,6 +129,5 @@ export const SYSEX_SUB_ID = 0x00;
 
 /**
  * Chunk size for file transfers (bytes)
- * elk-herd uses 512 bytes per chunk
  */
 export const FILE_CHUNK_SIZE = 512;

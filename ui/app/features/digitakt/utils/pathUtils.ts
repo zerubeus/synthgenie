@@ -1,6 +1,5 @@
 /**
  * Path manipulation utilities for Digitakt +Drive
- * Based on elk-herd/src/Elektron/Path.elm
  */
 
 import type { Path } from '../types/drive';

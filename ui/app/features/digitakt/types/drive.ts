@@ -1,6 +1,5 @@
 /**
  * Drive data model types for Digitakt +Drive
- * Ported from elk-herd/src/Elektron/Drive.elm
  */
 
 /**

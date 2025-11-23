@@ -1409,7 +1409,6 @@ input.onmidimessage = (event: MIDIMessageEvent) => {
 
 ## References
 
-- **elk-herd**: Original Elm implementation - https://github.com/mxmxmx/elk-herd
 - **Web MIDI API**: https://developer.mozilla.org/en-US/docs/Web/API/Web_MIDI_API
 - **Elektron Documentation**: Official Digitakt manual
 - **Windows-1252 Encoding**: https://en.wikipedia.org/wiki/Windows-1252
@@ -1429,4 +1428,4 @@ The Digitakt integration is built on these key concepts:
 6. **Queue-based Scanning**: Breadth-first directory traversal
 7. **Request-Response Correlation**: Message ID matching for async operations
 
-The implementation closely follows the elk-herd protocol specification while adapting it to modern React patterns and TypeScript type safety.
+The implementation uses modern React patterns and TypeScript type safety for the Elektron SysEx protocol.

@@ -1,6 +1,5 @@
 /**
  * SysEx message encoding/decoding utilities for Digitakt +Drive
- * Based on elk-herd's ByteArray.Builder and ByteArray.Parser
  */
 
 import type { ElkMessage, DirEntry } from '../types/sysex';
@@ -164,7 +163,7 @@ class ByteParser {
 }
 
 /**
- * Encode 8-bit data to 7-bit MIDI format (exactly as elk-herd does)
+ * Encode 8-bit data to 7-bit MIDI format
  */
 function encode7bit(data8: Uint8Array): Uint8Array {
   const len8 = data8.length;
@@ -207,7 +206,7 @@ function decode7bit(data: Uint8Array): Uint8Array {
 }
 
 /**
- * Wrap message payload in SysEx envelope with 7-bit encoding (exactly as elk-herd does)
+ * Wrap message payload in SysEx envelope with 7-bit encoding
  * Format: F0 00 20 3C 10 00 [7-bit encoded payload] F7
  */
 export function wrapSysEx(payload: number[]): Uint8Array {

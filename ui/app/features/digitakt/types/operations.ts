@@ -1,6 +1,5 @@
 /**
  * Operation queue types for managing sequential MIDI operations
- * Based on elk-herd's queue-based operation system
  */
 
 import type { Path } from './drive';

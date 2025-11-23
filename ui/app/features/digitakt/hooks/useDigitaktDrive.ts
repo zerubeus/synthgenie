@@ -58,7 +58,7 @@ export function useDigitaktDrive(): UseDigitaktDriveReturn {
   }, []);
 
   /**
-   * Merge new entries into existing drive tree (like elk-herd's setRawEntries)
+   * Merge new entries into existing drive tree
    * Returns updated drive and list of subdirectories that need to be scanned
    */
   const mergeEntries = useCallback(
@@ -133,7 +133,7 @@ export function useDigitaktDrive(): UseDigitaktDriveReturn {
   );
 
   /**
-   * Scan the entire +Drive iteratively (like elk-herd does)
+   * Scan the entire +Drive iteratively
    * Uses a queue to process directories one at a time
    */
   const scanDrive = useCallback(async () => {

@@ -1,6 +1,6 @@
 # Digitakt +Drive Integration - Deep Dive
 
-This document provides a comprehensive, inside-out explanation of how we interact with the Elektron Digitakt device to manage its +Drive file system. The implementation is based on the [elk-herd](https://github.com/mxmxmx/elk-herd) protocol and uses the Web MIDI API for communication.
+This document provides a comprehensive, inside-out explanation of how we interact with the Elektron Digitakt device to manage its +Drive file system.
 
 ## Table of Contents
 

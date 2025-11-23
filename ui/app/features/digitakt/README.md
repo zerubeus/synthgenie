@@ -907,7 +907,7 @@ interface Drive {
 graph LR
     A[DirEntry from Digitakt] -->|buildEntry| B[Entry in tree]
 
-    C[hash: number<br/>size: number<br/>locked: boolean<br/>type: 'f'|'d'<br/>name: string] -->|Transform| D[name: string<br/>path: Path<br/>locked: boolean<br/>item: Item<br/>itemSize: number]
+    C[hash: number<br/>size: number<br/>locked: boolean<br/>type: 'f' or 'd'<br/>name: string] -->|Transform| D[name: string<br/>path: Path<br/>locked: boolean<br/>item: Item<br/>itemSize: number]
 
     style A fill:#ffe1e1
     style B fill:#e1ffe1
